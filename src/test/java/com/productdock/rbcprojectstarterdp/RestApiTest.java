@@ -16,6 +16,6 @@ public class RestApiTest {
 
     @Test
     public void get() {
-        assertThat(restApi.get()).isEqualTo("test");
+        assertThat(restApi.getAll()).isEqualTo("test");
     }
 }
