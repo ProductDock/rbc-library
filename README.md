@@ -1,1 +1,5 @@
-# rbc-project-starter-dp
+# Team members
+- Nenad
+- Vladimir
+- Natasa
+- Dusan
