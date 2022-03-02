@@ -1,6 +1,5 @@
 package com.productdock.rbcprojectstarterdp.api;
 
-import com.productdock.rbcprojectstarterdp.Member;
 import com.productdock.rbcprojectstarterdp.model.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
