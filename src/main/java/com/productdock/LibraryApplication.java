@@ -1,13 +1,13 @@
-package com.productdock.rbcprojectstarterdp;
+package com.productdock;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RbcProjectStarterDpApplication {
+public class LibraryApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RbcProjectStarterDpApplication.class, args);
+		SpringApplication.run(LibraryApplication.class, args);
 	}
 
 }

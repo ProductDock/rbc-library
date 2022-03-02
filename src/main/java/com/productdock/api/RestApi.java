@@ -1,4 +1,4 @@
-package com.productdock.rbcprojectstarterdp.api;
+package com.productdock.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

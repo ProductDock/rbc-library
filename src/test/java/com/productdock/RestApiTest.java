@@ -1,6 +1,6 @@
-package com.productdock.rbcprojectstarterdp;
+package com.productdock;
 
-import com.productdock.rbcprojectstarterdp.api.RestApi;
+import com.productdock.api.RestApi;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
