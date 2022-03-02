@@ -15,16 +15,16 @@ public class RestApi {
     private List<Member> allMembers = new ArrayList<Member>();
 
     @GetMapping
-    public ResponseEntity<List<Member>> getAll(){
-        return new ResponseEntity(allMembers, HttpStatus.OK);
+    public List<Member> getAll(){
+        return allMembers;
     }
 
     @PostMapping
-    public ResponseEntity<Member> addMember(@RequestBody Member member){
+    public Member addMember(@RequestBody Member member){
         if(member != null){
             allMembers.add(member);
-            return new ResponseEntity(member, HttpStatus.CREATED);
+            return member;
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return null;
     }
 }

@@ -15,7 +15,13 @@ public class RestApiTest {
     private RestApi restApi;
 
     @Test
-    public void get() {
-        assertThat(restApi.getAll()).isEqualTo("test");
+    public void addMember() {
+        Member member = new Member("Nenad", "Becanovic");
+        assertThat(restApi.addMember(member)).isEqualTo(member);
+    }
+
+    @Test
+    public void getAllMembers() {
+        assertThat(restApi.getAll().size()).isEqualTo(0);
     }
 }
