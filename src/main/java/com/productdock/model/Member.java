@@ -1,9 +1,18 @@
 package com.productdock.model;
 
+import javax.persistence.*;
+
+@Entity
 public class Member {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer memberId;
+
+    @Column(nullable=false)
     private String firstName;
+
+    @Column(nullable=false)
     private String lastName;
 
     public Integer getMemberId() {

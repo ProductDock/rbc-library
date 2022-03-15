@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/api/members")
 public class RestApi {
 
     private final MemberService memberService;
@@ -27,6 +29,11 @@ public class RestApi {
             return new ResponseEntity<>(memberService.save(member), HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Member>> getAll() {
+        return new ResponseEntity(memberService.getAll(), HttpStatus.OK);
     }
 
 }
