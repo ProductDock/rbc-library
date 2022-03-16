@@ -2,6 +2,7 @@ package com.productdock.api;
 
 import com.productdock.model.Member;
 import com.productdock.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +14,8 @@ import java.util.List;
 @RequestMapping("/api/members")
 public class RestApi {
 
-    private final MemberService memberService;
-
-    public RestApi(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    @Autowired
+    private MemberService memberService;
 
     @GetMapping
     public String get() {
