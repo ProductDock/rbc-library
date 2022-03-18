@@ -1,10 +1,13 @@
 package com.productdock.model;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
+@Getter
 public class Member {
 
     @Id
@@ -21,27 +24,4 @@ public class Member {
     @Column(nullable=false)
     private String lastName;
 
-    public Integer getMemberId() {
-        return memberId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setMemberId(Integer memberId) {
-        this.memberId = memberId;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 }
