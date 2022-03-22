@@ -24,7 +24,7 @@ class SecurityConfigTest {
 
     String actualResponse = this.restTemplate.getForObject(securedUrl, String.class);
 
-    assertThat(actualResponse).isNotNull();
+    assertThat(actualResponse).isNull();
   }
 
 }
