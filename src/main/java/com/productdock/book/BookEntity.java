@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Getter
+@Table(name = "book")
 public class BookEntity {
 
     @Id
