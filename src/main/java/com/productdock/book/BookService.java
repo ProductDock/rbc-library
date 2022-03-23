@@ -13,13 +13,13 @@ public class BookService {
     private BookRepository bookRepository;
 
     @Autowired
-    private BookEntityMapper bookEntityMapper;
+    private BookMapper bookMapper;
 
     public List<Book> getAll() {
         return bookRepository
                 .findAll()
                 .stream()
-                .map(bookEntityMapper::toDomain)
+                .map(bookMapper::toDomain)
                 .collect(Collectors.toList());
     }
 
