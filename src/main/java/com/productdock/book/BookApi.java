@@ -14,11 +14,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/books")
 public class BookApi {
 
-    @Autowired
-    private BookService bookService;
+    private final BookService bookService;
 
-    @Autowired
-    private BookMapper bookMapper;
+    private final BookMapper bookMapper;
+
+    public BookApi(BookService bookService, BookMapper bookMapper) {
+        this.bookService = bookService;
+        this.bookMapper = bookMapper;
+    }
 
     @GetMapping
     public ResponseEntity<List<BookDto>> getAll() {
