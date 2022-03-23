@@ -6,11 +6,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceShould {
@@ -27,23 +29,19 @@ class BookServiceShould {
     @Test
     void getAllBooks() {
         //Given
-        when(bookRepository.findAll()).thenReturn(getBookEntities());
+        given(bookRepository.findAll()).willReturn(aBookCollection());
 
         //When
         List<BookDto> books = bookService.getAll();
 
         //Then
-        assertThat(books.size()).isEqualTo(1);
+        assertThat(books.size()).isEqualTo(2);
     }
 
-    private List<BookEntity> getBookEntities() {
-        BookEntity entity = new BookEntity();
-        entity.setId(1L);
-        entity.setAuthor("Ivo Andric");
-        entity.setTitle("Prokleta Avlija");
-
-        List<BookEntity> list = new ArrayList<>();
-        list.add(entity);
-        return list;
+    private List<BookEntity> aBookCollection() {
+        return of(
+                mock(BookEntity.class),
+                mock(BookEntity.class))
+                .collect(toList());
     }
 }
