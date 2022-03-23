@@ -40,19 +40,19 @@ class BookApiTestWithWebServer {
             .isEqualTo("[{\"id\":1,\"title\":\"Robert C. Martin\",\"author\":\"Clean Architecture\",\"cover\":null}]");
   }
 
+  private void givenThatBooksAreInDatabase() {
+    BookEntity book = new BookEntity();
+    book.setAuthor("Clean Architecture");
+    book.setTitle("Robert C. Martin");
+    bookRepository.save(book);
+  }
+
   @Test
   void getAll_whenNoBooks() {
     String booksUrl = "http://localhost:" + port + "/api/books";
     String actualResponse = this.restTemplate.getForObject(booksUrl, String.class);
 
     assertThat(actualResponse).isEqualTo("[]");
-  }
-
-  private void givenThatBooksAreInDatabase() {
-    BookEntity book = new BookEntity();
-    book.setAuthor("Clean Architecture");
-    book.setTitle("Robert C. Martin");
-    bookRepository.save(book);
   }
 
 }
