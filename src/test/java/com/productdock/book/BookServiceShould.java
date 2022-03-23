@@ -31,7 +31,7 @@ class BookServiceShould {
         when(bookRepository.findAll()).thenReturn(getBookEntities());
 
         //When
-        List<Book> books = bookService.getAll();
+        List<BookDto> books = bookService.getAll();
 
         //Then
         assertThat(books.size()).isEqualTo(1);

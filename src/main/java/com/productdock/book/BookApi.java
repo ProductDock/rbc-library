@@ -25,10 +25,7 @@ public class BookApi {
 
     @GetMapping
     public ResponseEntity<List<BookDto>> getAll() {
-        List<BookDto> bookDtos = bookService.getAll()
-                .stream()
-                .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+        List<BookDto> bookDtos = bookService.getAll();
 
         return new ResponseEntity<>(bookDtos, HttpStatus.OK);
     }
