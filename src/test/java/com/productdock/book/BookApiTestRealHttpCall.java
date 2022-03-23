@@ -13,7 +13,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"test", "in-memory-db"})
-class BookApiTestWithWebServer {
+class BookApiTestRealHttpCall {
 
   @LocalServerPort
   private int port;
