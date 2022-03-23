@@ -1,7 +1,5 @@
 package com.productdock.book;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,9 +20,7 @@ public class BookApi {
     }
 
     @GetMapping
-    public ResponseEntity<List<BookDto>> getAll() {
-        List<BookDto> bookDtos = bookService.getAll();
-
-        return new ResponseEntity<>(bookDtos, HttpStatus.OK);
+    public List<BookDto> getAll() {
+        return bookService.getAll();
     }
 }
