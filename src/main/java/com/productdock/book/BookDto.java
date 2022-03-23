@@ -10,11 +10,8 @@ import java.io.Serializable;
 public class BookDto implements Serializable {
 
     private Long id;
-
     private String title;
-
     private String author;
-
     private String cover;
 
 }
