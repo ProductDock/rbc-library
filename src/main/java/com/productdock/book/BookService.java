@@ -18,11 +18,11 @@ public class BookService {
         this.bookMapper = bookMapper;
     }
 
-    public List<Book> getAll() {
+    public List<BookDto> getAll() {
         return bookRepository
                 .findAll()
                 .stream()
-                .map(bookMapper::toDomain)
+                .map(bookMapper::toDto)
                 .collect(Collectors.toList());
     }
 

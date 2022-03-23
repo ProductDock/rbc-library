@@ -3,11 +3,11 @@ package com.productdock.book;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+import java.awt.print.Book;
+
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface BookMapper {
 
-    Book toDomain(BookEntity bookEntity);
-
-    BookDto toDto(Book book);
+    BookDto toDto(BookEntity bookEntity);
 
 }
