@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles({"test", "in-memory-db"})
+@ActiveProfiles({"in-memory-db"})
 class BookApiTestEmulatesHttpCall {
 
   @Autowired
