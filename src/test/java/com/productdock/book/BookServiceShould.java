@@ -35,7 +35,7 @@ class BookServiceShould {
         List<BookDto> books = bookService.getAll();
 
         //Then
-        assertThat(books.size()).isEqualTo(2);
+        assertThat(books).hasSize(2);
     }
 
     private List<BookEntity> aBookCollection() {
