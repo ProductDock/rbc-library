@@ -3,7 +3,6 @@ package com.productdock.book;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -22,7 +21,7 @@ public class BookService {
                 .findAll()
                 .stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }
