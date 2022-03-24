@@ -12,11 +12,8 @@ public class BookApi {
 
     private final BookService bookService;
 
-    private final BookMapper bookMapper;
-
-    public BookApi(BookService bookService, BookMapper bookMapper) {
+    public BookApi(BookService bookService) {
         this.bookService = bookService;
-        this.bookMapper = bookMapper;
     }
 
     @GetMapping
