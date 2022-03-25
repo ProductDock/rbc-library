@@ -2,29 +2,26 @@ package com.productdock.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles({"mock-db"})
 class SecurityConfigTest {
 
-  @LocalServerPort
-  private int port;
-
   @Autowired
-  private TestRestTemplate restTemplate;
+  private MockMvc mockMvc;
 
   @Test
-  void configure() {
-    String securedUrl = "http://localhost:" + port + "/api/test";
-
-    String actualResponse = this.restTemplate.getForObject(securedUrl, String.class);
-
-    assertThat(actualResponse).isNull();
+  void givenUnauthenticated_thenUnauthorizedResponse() throws Exception {
+    mockMvc.perform(get("/api/books"))
+            .andExpect(status().isUnauthorized());
   }
 
 }
