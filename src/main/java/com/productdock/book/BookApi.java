@@ -8,13 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
-public class BookApi {
-
-    private final BookService bookService;
-
-    public BookApi(BookService bookService) {
-        this.bookService = bookService;
-    }
+public record BookApi(BookService bookService) {
 
     @GetMapping
     public List<BookDto> getAll() {
