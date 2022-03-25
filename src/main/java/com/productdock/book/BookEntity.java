@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 
 @Entity
 @Getter
@@ -16,11 +15,9 @@ public class BookEntity {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min=2)
     @Column(nullable=false)
     private String title;
 
-    @Size(min=2)
     @Column(nullable=false)
     private String author;
 
