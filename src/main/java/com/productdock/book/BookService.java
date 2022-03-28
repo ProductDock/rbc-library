@@ -16,4 +16,7 @@ public record BookService(BookRepository bookRepository,
                 .toList();
     }
 
+    public Integer countAllBooks() {
+        return Math.toIntExact(bookRepository.count());
+    }
 }

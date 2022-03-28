@@ -14,4 +14,9 @@ public record BookApi(BookService bookService) {
     public List<BookDto> getAll() {
         return bookService.getAll();
     }
+
+    @GetMapping("count")
+    public Integer countAllBooks() {
+        return bookService.countAllBooks();
+    }
 }
