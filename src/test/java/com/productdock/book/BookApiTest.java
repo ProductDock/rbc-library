@@ -54,4 +54,22 @@ class BookApiTest {
             .andExpect(content().json("[]"));
   }
 
+  @Test
+  @WithMockUser
+  void countAllBooks_whenBooksExist() throws Exception {
+    givenThatBooksAreInDatabase();
+
+    mockMvc.perform(get("/api/books/count"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("1"));
+  }
+
+  @Test
+  @WithMockUser
+  void countAllBooks_whenNoBooks() throws Exception {
+    mockMvc.perform(get("/api/books/count"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("0"));
+  }
+
 }

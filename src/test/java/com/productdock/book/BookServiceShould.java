@@ -44,4 +44,13 @@ class BookServiceShould {
                 mock(BookEntity.class))
                 .collect(toList());
     }
+
+    @Test
+    void countAllBooks() {
+        given(bookRepository.count()).willReturn((long) aBookCollection().size());
+
+        Integer bookCount = bookService.countAllBooks();
+
+        assertThat(bookCount).isEqualTo(2);
+    }
 }
