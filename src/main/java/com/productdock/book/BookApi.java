@@ -16,7 +16,7 @@ public record BookApi(BookService bookService) {
     }
 
     @GetMapping("count")
-    public Integer countAllBooks() {
+    public long countAllBooks() {
         return bookService.countAllBooks();
     }
 }

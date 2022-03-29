@@ -47,10 +47,10 @@ class BookServiceShould {
 
     @Test
     void countAllBooks() {
-        given(bookRepository.count()).willReturn((long) aBookCollection().size());
+        given(bookRepository.count()).willReturn(2L);
 
-        Integer bookCount = bookService.countAllBooks();
+        long bookCount = bookService.countAllBooks();
 
-        assertThat(bookCount).isEqualTo(2);
+        assertThat(bookCount).isEqualTo(2L);
     }
 }
