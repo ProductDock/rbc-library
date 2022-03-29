@@ -5,6 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -29,10 +32,12 @@ class BookServiceShould {
     @Test
     void getAllBooks() {
         //Given
-        given(bookRepository.findAll()).willReturn(aBookCollection());
+        Pageable firstPage = PageRequest.of(0, 18);
+
+        given(bookRepository.findAll(firstPage)).willReturn(new PageImpl<>(aBookCollection()));
 
         //When
-        List<BookDto> books = bookService.getAll();
+        List<BookDto> books = bookService.getAll(0);
 
         //Then
         assertThat(books).hasSize(2);

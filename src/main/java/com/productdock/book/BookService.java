@@ -1,5 +1,7 @@
 package com.productdock.book;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,9 +10,10 @@ import java.util.List;
 public record BookService(BookRepository bookRepository,
                           BookMapper bookMapper) {
 
-    public List<BookDto> getAll() {
+    public List<BookDto> getAll(int pageNumber) {
+        Pageable firstPage = PageRequest.of(pageNumber, 18);
         return bookRepository
-                .findAll()
+                .findAll(firstPage)
                 .stream()
                 .map(bookMapper::toDto)
                 .toList();
