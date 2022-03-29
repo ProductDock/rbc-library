@@ -16,4 +16,7 @@ public record BookService(BookRepository bookRepository,
                 .toList();
     }
 
+    public long countAllBooks() {
+        return bookRepository.count();
+    }
 }
