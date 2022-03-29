@@ -59,7 +59,7 @@ class BookApiTest {
     void countAllBooks_whenBooksExist() throws Exception {
         givenThatBooksAreInDatabase();
 
-        mockMvc.perform(get("/api/books/count").param("pageNumber", "0"))
+        mockMvc.perform(get("/api/books/count"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
     }
