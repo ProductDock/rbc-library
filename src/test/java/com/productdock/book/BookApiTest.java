@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles({"in-memory-db"})
 class BookApiTest {
 
+    public static final int NUMBER_OF_BOOKS = 19;
     @Autowired
     private MockMvc mockMvc;
 
@@ -31,15 +32,29 @@ class BookApiTest {
 
     @Test
     @WithMockUser
-    void getAll_whenBooksExists() throws Exception {
-        givenThatBooksAreInDatabase();
+    void getSecondPage_whenBooksExists() throws Exception {
+        givenFirstPageOfResults();
+        givenSecondPageOfResults();
 
-        mockMvc.perform(get("/api/books"))
+        mockMvc.perform(get("/api/books").param("page", "1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":1,\"title\":\"Robert C. Martin\",\"author\":\"Clean Architecture\",\"cover\":null}]"));
+                .andExpect(content().json("[{\"id\": " + NUMBER_OF_BOOKS + ",\"title\":\"Second Page Title\",\"author\":\"Second Page Author\",\"cover\":null}]"));
     }
 
-    private void givenThatBooksAreInDatabase() {
+    private void givenSecondPageOfResults() {
+        BookEntity book = new BookEntity();
+        book.setAuthor("Second Page Author");
+        book.setTitle("Second Page Title");
+        bookRepository.save(book);
+    }
+
+    private void givenFirstPageOfResults() {
+        for (int i = 0; i < NUMBER_OF_BOOKS - 1; i++) {
+            givenThatBookIsInDatabase();
+        }
+    }
+
+    private void givenThatBookIsInDatabase() {
         BookEntity book = new BookEntity();
         book.setAuthor("Clean Architecture");
         book.setTitle("Robert C. Martin");
@@ -49,7 +64,7 @@ class BookApiTest {
     @Test
     @WithMockUser
     void getAll_whenNoBooks() throws Exception {
-        mockMvc.perform(get("/api/books"))
+        mockMvc.perform(get("/api/books").param("page", "0"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
     }
@@ -57,7 +72,7 @@ class BookApiTest {
     @Test
     @WithMockUser
     void countAllBooks_whenBooksExist() throws Exception {
-        givenThatBooksAreInDatabase();
+        givenThatBookIsInDatabase();
 
         mockMvc.perform(get("/api/books/count"))
                 .andExpect(status().isOk())
