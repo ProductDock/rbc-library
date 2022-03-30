@@ -14,7 +14,7 @@ export SPRING_DATASOURCE_PASSWORD=YOUR_DB_PASSWORD
 
 Before starting our application, we need to set up an active spring profile.
 
-Follow these steps:
+When running from IntelliJ IDEA, follow these steps:
 - Open "Edit Configurations";
 - in the section "Library Application" find the field "Program arguments";
 - enter the following command: --spring.profiles.active=local
