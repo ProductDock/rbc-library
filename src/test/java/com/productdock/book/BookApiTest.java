@@ -32,13 +32,14 @@ class BookApiTest {
     @Test
     @WithMockUser
     void getSecondPage_whenBooksExists() throws Exception {
-        for (int i = 0; i < 19; i++) {
+        int numberOfBooks = 19;
+        for (int i = 0; i < numberOfBooks; i++) {
             givenThatBooksAreInDatabase();
         }
 
         mockMvc.perform(get("/api/books").param("page", "1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":19,\"title\":\"Robert C. Martin\",\"author\":\"Clean Architecture\",\"cover\":null}]"));
+                .andExpect(content().json("[{\"id\": " + numberOfBooks + ",\"title\":\"Robert C. Martin\",\"author\":\"Clean Architecture\",\"cover\":null}]"));
     }
 
     private void givenThatBooksAreInDatabase() {

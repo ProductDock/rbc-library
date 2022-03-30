@@ -13,7 +13,7 @@ public record BookApi(BookService bookService) {
 
     @GetMapping
     public List<BookDto> getBooks(@RequestParam int page) {
-        return bookService.getAll(page);
+        return bookService.getBooks(page);
     }
 
     @GetMapping("count")

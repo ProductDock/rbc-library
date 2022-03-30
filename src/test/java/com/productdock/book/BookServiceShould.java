@@ -34,7 +34,7 @@ class BookServiceShould {
         Pageable firstPage = PageRequest.of(0, 18);
         given(bookRepository.findAll(firstPage)).willReturn(new PageImpl<>(aBookCollection()));
 
-        List<BookDto> books = bookService.getAll(0);
+        List<BookDto> books = bookService.getBooks(0);
 
         assertThat(books).hasSize(2);
     }

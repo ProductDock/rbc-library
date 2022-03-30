@@ -11,7 +11,7 @@ public record BookService(BookRepository bookRepository,
 
     private static final int PAGE_SIZE = 18;
 
-    public List<BookDto> getAll(int page) {
+    public List<BookDto> getBooks(int page) {
         var pageTemplate = PageRequest.of(page, PAGE_SIZE);
         return bookRepository
                 .findAll(pageTemplate)
