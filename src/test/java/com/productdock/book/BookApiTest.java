@@ -31,12 +31,14 @@ class BookApiTest {
 
     @Test
     @WithMockUser
-    void getAll_whenBooksExists() throws Exception {
-        givenThatBooksAreInDatabase();
+    void getSecondPage_whenBooksExists() throws Exception {
+        for (int i = 0; i < 19; i++) {
+            givenThatBooksAreInDatabase();
+        }
 
-        mockMvc.perform(get("/api/books").param("pageNumber", "0"))
+        mockMvc.perform(get("/api/books").param("page", "1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":1,\"title\":\"Robert C. Martin\",\"author\":\"Clean Architecture\",\"cover\":null}]"));
+                .andExpect(content().json("[{\"id\":19,\"title\":\"Robert C. Martin\",\"author\":\"Clean Architecture\",\"cover\":null}]"));
     }
 
     private void givenThatBooksAreInDatabase() {
@@ -49,7 +51,7 @@ class BookApiTest {
     @Test
     @WithMockUser
     void getAll_whenNoBooks() throws Exception {
-        mockMvc.perform(get("/api/books").param("pageNumber", "0"))
+        mockMvc.perform(get("/api/books").param("page", "0"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
     }

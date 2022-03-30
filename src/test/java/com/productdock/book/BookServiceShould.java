@@ -31,15 +31,11 @@ class BookServiceShould {
 
     @Test
     void getAllBooks() {
-        //Given
         Pageable firstPage = PageRequest.of(0, 18);
-
         given(bookRepository.findAll(firstPage)).willReturn(new PageImpl<>(aBookCollection()));
 
-        //When
         List<BookDto> books = bookService.getAll(0);
 
-        //Then
         assertThat(books).hasSize(2);
     }
 
