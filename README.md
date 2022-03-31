@@ -15,8 +15,8 @@ Production is running in GCP.
     ``` 
 3. #### This is a Git repository. Pull most recent version from main:
     ```  
-   git checkout main
-   git pull
+   sudo git checkout main
+   sudo git pull
     ``` 
 4. #### Maven is already installed, so you can build new jar with maven:
 
