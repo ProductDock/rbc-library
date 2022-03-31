@@ -27,17 +27,16 @@ Production is running in GCP.
     sudo su
    ../apache-maven-3.8.5/bin/mvn package
     ``` 
-5. #### Run a jar from maven target folder:
+5. #### Restart rbc-library-vm to run a new jar 
 
-   Actually, **rbc-library-vm** is configured with startup-script. Startup script already contains instructions for running the jar:
+   **rbc-library-vm** is configured with startup-script. Startup script already contains instructions for running the jar:
 
    **Startup-script content:**
     
     ```
     #! /bin/bash
     SPRING_DATASOURCE_PASSWORD=<REAL_PASS_HERE> SPRING_PROFILES_ACTIVE=prod java -jar /home/pd-library/rbc-library/target/rbc-library-0.0.1-SNAPSHOT.jar
-    ``` 
-6. Restart **rbc-library-vm** for new changes to take effect.
+    ```
 
 
 
