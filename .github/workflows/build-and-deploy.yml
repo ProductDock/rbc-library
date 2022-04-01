@@ -1,0 +1,55 @@
+name: Build and Deploy to Google Compute Engine
+
+on:
+  push:
+    branches:
+      - automate-deploy
+
+env:
+  PROJECT_ID: ${{ secrets.GCE_PROJECT }}
+  GCE_INSTANCE: prod-pd-library-app  # TODO: update to instance name
+  GCE_INSTANCE_ZONE: europe-west3-c   # TODO: update to instance zone
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Configure Workload Identity Federation and generate an access token.
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          workload_identity_provider: 'projects/817921738258/locations/global/workloadIdentityPools/rbc-github-pool/rbc-github-action-provider'
+          service_account: 'prod-pd-library-vm@prod-pd-library.iam.gserviceaccount.com'
+
+      # Setup gcloud CLI
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+      # Build the Docker image
+      - name: Build
+        run: |-
+          docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" .
+      # Push the Docker image to Google Container Registry
+      - name: Publish
+        run: |-
+          docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"
+      - name: Deploy
+        run: |-
+          gcloud compute instances update-container "$GCE_INSTANCE" \
+            --zone "$GCE_INSTANCE_ZONE" \
+            --container-image "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"
