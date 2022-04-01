@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+
+  pd-library-catalog-db:
+    image: mysql:5.7-debian
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=catalog
+    volumes:
+      - ./import-catalog.sql:/docker-entrypoint-initdb.d/import-catalog.sql
+    ports:
+      - "3308:3306"
