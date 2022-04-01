@@ -7,8 +7,8 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
-  GCE_INSTANCE: prod-pd-library-app  # TODO: update to instance name
-  GCE_INSTANCE_ZONE: europe-west3-c   # TODO: update to instance zone
+  GCE_INSTANCE: prod-pd-library-app
+  GCE_INSTANCE_ZONE: europe-west3-c
 
 jobs:
   setup-build-publish-deploy:
@@ -49,7 +49,7 @@ jobs:
         run: |-
           docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"
       - name: Deploy
-        run: |-
+        run: |- 
           gcloud compute instances update-container "$GCE_INSTANCE" \
             --zone "$GCE_INSTANCE_ZONE" \
             --container-image "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"
