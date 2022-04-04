@@ -39,7 +39,7 @@ jobs:
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
       - run: |-
-          sudo gcloud auth configure-docker
+          gcloud auth configure-docker
       # Build the Docker image
       - name: Build
         run: |-
@@ -50,7 +50,5 @@ jobs:
           docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library"
       # Pull image to vm instance
       - name: Deploy
-        run: |- 
-          gcloud compute instances update-container "$GCE_INSTANCE" \
-            --zone "$GCE_INSTANCE_ZONE" \
-            --container-image "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library"
+        run: |-
+          docker pull "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library"
