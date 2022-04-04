@@ -25,7 +25,7 @@ Production is running in GCP.
    _Why? Otherwise it will download entire .m2 repository to a home folder of a user who made SSH connection._
     ```  
     sudo su
-   ../apache-maven-3.8.5/bin/mvn package
+   ../apache-maven-3.8.5/bin/mvn package -P prod
     ``` 
 5. #### Restart rbc-library-vm to run a new jar 
 
