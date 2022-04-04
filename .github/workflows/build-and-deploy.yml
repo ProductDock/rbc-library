@@ -48,6 +48,7 @@ jobs:
       - name: Publish
         run: |-
           docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library"
+      # Pull image to vm instance
       - name: Deploy
         run: |- 
           gcloud compute instances update-container "$GCE_INSTANCE" \
