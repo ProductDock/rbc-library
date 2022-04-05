@@ -7,7 +7,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
-  GCE_INSTANCE: prod-pd-library-app
+  GCE_INSTANCE: prod-pd-library-single-container
   GCE_INSTANCE_ZONE: europe-west3-c
 
 jobs:
