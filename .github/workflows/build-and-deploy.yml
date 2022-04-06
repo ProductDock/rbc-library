@@ -39,4 +39,4 @@ jobs:
 
       - name: SSH to VM
         run: |-
-          gcloud compute ssh --project=prod-pd-library --zone=europe-west3-c --ssh-key-expire-after=5m --command="docker-credential-gcr configure-docker" $GCE_INSTANCE
+          gcloud compute ssh --project=prod-pd-library --zone=europe-west3-c --ssh-key-expire-after=5m --command="sudo docker pull gcr.io/prod-pd-library/prod-pd-library-app-image:rbc-library" $GCE_INSTANCE
