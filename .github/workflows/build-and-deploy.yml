@@ -39,5 +39,5 @@ jobs:
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
       - run: |-
-          gcloud compute ssh $GCE_INSTANCE --command="sudo docker pull gcr.io/prod-pd-library/prod-pd-library-app-image:rbc-library"
+          gcloud compute ssh $GCE_INSTANCE --ssh-key-expire-after=5m --command="sudo docker pull gcr.io/prod-pd-library/prod-pd-library-app-image:rbc-library"
 
