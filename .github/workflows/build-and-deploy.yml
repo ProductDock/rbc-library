@@ -33,24 +33,11 @@ jobs:
           service_account: 'prod-pd-library-vm@prod-pd-library.iam.gserviceaccount.com'
 
       # Setup gcloud CLI
-      - name: Set up Cloud SDK
+      - name: Set up Cloud SDK and SSH to VM
         uses: google-github-actions/setup-gcloud@v0
 
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
       - run: |-
-          gcloud auth configure-docker
-      # Build the Docker image
-      - name: Build
-        run: |-
-          docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library" .
-      # Push the Docker image to Google Container Registry
-      - name: Publish
-        run: |-
-          docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library"
-      # Pull image to vm instance
-      - name: Deploy
-        run: |-
-          gcloud compute instances update-container "$GCE_INSTANCE" \
-          --zone "$GCE_INSTANCE_ZONE" \
-          --container-image "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library"
+          gcloud compute ssh $GCE_INSTANCE --command="sudo docker pull gcr.io/prod-pd-library/prod-pd-library-app-image:rbc-library"
+
