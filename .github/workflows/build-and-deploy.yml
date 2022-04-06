@@ -36,6 +36,15 @@ jobs:
       - run: |-
           gcloud auth configure-docker
 
+      # Build the Docker image
+      - name: Build
+        run: |-
+          docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library" .
+      # Push the Docker image to Google Container Registry
+      - name: Publish
+        run: |-
+          docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library"
+
       - name: SSH to VM
         run: |-
-          gcloud compute ssh --project=prod-pd-library --zone=europe-west3-c --ssh-key-expire-after=5m --command="docker pull gcr.io/prod-pd-library/prod-pd-library-app-image:rbc-library" $GCE_INSTANCE
+          gcloud compute ssh --project=prod-pd-library --zone=europe-west3-c --ssh-key-expire-after=5m --command="bash /home/pd-library/update-imaeg.sh" $GCE_INSTANCE
