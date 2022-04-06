@@ -11,4 +11,4 @@ ARG ACTIVE_PROFILE
 WORKDIR /app
 COPY --from=builder /app/pd-library/target/rbc-library-0.0.1-SNAPSHOT.jar rbc-library-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
-CMD ['SPRING_DATASOURCE_PASSWORD=${PASSWORD}', "SPRING_PROFILES_ACTIVE=${ACTIVE_PROFILE}", "java", "-jar","rbc-library-0.0.1-SNAPSHOT.jar"]
+CMD ["SPRING_DATASOURCE_PASSWORD=${PASSWORD}", "SPRING_PROFILES_ACTIVE=${ACTIVE_PROFILE}", "java", "-jar","rbc-library-0.0.1-SNAPSHOT.jar"]
