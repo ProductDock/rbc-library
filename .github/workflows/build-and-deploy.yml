@@ -33,13 +33,12 @@ jobs:
           service_account: 'prod-pd-library-vm@prod-pd-library.iam.gserviceaccount.com'
 
       # Setup gcloud CLI
-      - name: Set up Cloud SDK and SSH to VM
+      - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
       - run: |-
           gcloud auth configure-docker
-      # Configure Docker to use the gcloud command-line tool as a credential
-      # helper for authentication
+
       - name: SSH to VM
-      - run: |-
+        run: |-
           gcloud compute ssh $GCE_INSTANCE --zone=europe-west3-c --ssh-key-expire-after=5m --command="sudo docker pull gcr.io/prod-pd-library/prod-pd-library-app-image:rbc-library"
 
