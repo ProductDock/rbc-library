@@ -11,7 +11,7 @@ ARG PASSWORD
 ARG ACTIVE_PROFILE
 ENV SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
 ENV SPRING_DATASOURCE_PASSWORD=$PASSWORD
-ENV GOOGLE_APPLICATION_CREDENTIALS=prod-pd-library-a54febd9050a.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/prod-pd-library-a54febd9050a.json
 WORKDIR /app
 COPY entrypoint.sh /entrypoint.sh
 COPY --from=builder /app/pd-library/target/rbc-library-0.0.1-SNAPSHOT.jar rbc-library-0.0.1-SNAPSHOT.jar
