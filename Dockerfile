@@ -6,10 +6,12 @@ COPY pom.xml .
 COPY src src
 RUN ["./mvnw", "package"]
 FROM openjdk:17-jdk-alpine
+COPY prod-pd-library-a54febd9050a.json /prod-pd-library-a54febd9050a.json
 ARG PASSWORD
 ARG ACTIVE_PROFILE
 ENV SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
 ENV SPRING_DATASOURCE_PASSWORD=$PASSWORD
+ENV APPLICATION_DEFAULT_CREDENTIALS=prod-pd-library-a54febd9050a.json
 WORKDIR /app
 COPY entrypoint.sh /entrypoint.sh
 COPY --from=builder /app/pd-library/target/rbc-library-0.0.1-SNAPSHOT.jar rbc-library-0.0.1-SNAPSHOT.jar
