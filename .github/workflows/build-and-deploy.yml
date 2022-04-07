@@ -30,7 +30,6 @@ jobs:
           workload_identity_provider: 'projects/817921738258/locations/global/workloadIdentityPools/rbc-github-pool/providers/rbc-github-action-provider'
           service_account: 'prod-pd-library-vm@prod-pd-library.iam.gserviceaccount.com'
 
-      # Setup gcloud CLI
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
       - run: |-
