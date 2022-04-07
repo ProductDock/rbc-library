@@ -15,4 +15,4 @@ COPY entrypoint.sh /entrypoint.sh
 COPY --from=builder /app/pd-library/target/rbc-library-0.0.1-SNAPSHOT.jar rbc-library-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
 RUN chmod +x /entrypoint.sh
-ENTRYPOINT ['./entrypoint.sh']
+ENTRYPOINT ["/entrypoint.sh"]
