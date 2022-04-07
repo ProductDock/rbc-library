@@ -31,7 +31,7 @@ public record BookService(BookRepository bookRepository,
     private List<BookDto> getBooksByTopics(List<String> topics, int page){
         var pageTemplate = PageRequest.of(page, PAGE_SIZE);
         return bookRepository
-                .findAllByTopics_Name(topics, pageTemplate)
+                .findAllByTopicsName(topics, pageTemplate)
                 .stream()
                 .map(bookMapper::toDto)
                 .toList();

@@ -14,5 +14,5 @@ public interface BookRepository extends PagingAndSortingRepository<BookEntity, L
                     "left join topic t on t.id = bt.topic_id\r\n" +
                     "where t.name in (?1)",
     nativeQuery = true)
-    Page<BookEntity> findAllByTopics_Name(List<String> filters, Pageable pageable);
+    Page<BookEntity> findAllByTopicsName(List<String> filters, Pageable pageable);
 }
