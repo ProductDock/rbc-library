@@ -45,7 +45,7 @@ class BookApiTest {
     }
 
     private void givenSecondPageOfResults() {
-        BookEntity book = new BookEntity();
+        var book = new BookEntity();
         book.setAuthor("Second Page Author");
         book.setTitle("Second Page Title");
         bookRepository.save(book);
@@ -58,7 +58,7 @@ class BookApiTest {
     }
 
     private void givenThatBookIsInDatabase() {
-        BookEntity book = new BookEntity();
+        var book = new BookEntity();
         book.setAuthor("Clean Architecture");
         book.setTitle("Robert C. Martin");
         bookRepository.save(book);
@@ -108,10 +108,10 @@ class BookApiTest {
 
     private void givenABookInTopic(String topicName, String title) {
         Set<TopicEntity> topics = new HashSet<>();
-        TopicEntity topic = new TopicEntity();
+        var topic = new TopicEntity();
         topic.setName(topicName);
 
-        BookEntity book = new BookEntity();
+        var book = new BookEntity();
         book.setTitle(title);
         book.setAuthor("Author");
         topics.add(topic);
