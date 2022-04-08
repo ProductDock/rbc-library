@@ -35,10 +35,6 @@ jobs:
       - run: |-
           gcloud auth configure-docker
 
-      - name: Create file
-        run: |-
-          docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library"
-
       - name: Build
         run: |-
           docker build --build-arg PASSWORD=${{ secrets.DATABASE_PASSWORD }} --build-arg GOOGLE_APPLICATIONS_CREDENTIALS_JSON=${{ secrets.GOOGLE_APPLICATIONS_CREDENTIALS_JSON }} --build-arg ACTIVE_PROFILE=${{ secrets.ACTIVE_PROFILE }} --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:rbc-library" .
