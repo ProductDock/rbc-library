@@ -24,7 +24,7 @@ public class BookEntity {
 
     private String cover;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "book_topic",
             joinColumns = { @JoinColumn(name = "book_id") },
