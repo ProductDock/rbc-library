@@ -9,14 +9,12 @@ import java.util.List;
 
 public interface BookRepository extends PagingAndSortingRepository<BookEntity, Long> {
 
-    @Query(value = """
-            select b.* from book b 
-            left join book_topic bt on b.id = bt.book_id 
-            left join topic t on t.id = bt.topic_id 
-            where t.name in (?1)
-            """,
-            nativeQuery = true)
-    Page<BookEntity> findAllByTopicsName(List<String> filters, Pageable pageable);
+    @Query("""
+        select b from BookEntity b
+        left join b.topics t
+        where t.name in :topics
+        """)
+    Page<BookEntity> findAllByTopicsName(List<String> topics, Pageable pageable);
 }
 
 
