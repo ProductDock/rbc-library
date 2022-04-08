@@ -12,8 +12,8 @@ import java.util.List;
 public record BookApi(BookService bookService) {
 
     @GetMapping
-    public List<BookDto> getBooks(@RequestParam int page) {
-        return bookService.getBooks(page);
+    public List<BookDto> getBooks(@RequestParam(required = false) List<String> topics, @RequestParam int page) {
+        return bookService.getBooks(topics, page);
     }
 
     @GetMapping("count")

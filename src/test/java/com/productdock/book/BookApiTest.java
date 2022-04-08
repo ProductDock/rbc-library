@@ -9,9 +9,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -19,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookApiTest {
 
     public static final int NUMBER_OF_BOOKS = 19;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -42,7 +45,7 @@ class BookApiTest {
     }
 
     private void givenSecondPageOfResults() {
-        BookEntity book = new BookEntity();
+        var book = new BookEntity();
         book.setAuthor("Second Page Author");
         book.setTitle("Second Page Title");
         bookRepository.save(book);
@@ -55,7 +58,7 @@ class BookApiTest {
     }
 
     private void givenThatBookIsInDatabase() {
-        BookEntity book = new BookEntity();
+        var book = new BookEntity();
         book.setAuthor("Clean Architecture");
         book.setTitle("Robert C. Martin");
         bookRepository.save(book);
@@ -63,7 +66,63 @@ class BookApiTest {
 
     @Test
     @WithMockUser
-    void getAll_whenNoBooks() throws Exception {
+    void getFirstPageByTopics_whenNoBooksExists() throws Exception {
+        mockMvc.perform(get("/api/books")
+                        .param("page", "0")
+                        .param("topics","MARKETING")
+                        .param("topics","DESIGN"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    @WithMockUser
+    void getSecondPageByTopics_whenNoBooksExists() throws Exception {
+        mockMvc.perform(get("/api/books")
+                        .param("page", "1")
+                        .param("topics","MARKETING")
+                        .param("topics","DESIGN"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    @WithMockUser
+    void getFirstPageByTopics_whenBooksExists() throws Exception {
+        givenThatFilteredBooksAreInDb();
+
+        mockMvc.perform(get("/api/books")
+                        .param("page", "0")
+                        .param("topics","MARKETING")
+                        .param("topics","DESIGN"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Title Marketing"))
+                .andExpect(jsonPath("$[1].title").value("Title Design"));
+    }
+
+    private void givenThatFilteredBooksAreInDb() {
+        givenABookInTopic("PRODUCT", "Title Product");
+        givenABookInTopic("MARKETING", "Title Marketing");
+        givenABookInTopic("DESIGN", "Title Design");
+    }
+
+    private void givenABookInTopic(String topicName, String title) {
+        Set<TopicEntity> topics = new HashSet<>();
+        var topic = new TopicEntity();
+        topic.setName(topicName);
+
+        var book = new BookEntity();
+        book.setTitle(title);
+        book.setAuthor("Author");
+        topics.add(topic);
+        book.setTopics(topics);
+
+        bookRepository.save(book);
+    }
+
+    @Test
+    @WithMockUser
+    void getFirstPage_whenNoBooksExists() throws Exception {
         mockMvc.perform(get("/api/books").param("page", "0"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
