@@ -1,0 +1,4 @@
+ALTER TABLE book DROP COLUMN id;
+ALTER TABLE book ADD COLUMN uuid_id VARCHAR(36);
+UPDATE book SET uuid_id = UUID();
+ALTER TABLE book RENAME COLUMN uuid_id TO id;
