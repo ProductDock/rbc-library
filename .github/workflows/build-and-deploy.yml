@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Compute ENVs
-        run: echo "DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME_TEMPLATE}" >> $GITHUB_ENV
+        run: echo "DOCKER_IMAGE_NAME=${{DOCKER_IMAGE_NAME_TEMPLATE}}" >> $GITHUB_ENV
 
       - name: Test
         run: echo $DOCKER_IMAGE_NAME
