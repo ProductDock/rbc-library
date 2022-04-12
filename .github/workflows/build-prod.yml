@@ -1,4 +1,4 @@
-name: Build and Deploy to Google Compute Engine
+name: Build Production And Publish to Docker registry
 
 on:
   push:
