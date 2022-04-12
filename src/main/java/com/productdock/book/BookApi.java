@@ -13,7 +13,7 @@ import java.util.Optional;
 public record BookApi(BookService bookService) {
 
     @GetMapping
-    public List<BookDto> getBooks(@RequestParam(required = false) Optional<List<String>> topics, @RequestParam int page) {
+    public SearchBooksResponse getBooks(@RequestParam(required = false) Optional<List<String>> topics, @RequestParam int page) {
         return bookService.getBooks(topics, page);
     }
 

@@ -62,7 +62,7 @@ class BookApiTest {
                             .param("topics", "MARKETING")
                             .param("topics", "DESIGN"))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("[]"));
+                    .andExpect(content().json("{\"count\":0,\"books\":[]}"));
         }
 
         @Test
@@ -77,9 +77,10 @@ class BookApiTest {
                             .param("topics", "MARKETING")
                             .param("topics", "DESIGN"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.*").value(hasSize(2)))
-                    .andExpect(jsonPath("$[0].title").value("Title Marketing"))
-                    .andExpect(jsonPath("$[1].title").value("Title Design"));
+                    .andExpect(jsonPath("$.count").value(2))
+                    .andExpect(jsonPath("$.books").value(hasSize(2)))
+                    .andExpect(jsonPath("$.books[0].title").value("Title Marketing"))
+                    .andExpect(jsonPath("$.books[1].title").value("Title Design"));
         }
 
         private void givenABookBelongingToTopic(String topicName, String title) {
@@ -100,7 +101,7 @@ class BookApiTest {
         void getFirstPage_whenEmptyResults() throws Exception {
             mockMvc.perform(get("/api/books").param("page", FIRST_PAGE))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("[]"));
+                    .andExpect(content().json("{\"count\":0,\"books\":[]}"));
         }
 
         @Test
@@ -111,9 +112,10 @@ class BookApiTest {
 
             mockMvc.perform(get("/api/books").param("page", SECOND_PAGE))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.*").value(hasSize(1)))
-                    .andExpect(jsonPath("$[0].id").exists())
-                    .andExpect(jsonPath("$[0].title").value("Second Page Title"));
+                    .andExpect(jsonPath("$.count").value(19))
+                    .andExpect(jsonPath("$.books").value(hasSize(1)))
+                    .andExpect(jsonPath("$.books[0].id").exists())
+                    .andExpect(jsonPath("$.books[0].title").value("Second Page Title"));
         }
 
         private void givenFirstPageOfResults() {

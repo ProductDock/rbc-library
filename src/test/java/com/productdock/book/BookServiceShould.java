@@ -38,7 +38,8 @@ class BookServiceShould {
 
         var books = bookService.getBooks(topicsFilter, 0);
 
-        assertThat(books).hasSize(2);
+        assertThat(books.count).isEqualTo(2);
+        assertThat(books.books).hasSize(2);
     }
 
     private Page<BookEntity> aBooksPage() {
