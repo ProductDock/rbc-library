@@ -1,13 +1,15 @@
 package com.productdock.book;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
-@Getter
-@Setter
 @Table(name = "book")
 public class BookEntity {
 
@@ -22,4 +24,14 @@ public class BookEntity {
     private String author;
 
     private String cover;
+
+    @Singular
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "book_topic",
+            joinColumns = { @JoinColumn(name = "book_id") },
+            inverseJoinColumns = { @JoinColumn(name = "topic_id") }
+    )
+    private Set<TopicEntity> topics;
+
 }

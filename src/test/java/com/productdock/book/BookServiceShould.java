@@ -5,11 +5,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
@@ -30,28 +31,23 @@ class BookServiceShould {
     private BookMapper bookMapper;
 
     @Test
-    void getAllBooks() {
-        Pageable firstPage = PageRequest.of(0, 18);
-        given(bookRepository.findAll(firstPage)).willReturn(new PageImpl<>(aBookCollection()));
+    void getBooksByTopics() {
+        var topicsFilter = Optional.of(List.of("TOPIC"));
+        var firstPage = PageRequest.of(0, 18);
+        given(bookRepository.findByTopicsName(topicsFilter, firstPage)).willReturn(aBooksPage());
 
-        List<BookDto> books = bookService.getBooks(0);
+        var books = bookService.getBooks(topicsFilter, 0);
 
-        assertThat(books).hasSize(2);
+        assertThat(books.count).isEqualTo(2);
+        assertThat(books.books).hasSize(2);
     }
 
-    private List<BookEntity> aBookCollection() {
-        return of(
+    private Page<BookEntity> aBooksPage() {
+        List<BookEntity> bookEntities = of(
                 mock(BookEntity.class),
                 mock(BookEntity.class))
                 .collect(toList());
+        return new PageImpl<>(bookEntities);
     }
 
-    @Test
-    void countAllBooks() {
-        given(bookRepository.count()).willReturn(2L);
-
-        long bookCount = bookService.countAllBooks();
-
-        assertThat(bookCount).isEqualTo(2L);
-    }
 }
