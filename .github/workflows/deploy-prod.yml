@@ -1,16 +1,16 @@
 name: Build and Deploy to Google Compute Engine
 
 on:
-  push:
-    branches:
-      - feat/automate-deploy
+  workflow_dispatch:
 
 env:
+  GCE_INSTANCE: prod-pd-library-services
+  GCE_INSTANCE_ZONE: europe-west3-c
   DOCKER_IMAGE_NAME: gcr.io/${{ secrets.GCE_PROJECT }}/${{ github.event.repository.name }}
 
 jobs:
   setup-build-publish-deploy:
-    name: Build Production Job
+    name: Deploy Production Job
     runs-on: ubuntu-latest
 
     permissions:
@@ -18,9 +18,6 @@ jobs:
       id-token: 'write'
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v0'
@@ -33,10 +30,6 @@ jobs:
       - run: |-
           gcloud auth configure-docker
 
-      - name: Build
+      - name: SSH to VM
         run: |-
-          docker build --build-arg PASSWORD=${{ secrets.DATABASE_PASSWORD }} --build-arg ACTIVE_PROFILE=prod --tag "$DOCKER_IMAGE_NAME:latest" .
-
-      - name: Publish
-        run: |-
-          docker push "$DOCKER_IMAGE_NAME:latest"
+          gcloud compute ssh --project=prod-pd-library --zone=$GCE_INSTANCE_ZONE --ssh-key-expire-after=5m --command="bash /home/pd-library/update-catalog-image.sh" $GCE_INSTANCE
