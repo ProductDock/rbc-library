@@ -9,7 +9,6 @@ env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
   GCE_INSTANCE: prod-pd-library-services
   GCE_INSTANCE_ZONE: europe-west3-c
-  REPO_NAME: ${{ github.event.repository.name }}
   DOCKER_IMAGE_NAME: gcr.io/${{ secrets.GCE_PROJECT }}/${{ github.event.repository.name }}
 
 jobs:
@@ -22,9 +21,6 @@ jobs:
       id-token: 'write'
 
     steps:
-      - name: Test
-        run: echo $DOCKER_IMAGE_NAME
-
       - name: Checkout
         uses: actions/checkout@v3
 
