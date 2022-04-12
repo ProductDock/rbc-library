@@ -26,7 +26,4 @@ public record BookService(BookRepository bookRepository,
         return new SearchBooksResponse(booksPage.getTotalElements(), books);
     }
 
-    public long countAllBooks() {
-        return bookRepository.count();
-    }
 }

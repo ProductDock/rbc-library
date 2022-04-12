@@ -50,12 +50,4 @@ class BookServiceShould {
         return new PageImpl<>(bookEntities);
     }
 
-    @Test
-    void countAllBooks() {
-        given(bookRepository.count()).willReturn(2L);
-
-        var bookCount = bookService.countAllBooks();
-
-        assertThat(bookCount).isEqualTo(2L);
-    }
 }

@@ -36,21 +36,6 @@ class BookApiTest {
         bookRepository.deleteAll();
     }
 
-    @Test
-    @WithMockUser
-    void countAllBooks() throws Exception {
-        givenAnyBook();
-
-        mockMvc.perform(get("/api/books/count"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("1"));
-    }
-
-    private void givenAnyBook() {
-        var book = defaultBook();
-        bookRepository.save(book);
-    }
-
     @Nested
     class SearchWithFilters {
 
@@ -122,6 +107,11 @@ class BookApiTest {
             for (int i = 0; i < RESULTS_PAGE_SIZE - 1; i++) {
                 givenAnyBook();
             }
+        }
+
+        private void givenAnyBook() {
+            var book = defaultBook();
+            bookRepository.save(book);
         }
 
         private void givenSecondPageOfResults() {
