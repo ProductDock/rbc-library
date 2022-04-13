@@ -50,4 +50,18 @@ class BookServiceShould {
         return new PageImpl<>(bookEntities);
     }
 
+    @Test
+    void getBookById() {
+        long bookId = 1L;
+        var entity = mock(BookEntity.class);
+        var dto = mock(BookDto.class);
+
+        given(bookRepository.findById(bookId)).willReturn(Optional.of(entity));
+        given(bookMapper.toDto(entity)).willReturn(dto);
+
+        var result = bookService.findById(bookId);
+
+        assertThat(result).isEqualTo(dto);
+    }
+
 }

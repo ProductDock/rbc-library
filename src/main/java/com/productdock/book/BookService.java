@@ -28,6 +28,6 @@ public record BookService(BookRepository bookRepository,
 
     public BookDto findById(Long bookId) {
         Optional<BookEntity> book = bookRepository.findById(bookId);
-        return bookMapper.toDto(book.orElseThrow());
+        return bookMapper.toDto(book.get());
     }
 }

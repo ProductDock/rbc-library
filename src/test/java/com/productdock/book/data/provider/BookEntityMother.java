@@ -20,6 +20,13 @@ public class BookEntityMother {
     public static BookEntity defaultBook() {
         return defaultBookBuilder().build();
     }
-    
-    
+
+    public static BookEntity.BookEntityBuilder bookWithAnyCover() {
+        return BookEntity.builder()
+                .id(defaultId)
+                .title(defaultTitle)
+                .author(defaultAuthor)
+                .cover("http://cover");
+    }
+
 }
