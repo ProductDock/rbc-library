@@ -51,7 +51,7 @@ class BookServiceShould {
     }
 
     @Test
-    void getBookById() {
+    void getBookById_WhenBookExist() {
         long bookId = 1L;
         var entity = mock(BookEntity.class);
         var dto = mock(BookDto.class);
@@ -62,6 +62,17 @@ class BookServiceShould {
         var result = bookService.findById(bookId);
 
         assertThat(result).isEqualTo(dto);
+    }
+
+    @Test
+    void returnNull_WhenBookIsMissing() {
+        long bookId = -1L;
+
+        given(bookRepository.findById(bookId)).willReturn(Optional.empty());
+
+        var result = bookService.findById(bookId);
+
+        assertThat(result).isNull();
     }
 
 }
