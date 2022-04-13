@@ -28,6 +28,9 @@ public record BookService(BookRepository bookRepository,
 
     public BookDto findById(Long bookId) {
         Optional<BookEntity> book = bookRepository.findById(bookId);
+        if(book.isEmpty()) {
+            return null;
+        }
         return bookMapper.toDto(book.get());
     }
 }
