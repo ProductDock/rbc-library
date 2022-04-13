@@ -127,12 +127,12 @@ class BookApiTest {
         @WithMockUser
         void getBook_whenTheIdIsExisting() throws Exception {
 
-            var book = bookWithAnyCover().id(1L).author("author").title("title").build();
+            var book = bookWithAnyCover().id(1L).build();
             bookRepository.save(book);
 
             mockMvc.perform(get("/api/books/1").param("bookId", "1"))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("{\"id\":1,\"title\":\"title\", \"author\":\"author\",\"cover\":\"http://cover\"}"));
+                    .andExpect(content().json("{\"id\":1,\"title\":\"::title::\", \"author\":\"::author::\",\"cover\":\"http://cover\"}"));
         }
 
     }
