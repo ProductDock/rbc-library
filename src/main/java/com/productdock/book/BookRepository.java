@@ -11,10 +11,13 @@ import java.util.Optional;
 public interface BookRepository extends PagingAndSortingRepository<BookEntity, Long> {
 
     @Query("""
-        select distinct b from BookEntity b
-        left join b.topics t
-        where t.name in :topics or concat(:topics, '') is null
-        """)
+            select b from BookEntity b 
+            where b in (
+                select distinct b from BookEntity b
+                left join b.topics t
+                where t.name in :topics or concat(:topics, '') is null
+            )
+            """)
     Page<BookEntity> findByTopicsName(Optional<List<String>> topics, Pageable pageable);
 }
 
