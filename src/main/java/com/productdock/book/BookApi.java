@@ -1,9 +1,6 @@
 package com.productdock.book;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +12,11 @@ public record BookApi(BookService bookService) {
     @GetMapping
     public SearchBooksResponse getBooks(@RequestParam(required = false) Optional<List<String>> topics, @RequestParam int page) {
         return bookService.getBooks(topics, page);
+    }
+
+    @GetMapping("/{bookId}")
+    public BookDto getBook(@PathVariable("bookId") Long bookId){
+        return bookService.findById(bookId);
     }
 
 }
