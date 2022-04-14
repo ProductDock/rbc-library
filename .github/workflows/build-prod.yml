@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: 'Get version from tag name'
         id: get_version
-        run: echo "VERSION=$(echo $GITHUB_REF)" >> $GITHUB_ENV
+        run: echo "VERSION=$(echo ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v3
