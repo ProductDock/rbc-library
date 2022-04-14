@@ -1,7 +1,14 @@
 name: Deploy Production to Google Compute Engine
 
 on:
-  [workflow_dispatch]
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Docker image tag that will be deployed to Production'
+        required: true
 
 env:
   GCE_INSTANCE: prod-pd-library-services
@@ -18,6 +25,10 @@ jobs:
       id-token: 'write'
 
     steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v0'
