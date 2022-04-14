@@ -11,6 +11,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.productdock.book.data.provider.BookEntityMother.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.productdock.book.data.provider.BookEntityMother.defaultBook;
+import static com.productdock.book.data.provider.BookEntityMother.defaultBookBuilder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -52,9 +57,9 @@ class BookApiTest {
         @Test
         @WithMockUser
         void getFirstPage_whenThereAreResults() throws Exception {
-            givenABookBelongingToTopic("PRODUCT", "Title Product");
-            givenABookBelongingToTopic("MARKETING", "Title Marketing");
-            givenABookBelongingToTopic("DESIGN", "Title Design");
+            givenABookBelongingToTopic("Title Product", "PRODUCT");
+            givenABookBelongingToTopic("Title Marketing", "MARKETING");
+            givenABookBelongingToTopic("Title Design", "DESIGN", "MARKETING");
 
             mockMvc.perform(get("/api/books")
                             .param("page", FIRST_PAGE)
@@ -67,11 +72,14 @@ class BookApiTest {
                     .andExpect(jsonPath("$.books[1].title").value("Title Design"));
         }
 
-        private void givenABookBelongingToTopic(String topicName, String title) {
-            var topic = new TopicEntity();
-            topic.setName(topicName);
-            var book = defaultBookBuilder().title(title).topic(topic).build();
-
+        private void givenABookBelongingToTopic(String title, String... topicNames) {
+            List<TopicEntity> topics = new ArrayList<>();
+            for (String topicName : topicNames) {
+                var topic = new TopicEntity();
+                topic.setName(topicName);
+                topics.add(topic);
+            }
+            var book = defaultBookBuilder().title(title).topics(topics).build();
             bookRepository.save(book);
         }
 

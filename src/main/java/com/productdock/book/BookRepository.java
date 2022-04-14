@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface BookRepository extends PagingAndSortingRepository<BookEntity, Long> {
 
     @Query("""
-        select b from BookEntity b
+        select distinct b from BookEntity b
         left join b.topics t
         where t.name in :topics or concat(:topics, '') is null
         """)
