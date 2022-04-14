@@ -11,11 +11,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.productdock.book.data.provider.BookEntityMother.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.productdock.book.data.provider.BookEntityMother.defaultBook;
 import static com.productdock.book.data.provider.BookEntityMother.defaultBookBuilder;
+import static java.util.Arrays.stream;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -73,14 +75,15 @@ class BookApiTest {
         }
 
         private void givenABookBelongingToTopic(String title, String... topicNames) {
-            List<TopicEntity> topics = new ArrayList<>();
-            for (String topicName : topicNames) {
-                var topic = new TopicEntity();
-                topic.setName(topicName);
-                topics.add(topic);
-            }
+            var topics = createTopicEntitiesWithNames(topicNames);
             var book = defaultBookBuilder().title(title).topics(topics).build();
             bookRepository.save(book);
+        }
+
+        private List<TopicEntity> createTopicEntitiesWithNames(String... topicNames) {
+            return stream(topicNames)
+                    .map(topicName -> TopicEntity.builder().name(topicName).build())
+                    .toList();
         }
 
     }
