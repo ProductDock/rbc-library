@@ -61,17 +61,19 @@ class BookApiTest {
         void getFirstPage_whenThereAreResults() throws Exception {
             givenABookBelongingToTopic("Title Product", "PRODUCT");
             givenABookBelongingToTopic("Title Marketing", "MARKETING");
-            givenABookBelongingToTopic("Title Design", "DESIGN", "MARKETING");
+            givenABookBelongingToTopic("Title Design", "DESIGN");
+            givenABookBelongingToTopic("Title Product & Marketing", "PRODUCT", "MARKETING");
 
             mockMvc.perform(get("/api/books")
                             .param("page", FIRST_PAGE)
                             .param("topics", "MARKETING")
                             .param("topics", "DESIGN"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.count").value(2))
-                    .andExpect(jsonPath("$.books").value(hasSize(2)))
+                    .andExpect(jsonPath("$.count").value(3))
+                    .andExpect(jsonPath("$.books").value(hasSize(3)))
                     .andExpect(jsonPath("$.books[0].title").value("Title Marketing"))
-                    .andExpect(jsonPath("$.books[1].title").value("Title Design"));
+                    .andExpect(jsonPath("$.books[1].title").value("Title Design"))
+                    .andExpect(jsonPath("$.books[2].title").value("Title Product & Marketing"));
         }
 
         private void givenABookBelongingToTopic(String title, String... topicNames) {
