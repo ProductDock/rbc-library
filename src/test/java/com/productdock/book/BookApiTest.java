@@ -126,7 +126,6 @@ class BookApiTest {
         @Test
         @WithMockUser
         void getBook_whenTheIdIsExisting() throws Exception {
-
             var book = bookWithAnyCover().id(1L).build();
             bookRepository.save(book);
 
