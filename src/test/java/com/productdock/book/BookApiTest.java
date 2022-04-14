@@ -10,8 +10,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.productdock.book.data.provider.BookEntityMother.defaultBook;
-import static com.productdock.book.data.provider.BookEntityMother.defaultBookBuilder;
+import static com.productdock.book.data.provider.BookEntityMother.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -117,6 +116,22 @@ class BookApiTest {
         private void givenSecondPageOfResults() {
             var book = defaultBookBuilder().title("Second Page Title").build();
             bookRepository.save(book);
+        }
+
+    }
+
+    @Nested
+    class GetBookDetails {
+
+        @Test
+        @WithMockUser
+        void getBook_whenTheIdIsExisting() throws Exception {
+            var book = bookWithAnyCover().id(1L).build();
+            bookRepository.save(book);
+
+            mockMvc.perform(get("/api/books/1").param("bookId", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json("{\"id\":1,\"title\":\"::title::\", \"author\":\"::author::\",\"cover\":\"http://cover\"}"));
         }
 
     }

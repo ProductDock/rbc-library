@@ -15,6 +15,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -48,6 +49,29 @@ class BookServiceShould {
                 mock(BookEntity.class))
                 .collect(toList());
         return new PageImpl<>(bookEntities);
+    }
+
+    @Test
+    void getBookById_whenBookIsMissing() {
+        given(bookRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        var result = bookService.findById(anyLong());
+
+        assertThat(result).isNull();
+    }
+
+    @Test
+    void getBookById_whenBookExist() {
+        long bookId = 1L;
+        var entity = mock(BookEntity.class);
+        var dto = mock(BookDto.class);
+
+        given(bookRepository.findById(bookId)).willReturn(Optional.of(entity));
+        given(bookMapper.toDto(entity)).willReturn(dto);
+
+        var result = bookService.findById(bookId);
+
+        assertThat(result).isEqualTo(dto);
     }
 
 }
