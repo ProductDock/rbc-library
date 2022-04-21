@@ -48,7 +48,7 @@ class BookApiTest {
         @Test
         @WithMockUser
         void getSecondPage_whenEmptyResults() throws Exception {
-            mockMvc.perform(get("/api/books")
+            mockMvc.perform(get("/api/catalog/books")
                             .param("page", SECOND_PAGE)
                             .param("topics", "MARKETING")
                             .param("topics", "DESIGN"))
@@ -64,7 +64,7 @@ class BookApiTest {
             givenABookBelongingToTopic("Title Design", "DESIGN");
             givenABookBelongingToTopic("Title Product & Marketing", "PRODUCT", "MARKETING");
 
-            mockMvc.perform(get("/api/books")
+            mockMvc.perform(get("/api/catalog/books")
                             .param("page", FIRST_PAGE)
                             .param("topics", "MARKETING")
                             .param("topics", "DESIGN"))
@@ -96,7 +96,7 @@ class BookApiTest {
         @Test
         @WithMockUser
         void getFirstPage_whenEmptyResults() throws Exception {
-            mockMvc.perform(get("/api/books").param("page", FIRST_PAGE))
+            mockMvc.perform(get("/api/catalog/books").param("page", FIRST_PAGE))
                     .andExpect(status().isOk())
                     .andExpect(content().json("{\"count\":0,\"books\":[]}"));
         }
@@ -107,7 +107,7 @@ class BookApiTest {
             givenFirstPageOfResults();
             givenSecondPageOfResults();
 
-            mockMvc.perform(get("/api/books").param("page", SECOND_PAGE))
+            mockMvc.perform(get("/api/catalog/books").param("page", SECOND_PAGE))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.count").value(19))
                     .andExpect(jsonPath("$.books").value(hasSize(1)))
@@ -142,7 +142,7 @@ class BookApiTest {
             var book = bookWithAnyCover().id(1L).build();
             bookRepository.save(book);
 
-            mockMvc.perform(get("/api/books/1").param("bookId", "1"))
+            mockMvc.perform(get("/api/catalog/books/1").param("bookId", "1"))
                     .andExpect(status().isOk())
                     .andExpect(content().json("{\"id\":1,\"title\":\"::title::\", \"author\":\"::author::\",\"cover\":\"http://cover\"}"));
         }
