@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/api/catalog/books")
 public record BookApi(BookService bookService) {
 
     @GetMapping
