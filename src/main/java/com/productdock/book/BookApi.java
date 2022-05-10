@@ -1,5 +1,7 @@
 package com.productdock.book;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +24,10 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
     @PostMapping("/{bookId}/reviews")
     public ReviewDto createReviewForBook(
             @PathVariable(value = "bookId", required = false) final Long bookId,
-            @RequestBody ReviewDto reviewDto) {
+            @RequestBody ReviewDto reviewDto,
+            Authentication authentication) {
+        reviewDto.userId = ((Jwt) authentication.getCredentials()).getClaim("email");
+        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim("name");
         return reviewService.saveReview(reviewDto);
     }
 
