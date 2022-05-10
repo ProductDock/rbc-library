@@ -184,7 +184,7 @@ CREATE TABLE review (
     user_id varchar(100) not null,
     user_full_name varchar(255) not null,
     comment varchar(500),
-    rating tinyint,
-    recommendation varchar(255),
+    rating smallint,
+    recommendation int,
     PRIMARY KEY(book_id, user_id)
 );
