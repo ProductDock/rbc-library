@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -20,7 +17,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 @Entity
-public class Review {
+@Table(name = "review")
+public class ReviewEntity {
 
     @EmbeddedId
     private ReviewCompositeKey reviewCompositeKey;
