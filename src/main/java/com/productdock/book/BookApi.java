@@ -26,6 +26,7 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
             @PathVariable(value = "bookId", required = false) final Long bookId,
             @RequestBody ReviewDto reviewDto,
             Authentication authentication) {
+        reviewDto.bookId = bookId;
         reviewDto.userId = ((Jwt) authentication.getCredentials()).getClaim("email");
         reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim("name");
         return reviewService.saveReview(reviewDto);
