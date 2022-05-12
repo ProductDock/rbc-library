@@ -18,7 +18,7 @@ public class RecommendationBits {
 
     public List<Recommendation> toList() {
         return KNOWN_RECOMMENDATIONS.stream()
-                .filter(recommendation -> this.hasRecommendation(recommendation))
+                .filter(this::hasRecommendation)
                 .toList();
     }
 

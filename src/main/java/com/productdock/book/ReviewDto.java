@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewDto implements Serializable {
+public class ReviewDto {
 
     public Long bookId;
 
