@@ -1,8 +1,16 @@
 package com.productdock.book;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class ReviewDto {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ReviewDto implements Serializable {
 
     public Long bookId;
     public String userId;

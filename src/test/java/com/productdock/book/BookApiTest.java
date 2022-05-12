@@ -1,25 +1,30 @@
 package com.productdock.book;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.productdock.book.data.provider.BookEntityMother.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.productdock.book.data.provider.BookEntityMother.defaultBook;
 import static com.productdock.book.data.provider.BookEntityMother.defaultBookBuilder;
+import static com.productdock.book.data.provider.ReviewMother.*;
 import static java.util.Arrays.stream;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -31,15 +36,26 @@ class BookApiTest {
     public static final String FIRST_PAGE = "0";
     public static final String SECOND_PAGE = "1";
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final String INVALID_REVIEW_MESSAGE = "The content of the review is not valid. A comment cannot be longer than 500 characters, and the rating must be between 1 and 5.";
+    private final String REVIEW_ALREADY_EXISTS_MESSAGE = "The user cannot enter more than one comment for a particular book.";
+
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private ReviewMapper reviewMapper;
+
     @BeforeEach
     final void before() {
         bookRepository.deleteAll();
+        reviewRepository.deleteAll();
     }
 
     @Nested
@@ -147,6 +163,92 @@ class BookApiTest {
                     .andExpect(content().json("{\"id\":1,\"title\":\"::title::\", \"author\":\"::author::\",\"cover\":\"http://cover\"}"));
         }
 
+    }
+
+    @Nested
+    class CreateReviewForBook {
+
+        @Test
+        @WithMockUser
+        void createReview_whenReviewIsValid() throws Exception {
+            var reviewDto = defaultReviewDto();
+            var resultReviewDto = defaultReviewDtoBuilder()
+                    .bookId(1L)
+                    .userId("user@mail.com")
+                    .userFullName("full name")
+                    .build();
+            var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
+
+            mockMvc.perform(post("/api/catalog/books/1/reviews")
+                            .param("bookId", "1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(reviewDtoJson)
+                            .with(jwt().jwt(jwt -> {
+                                jwt.claim("email", "user@mail.com");
+                                jwt.claim("name", "full name");
+                            })))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(objectMapper.writeValueAsString(resultReviewDto)));
+        }
+
+        @Test
+        @WithMockUser
+        void returnBadRequest_whenReviewAlreadyExists() throws Exception {
+            var reviewDto = defaultReviewDtoBuilder().bookId(1L).build();
+            var review = reviewMapper.toEntity(reviewDto);
+            reviewRepository.save(review);
+
+            var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
+
+            mockMvc.perform(post("/api/catalog/books/1/reviews")
+                            .param("bookId", "1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(reviewDtoJson)
+                            .with(jwt().jwt(jwt -> {
+                                jwt.claim("email", "::userId::");
+                                jwt.claim("name", "full name");
+                            })))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(REVIEW_ALREADY_EXISTS_MESSAGE));
+        }
+
+        @Test
+        @WithMockUser
+        void returnBadRequest_whenReviewHasTooLongComment() throws Exception {
+            var reviewDto = defaultReviewDtoBuilder()
+                    .comment(RandomString.make(501))
+                    .build();
+            var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
+
+            mockMvc.perform(post("/api/catalog/books/1/reviews")
+                            .param("bookId", "1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(reviewDtoJson)
+                            .with(jwt().jwt(jwt -> {
+                                jwt.claim("email", "::userId::");
+                                jwt.claim("name", "::userFullName::");
+                            })))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(INVALID_REVIEW_MESSAGE));
+        }
+
+        @Test
+        @WithMockUser
+        void returnBadRequest_whenReviewHasInvalidRating() throws Exception {
+            var reviewDto = defaultReviewDtoBuilder().rating((short) 7).build();
+            var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
+
+            mockMvc.perform(post("/api/catalog/books/1/reviews")
+                            .param("bookId", "1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(reviewDtoJson)
+                            .with(jwt().jwt(jwt -> {
+                                jwt.claim("email", "::userId::");
+                                jwt.claim("name", "::userFullName::");
+                            })))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(INVALID_REVIEW_MESSAGE));
+        }
     }
 
 }
