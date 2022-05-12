@@ -37,8 +37,6 @@ class BookApiTest {
     public static final String SECOND_PAGE = "1";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final String INVALID_REVIEW_MESSAGE = "The content of the review is not valid. A comment cannot be longer than 500 characters, and the rating must be between 1 and 5.";
-    private final String REVIEW_ALREADY_EXISTS_MESSAGE = "The user cannot enter more than one comment for a particular book.";
 
     @Autowired
     private MockMvc mockMvc;
@@ -172,11 +170,6 @@ class BookApiTest {
         @WithMockUser
         void createReview_whenReviewIsValid() throws Exception {
             var reviewDto = defaultReviewDto();
-            var resultReviewDto = defaultReviewDtoBuilder()
-                    .bookId(1L)
-                    .userId("user@mail.com")
-                    .userFullName("full name")
-                    .build();
             var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
 
             mockMvc.perform(post("/api/catalog/books/1/reviews")
@@ -187,8 +180,7 @@ class BookApiTest {
                                 jwt.claim("email", "user@mail.com");
                                 jwt.claim("name", "full name");
                             })))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(objectMapper.writeValueAsString(resultReviewDto)));
+                    .andExpect(status().isOk());
         }
 
         @Test
@@ -198,18 +190,7 @@ class BookApiTest {
             var review = reviewMapper.toEntity(reviewDto);
             reviewRepository.save(review);
 
-            var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
-
-            mockMvc.perform(post("/api/catalog/books/1/reviews")
-                            .param("bookId", "1")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(reviewDtoJson)
-                            .with(jwt().jwt(jwt -> {
-                                jwt.claim("email", "::userId::");
-                                jwt.claim("name", "full name");
-                            })))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(content().string(REVIEW_ALREADY_EXISTS_MESSAGE));
+            assertThatBadRequestIsReturned(reviewDto);
         }
 
         @Test
@@ -218,24 +199,17 @@ class BookApiTest {
             var reviewDto = defaultReviewDtoBuilder()
                     .comment(RandomString.make(501))
                     .build();
-            var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
-
-            mockMvc.perform(post("/api/catalog/books/1/reviews")
-                            .param("bookId", "1")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(reviewDtoJson)
-                            .with(jwt().jwt(jwt -> {
-                                jwt.claim("email", "::userId::");
-                                jwt.claim("name", "::userFullName::");
-                            })))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(content().string(INVALID_REVIEW_MESSAGE));
+            assertThatBadRequestIsReturned(reviewDto);
         }
 
         @Test
         @WithMockUser
         void returnBadRequest_whenReviewHasInvalidRating() throws Exception {
             var reviewDto = defaultReviewDtoBuilder().rating((short) 7).build();
+            assertThatBadRequestIsReturned(reviewDto);
+        }
+
+        private void assertThatBadRequestIsReturned(ReviewDto reviewDto) throws Exception {
             var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
 
             mockMvc.perform(post("/api/catalog/books/1/reviews")
@@ -246,8 +220,7 @@ class BookApiTest {
                                 jwt.claim("email", "::userId::");
                                 jwt.claim("name", "::userFullName::");
                             })))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(content().string(INVALID_REVIEW_MESSAGE));
+                    .andExpect(status().isBadRequest());
         }
     }
 
