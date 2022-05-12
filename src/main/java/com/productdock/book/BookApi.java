@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,14 +23,14 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
     }
 
     @PostMapping("/{bookId}/reviews")
-    public ReviewDto createReviewForBook(
-            @PathVariable(value = "bookId", required = false) final Long bookId,
-            @RequestBody ReviewDto reviewDto,
+    public void createReviewForBook(
+            @PathVariable("bookId") final Long bookId,
+            @Valid @RequestBody ReviewDto reviewDto,
             Authentication authentication) {
         reviewDto.bookId = bookId;
         reviewDto.userId = ((Jwt) authentication.getCredentials()).getClaim("email");
         reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim("name");
-        return reviewService.saveReview(reviewDto);
+        reviewService.saveReview(reviewDto);
     }
 
 }
