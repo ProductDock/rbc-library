@@ -186,5 +186,6 @@ CREATE TABLE review (
     comment varchar(500),
     rating smallint,
     recommendation int,
-    PRIMARY KEY(book_id, user_id)
+    PRIMARY KEY(book_id, user_id),
+    FOREIGN KEY (book_id) REFERENCES book(id)
 );
