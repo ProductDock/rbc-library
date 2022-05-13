@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static com.productdock.book.data.provider.BookEntityMother.*;
 
@@ -172,15 +173,7 @@ class BookApiTest {
             var reviewDto = defaultReviewDto();
             var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
 
-            mockMvc.perform(post("/api/catalog/books/1/reviews")
-                            .param("bookId", "1")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(reviewDtoJson)
-                            .with(jwt().jwt(jwt -> {
-                                jwt.claim("email", "user@mail.com");
-                                jwt.claim("name", "full name");
-                            })))
-                    .andExpect(status().isOk());
+            simulateTheRequest(reviewDtoJson).andExpect(status().isOk());
         }
 
         @Test
@@ -212,15 +205,18 @@ class BookApiTest {
         private void assertThatBadRequestIsReturned(ReviewDto reviewDto) throws Exception {
             var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
 
-            mockMvc.perform(post("/api/catalog/books/1/reviews")
-                            .param("bookId", "1")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(reviewDtoJson)
-                            .with(jwt().jwt(jwt -> {
-                                jwt.claim("email", "::userId::");
-                                jwt.claim("name", "::userFullName::");
-                            })))
-                    .andExpect(status().isBadRequest());
+            simulateTheRequest(reviewDtoJson).andExpect(status().isBadRequest());
+        }
+
+        private ResultActions simulateTheRequest(String reviewDtoJson) throws Exception {
+            return mockMvc.perform(post("/api/catalog/books/1/reviews")
+                    .param("bookId", "1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(reviewDtoJson)
+                    .with(jwt().jwt(jwt -> {
+                        jwt.claim("email", "::userId::");
+                        jwt.claim("name", "::userFullName::");
+                    })));
         }
     }
 
