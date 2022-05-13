@@ -12,3 +12,4 @@ services:
       - ./import-catalog.sql:/docker-entrypoint-initdb.d/import-catalog.sql
     ports:
       - "3308:3306"
+    command: ['mysqld', '--character-set-server=utf8', '--collation-server=utf8_general_ci']

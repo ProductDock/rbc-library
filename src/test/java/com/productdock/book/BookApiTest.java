@@ -1,25 +1,30 @@
 package com.productdock.book;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static com.productdock.book.data.provider.BookEntityMother.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.productdock.book.data.provider.BookEntityMother.defaultBook;
 import static com.productdock.book.data.provider.BookEntityMother.defaultBookBuilder;
 import static java.util.Arrays.stream;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -31,15 +36,24 @@ class BookApiTest {
     public static final String FIRST_PAGE = "0";
     public static final String SECOND_PAGE = "1";
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private ReviewMapper reviewMapper;
+
     @BeforeEach
     final void before() {
         bookRepository.deleteAll();
+        reviewRepository.deleteAll();
     }
 
     @Nested
@@ -147,6 +161,74 @@ class BookApiTest {
                     .andExpect(content().json("{\"id\":1,\"title\":\"::title::\", \"author\":\"::author::\",\"cover\":\"http://cover\"}"));
         }
 
+    }
+
+    @Nested
+    class CreateReviewForBook {
+
+        @Test
+        @WithMockUser
+        void createReview_whenReviewIsValid() throws Exception {
+            var reviewDtoJson =
+                    "{\"bookId\":null," +
+                    "\"userId\":\"::userId::\"," +
+                    "\"userFullName\":\"::userFullName::\"," +
+                    "\"comment\":\"::comment::\"," +
+                    "\"rating\":null," +
+                    "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isOk());
+        }
+
+        @Test
+        @WithMockUser
+        void returnBadRequest_whenReviewAlreadyExists() throws Exception {
+            var reviewDtoJson =
+                    "{\"bookId\":1," +
+                    "\"userId\":\"::userId::\"," +
+                    "\"userFullName\":\"::userFullName::\"," +
+                    "\"comment\":\"::comment::\"," +
+                    "\"rating\":null," +
+                    "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isOk());
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @WithMockUser
+        void returnBadRequest_whenReviewHasTooLongComment() throws Exception {
+            var reviewDtoJson =
+                    "{\"bookId\":1," +
+                    "\"userId\":\"::userId::\"," +
+                    "\"userFullName\":\"::userFullName::\"," +
+                    "\"comment\":\""+ RandomString.make(501) + "\"," +
+                    "\"rating\":null," +
+                    "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @WithMockUser
+        void returnBadRequest_whenReviewHasInvalidRating() throws Exception {
+            var reviewDtoJson =
+                    "{\"bookId\":1," +
+                    "\"userId\":\"::userId::\"," +
+                    "\"userFullName\":\"::userFullName::\"," +
+                    "\"comment\":\"::comment::\"," +
+                    "\"rating\":7," +
+                    "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isBadRequest());
+        }
+
+        private ResultActions makeBookReviewRequest(String reviewDtoJson) throws Exception {
+            return mockMvc.perform(post("/api/catalog/books/1/reviews")
+                    .param("bookId", "1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(reviewDtoJson)
+                    .with(jwt().jwt(jwt -> {
+                        jwt.claim("email", "::userId::");
+                        jwt.claim("name", "::userFullName::");
+                    })));
+        }
     }
 
 }

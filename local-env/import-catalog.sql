@@ -178,3 +178,13 @@ INSERT into book_topic (book_id, topic_id) VALUES (69,1);
 INSERT into book_topic (book_id, topic_id) VALUES (70,1);
 INSERT into book_topic (book_id, topic_id) VALUES (71,1);
 INSERT into book_topic (book_id, topic_id) VALUES (72,5);
+
+CREATE TABLE review (
+    book_id bigint not null,
+    user_id varchar(100) not null,
+    user_full_name varchar(255) not null,
+    comment varchar(500),
+    rating smallint,
+    recommendation int,
+    PRIMARY KEY(book_id, user_id)
+);

@@ -1,5 +1,6 @@
 package com.productdock.book;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -8,8 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public record BookService(BookRepository bookRepository,
-                          BookMapper bookMapper) {
+@AllArgsConstructor
+public class BookService {
+
+    private BookRepository bookRepository;
+    private BookMapper bookMapper;
 
     private static final int PAGE_SIZE = 18;
 
