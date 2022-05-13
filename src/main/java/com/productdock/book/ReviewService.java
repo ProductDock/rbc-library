@@ -1,11 +1,16 @@
 package com.productdock.book;
 
 import com.productdock.exception.BadRequestException;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-public record ReviewService(ReviewRepository reviewRepository,
-                            ReviewMapper reviewMapper) {
+@AllArgsConstructor
+public class ReviewService {
+
+    private ReviewRepository reviewRepository;
+    private ReviewMapper reviewMapper;
+
 
     public void saveReview(ReviewDto reviewDto) {
         var reviewEntity = reviewMapper.toEntity(reviewDto);
