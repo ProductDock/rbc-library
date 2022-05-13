@@ -52,6 +52,7 @@ class BookApiTest {
     final void before() {
         reviewRepository.deleteAll();
         bookRepository.deleteAll();
+        reviewRepository.deleteAll();
     }
 
     @Nested
@@ -250,8 +251,8 @@ class BookApiTest {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
-                            "\"rating\":7," +
-                            "\"recommendation\":[]}";
+                    "\"rating\":7," +
+                    "\"recommendation\":[]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
 
