@@ -20,7 +20,6 @@ import java.util.List;
 
 import static com.productdock.book.data.provider.BookEntityMother.defaultBook;
 import static com.productdock.book.data.provider.BookEntityMother.defaultBookBuilder;
-import static com.productdock.book.data.provider.ReviewDtoMother.*;
 import static java.util.Arrays.stream;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -170,45 +169,57 @@ class BookApiTest {
         @Test
         @WithMockUser
         void createReview_whenReviewIsValid() throws Exception {
-            var reviewDto = defaultReviewDto();
-            var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
-
-            simulateTheRequest(reviewDtoJson).andExpect(status().isOk());
+            var reviewDtoJson =
+                    "{\"bookId\":null," +
+                    "\"userId\":\"::userId::\"," +
+                    "\"userFullName\":\"::userFullName::\"," +
+                    "\"comment\":\"::comment::\"," +
+                    "\"rating\":null," +
+                    "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isOk());
         }
 
         @Test
         @WithMockUser
         void returnBadRequest_whenReviewAlreadyExists() throws Exception {
-            var reviewDto = defaultReviewDtoBuilder().bookId(1L).build();
-            var review = reviewMapper.toEntity(reviewDto);
-            reviewRepository.save(review);
-
-            assertThatBadRequestIsReturned(reviewDto);
+            var reviewDtoJson =
+                    "{\"bookId\":1," +
+                    "\"userId\":\"::userId::\"," +
+                    "\"userFullName\":\"::userFullName::\"," +
+                    "\"comment\":\"::comment::\"," +
+                    "\"rating\":null," +
+                    "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isOk());
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isBadRequest());
         }
 
         @Test
         @WithMockUser
         void returnBadRequest_whenReviewHasTooLongComment() throws Exception {
-            var reviewDto = defaultReviewDtoBuilder()
-                    .comment(RandomString.make(501))
-                    .build();
-            assertThatBadRequestIsReturned(reviewDto);
+            var reviewDtoJson =
+                    "{\"bookId\":1," +
+                    "\"userId\":\"::userId::\"," +
+                    "\"userFullName\":\"::userFullName::\"," +
+                    "\"comment\":\""+ RandomString.make(501) + "\"," +
+                    "\"rating\":null," +
+                    "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isBadRequest());
         }
 
         @Test
         @WithMockUser
         void returnBadRequest_whenReviewHasInvalidRating() throws Exception {
-            var reviewDto = defaultReviewDtoBuilder().rating((short) 7).build();
-            assertThatBadRequestIsReturned(reviewDto);
+            var reviewDtoJson =
+                    "{\"bookId\":1," +
+                    "\"userId\":\"::userId::\"," +
+                    "\"userFullName\":\"::userFullName::\"," +
+                    "\"comment\":\"::comment::\"," +
+                    "\"rating\":7," +
+                    "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isBadRequest());
         }
 
-        private void assertThatBadRequestIsReturned(ReviewDto reviewDto) throws Exception {
-            var reviewDtoJson = objectMapper.writeValueAsString(reviewDto);
-
-            simulateTheRequest(reviewDtoJson).andExpect(status().isBadRequest());
-        }
-
-        private ResultActions simulateTheRequest(String reviewDtoJson) throws Exception {
+        private ResultActions makeBookReviewRequest(String reviewDtoJson) throws Exception {
             return mockMvc.perform(post("/api/catalog/books/1/reviews")
                     .param("bookId", "1")
                     .contentType(MediaType.APPLICATION_JSON)
