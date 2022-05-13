@@ -6,7 +6,7 @@ import com.productdock.book.ReviewDto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReviewMother {
+public class ReviewDtoMother {
 
     private static final Long defaultBookId = null;
     private static final String defaultUserId = "::userId::";

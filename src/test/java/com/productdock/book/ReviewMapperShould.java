@@ -1,6 +1,6 @@
 package com.productdock.book;
 
-import com.productdock.book.data.provider.ReviewMother;
+import com.productdock.book.data.provider.ReviewDtoMother;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +42,7 @@ class ReviewMapperShould {
     @Test
     void convertReviewDtoToEntity() {
 
-        var reviewDto = ReviewMother.defaultReviewDtoBuilder()
+        var reviewDto = ReviewDtoMother.defaultReviewDtoBuilder()
                 .bookId(1L)
                 .recommendation(List.of(MEDIOR, SENIOR))
                 .build();

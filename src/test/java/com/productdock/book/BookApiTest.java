@@ -19,7 +19,7 @@ import java.util.List;
 
 import static com.productdock.book.data.provider.BookEntityMother.defaultBook;
 import static com.productdock.book.data.provider.BookEntityMother.defaultBookBuilder;
-import static com.productdock.book.data.provider.ReviewMother.*;
+import static com.productdock.book.data.provider.ReviewDtoMother.*;
 import static java.util.Arrays.stream;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
