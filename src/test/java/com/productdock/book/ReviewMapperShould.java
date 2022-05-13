@@ -34,6 +34,9 @@ class ReviewMapperShould {
 
         try (var softly = new AutoCloseableSoftAssertions()) {
             softly.assertThat(reviewDto.userId).isEqualTo(reviewEntity.getReviewCompositeKey().getUserId());
+            softly.assertThat(reviewDto.bookId).isEqualTo(reviewEntity.getReviewCompositeKey().getBookId());
+            softly.assertThat(reviewDto.userFullName).isEqualTo(reviewEntity.getUserFullName());
+            softly.assertThat(reviewDto.comment).isEqualTo(reviewEntity.getComment());
             softly.assertThat(reviewDto.rating).isEqualTo(reviewEntity.getRating());
             softly.assertThat(reviewDto.recommendation).containsExactlyInAnyOrder(SENIOR, JUNIOR, MEDIOR);
         }
@@ -50,8 +53,12 @@ class ReviewMapperShould {
         var reviewEntity = reviewMapper.toEntity(reviewDto);
 
         try (var softly = new AutoCloseableSoftAssertions()) {
+            softly.assertThat(reviewEntity.getReviewCompositeKey().getUserId()).isEqualTo(reviewDto.userId);
             softly.assertThat(reviewEntity.getReviewCompositeKey().getBookId()).isEqualTo(reviewDto.bookId);
+            softly.assertThat(reviewEntity.getComment()).isEqualTo(reviewDto.comment);
+            softly.assertThat(reviewEntity.getRating()).isEqualTo(reviewDto.rating);
             softly.assertThat(reviewEntity.getRecommendation()).isEqualTo(6);
+            softly.assertThat(reviewEntity.getUserFullName()).isEqualTo(reviewDto.userFullName);
         }
     }
 
