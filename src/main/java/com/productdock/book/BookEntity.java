@@ -1,7 +1,6 @@
 package com.productdock.book;
 
 import lombok.*;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.List;

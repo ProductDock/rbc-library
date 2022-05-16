@@ -1,9 +1,8 @@
 package com.productdock.book;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class BookDto implements Serializable {
+public class BookDto {
 
     public Long id;
     public String title;
@@ -11,7 +10,7 @@ public class BookDto implements Serializable {
     public String cover;
     public List<ReviewDto> reviews;
 
-    public static class ReviewDto implements Serializable {
+    public static class ReviewDto {
 
         public String userFullName;
         public Short rating;
