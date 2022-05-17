@@ -213,12 +213,10 @@ class BookApiTest {
         @Test
         @WithMockUser
         void createReview_whenCommentAndRatingMissing() throws Exception {
+            var bookId = givenAnyBook();
             var reviewDtoJson =
-                    "{\"bookId\":null," +
-                            "\"userId\":\"::userId::\"," +
-                            "\"userFullName\":\"::userFullName::\"," +
-                            "\"recommendation\":[]}";
-            makeBookReviewRequest(reviewDtoJson).andExpect(status().isOk());
+                    "{\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
         }
 
         @Test
@@ -227,8 +225,8 @@ class BookApiTest {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
-                            "\"rating\":1," +
-                            "\"recommendation\":[]}";
+                    "\"rating\":1," +
+                    "\"recommendation\":[]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
         }
 
@@ -238,8 +236,8 @@ class BookApiTest {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
-                            "\"rating\":null," +
-                            "\"recommendation\":[]}";
+                    "\"rating\":null," +
+                    "\"recommendation\":[]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
@@ -250,8 +248,8 @@ class BookApiTest {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"" + RandomString.make(501) + "\"," +
-                            "\"rating\":null," +
-                            "\"recommendation\":[]}";
+                    "\"rating\":null," +
+                    "\"recommendation\":[]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
 
