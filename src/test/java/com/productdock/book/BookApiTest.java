@@ -14,12 +14,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static com.productdock.book.data.provider.BookEntityMother.*;
-
 import java.util.List;
 
-import static com.productdock.book.data.provider.BookEntityMother.defaultBook;
-import static com.productdock.book.data.provider.BookEntityMother.defaultBookBuilder;
+import static com.productdock.book.data.provider.BookEntityMother.*;
+import static com.productdock.book.data.provider.ReviewEntityMother.defaultReviewEntityBuilder;
 import static java.util.Arrays.stream;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -52,8 +50,8 @@ class BookApiTest {
 
     @BeforeEach
     final void before() {
-        bookRepository.deleteAll();
         reviewRepository.deleteAll();
+        bookRepository.deleteAll();
     }
 
     @Nested
@@ -152,13 +150,59 @@ class BookApiTest {
 
         @Test
         @WithMockUser
-        void getBook_whenTheIdIsExisting() throws Exception {
-            var book = bookWithAnyCover().id(1L).build();
-            bookRepository.save(book);
+        void getBook_whenIdExistAndNoReviews() throws Exception {
+            var bookId = givenAnyBook();
 
-            mockMvc.perform(get("/api/catalog/books/1").param("bookId", "1"))
+            mockMvc.perform(get("/api/catalog/books/" + bookId))
                     .andExpect(status().isOk())
-                    .andExpect(content().json("{\"id\":1,\"title\":\"::title::\", \"author\":\"::author::\",\"cover\":\"http://cover\"}"));
+                    .andExpect(content().json(
+                            "{\"id\":" + bookId + "," +
+                                    "\"title\":\"::title::\"," +
+                                    "\"author\":\"::author::\"," +
+                                    "\"cover\":\"http://cover\"," +
+                                    "\"reviews\": []}"));
+        }
+
+        @Test
+        @WithMockUser
+        void getBook_whenIdExistAndReviewsExist() throws Exception {
+            var bookId = givenAnyBook();
+            givenReviewForBook(bookId);
+
+            mockMvc.perform(get("/api/catalog/books/" + bookId)
+                            .with(jwt().jwt(jwt -> {
+                                jwt.claim("email", "::userId::");
+                                jwt.claim("name", "::userFullName::");
+                            })))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(
+                            "{\"id\":" + bookId + "," +
+                                    "\"title\":\"::title::\"," +
+                                    "\"author\":\"::author::\"," +
+                                    "\"cover\":\"http://cover\"," +
+                                    "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
+                                    "\"rating\":2," +
+                                    "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
+                                    "\"comment\": \"::comment::\"}]}"));
+        }
+
+        private Long givenAnyBook() {
+            var book = bookWithAnyCover().build();
+            return bookRepository.save(book).getId();
+        }
+
+        private void givenReviewForBook(Long bookId) {
+            var review = defaultReviewEntityBuilder()
+                    .reviewCompositeKey(ReviewEntity.ReviewCompositeKey.builder()
+                            .bookId(bookId)
+                            .userId("::userId::")
+                            .build())
+                    .userFullName("::userFullName::")
+                    .rating((short) 2)
+                    .comment("::comment::")
+                    .recommendation(3).build();
+
+            reviewRepository.save(review);
         }
 
     }
@@ -180,65 +224,61 @@ class BookApiTest {
         @Test
         @WithMockUser
         void createReview_whenReviewIsValid() throws Exception {
+            var bookId = givenAnyBook();
             var reviewDtoJson =
-                    "{\"bookId\":null," +
-                    "\"userId\":\"::userId::\"," +
-                    "\"userFullName\":\"::userFullName::\"," +
-                    "\"comment\":\"::comment::\"," +
-                    "\"rating\":null," +
-                    "\"recommendation\":[]}";
-            makeBookReviewRequest(reviewDtoJson).andExpect(status().isOk());
+                    "{\"comment\":\"::comment::\"," +
+                            "\"rating\":1," +
+                            "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
         }
 
         @Test
         @WithMockUser
         void returnBadRequest_whenReviewAlreadyExists() throws Exception {
+            var bookId = givenAnyBook();
             var reviewDtoJson =
-                    "{\"bookId\":1," +
-                    "\"userId\":\"::userId::\"," +
-                    "\"userFullName\":\"::userFullName::\"," +
-                    "\"comment\":\"::comment::\"," +
-                    "\"rating\":null," +
-                    "\"recommendation\":[]}";
-            makeBookReviewRequest(reviewDtoJson).andExpect(status().isOk());
-            makeBookReviewRequest(reviewDtoJson).andExpect(status().isBadRequest());
+                    "{\"comment\":\"::comment::\"," +
+                            "\"rating\":null," +
+                            "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+            makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
 
         @Test
         @WithMockUser
         void returnBadRequest_whenReviewHasTooLongComment() throws Exception {
+            var bookId = givenAnyBook();
             var reviewDtoJson =
-                    "{\"bookId\":1," +
-                    "\"userId\":\"::userId::\"," +
-                    "\"userFullName\":\"::userFullName::\"," +
-                    "\"comment\":\""+ RandomString.make(501) + "\"," +
-                    "\"rating\":null," +
-                    "\"recommendation\":[]}";
-            makeBookReviewRequest(reviewDtoJson).andExpect(status().isBadRequest());
+                    "{\"comment\":\"" + RandomString.make(501) + "\"," +
+                            "\"rating\":null," +
+                            "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
 
         @Test
         @WithMockUser
         void returnBadRequest_whenReviewHasInvalidRating() throws Exception {
+            var bookId = givenAnyBook();
             var reviewDtoJson =
-                    "{\"bookId\":1," +
-                    "\"userId\":\"::userId::\"," +
-                    "\"userFullName\":\"::userFullName::\"," +
-                    "\"comment\":\"::comment::\"," +
+                    "{\"comment\":\"::comment::\"," +
                     "\"rating\":7," +
                     "\"recommendation\":[]}";
-            makeBookReviewRequest(reviewDtoJson).andExpect(status().isBadRequest());
+            makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
 
-        private ResultActions makeBookReviewRequest(String reviewDtoJson) throws Exception {
-            return mockMvc.perform(post("/api/catalog/books/1/reviews")
-                    .param("bookId", "1")
+        private ResultActions makeBookReviewRequest(String reviewDtoJson, Long bookId) throws Exception {
+            return mockMvc.perform(post("/api/catalog/books/" + bookId + "/reviews")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(reviewDtoJson)
                     .with(jwt().jwt(jwt -> {
                         jwt.claim("email", "::userId::");
                         jwt.claim("name", "::userFullName::");
                     })));
+        }
+
+        private Long givenAnyBook() {
+            var book = defaultBookBuilder().build();
+            return bookRepository.save(book).getId();
         }
     }
 

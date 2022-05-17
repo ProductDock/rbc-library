@@ -39,6 +39,7 @@ public class ReviewEntity {
     @NoArgsConstructor
     @AllArgsConstructor
     @Embeddable
+    @Builder
     public static class ReviewCompositeKey implements Serializable {
 
         protected Long bookId;
