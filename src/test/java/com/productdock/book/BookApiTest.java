@@ -169,12 +169,7 @@ class BookApiTest {
             var bookId = givenAnyBook();
             givenReviewForBook(bookId);
 
-            mockMvc.perform(get("/api/catalog/books/" + bookId)
-                            .with(jwt().jwt(jwt -> {
-                                jwt.claim("email", "::userId::");
-                                jwt.claim("name", "::userFullName::");
-                            })))
-                    .andExpect(status().isOk())
+            makeGetBookRequest(bookId)
                     .andExpect(content().json(
                             "{\"id\":" + bookId + "," +
                                     "\"title\":\"::title::\"," +
@@ -207,8 +202,26 @@ class BookApiTest {
 
     }
 
+    private ResultActions makeGetBookRequest(Long bookId) throws Exception {
+        return mockMvc.perform(get("/api/catalog/books/" + bookId)
+                        .with(jwt().jwt(jwt -> {
+                            jwt.claim("email", "::userId::");
+                            jwt.claim("name", "::userFullName::");
+                        })))
+                .andExpect(status().isOk());
+    }
+
     @Nested
     class CreateReviewForBook {
+
+        @Test
+        @WithMockUser
+        void createReview_whenCommentAndRatingMissing() throws Exception {
+            var bookId = givenAnyBook();
+            var reviewDtoJson =
+                    "{\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+        }
 
         @Test
         @WithMockUser
@@ -216,9 +229,19 @@ class BookApiTest {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
-                            "\"rating\":1," +
-                            "\"recommendation\":[]}";
+                    "\"rating\":1," +
+                    "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+            makeGetBookRequest(bookId)
+                    .andExpect(content().json(
+                            "{\"id\":" + bookId + "," +
+                                    "\"title\":\"::title::\"," +
+                                    "\"author\":\"::author::\"," +
+                                    "\"cover\": null," +
+                                    "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
+                                    "\"rating\":1," +
+                                    "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
+                                    "\"comment\": \"::comment::\"}]}"));
         }
 
         @Test
@@ -227,8 +250,8 @@ class BookApiTest {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
-                            "\"rating\":null," +
-                            "\"recommendation\":[]}";
+                    "\"rating\":null," +
+                    "\"recommendation\":[]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
@@ -239,8 +262,8 @@ class BookApiTest {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"" + RandomString.make(501) + "\"," +
-                            "\"rating\":null," +
-                            "\"recommendation\":[]}";
+                    "\"rating\":null," +
+                    "\"recommendation\":[]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
 

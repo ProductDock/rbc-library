@@ -23,8 +23,8 @@ public class ReviewDto {
     @Size(max = 500, message = "Comment cannot be longer than 500 characters")
     public String comment;
 
-    @Min(value = 0, message = "Rating must be between 0 and 5")
-    @Max(value = 5, message = "Rating must be between 0 and 5")
+    @Min(value = 1, message = "Rating must be between 1 and 5")
+    @Max(value = 5, message = "Rating must be between 1 and 5")
     public Short rating;
 
     public List<Recommendation> recommendation;

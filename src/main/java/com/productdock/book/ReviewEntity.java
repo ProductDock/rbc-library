@@ -29,7 +29,7 @@ public class ReviewEntity {
     @Size(max = 500)
     private String comment;
 
-    @Min(0)
+    @Min(1)
     @Max(5)
     private Short rating;
 
