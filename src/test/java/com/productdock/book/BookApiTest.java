@@ -52,7 +52,6 @@ class BookApiTest {
     final void before() {
         reviewRepository.deleteAll();
         bookRepository.deleteAll();
-        reviewRepository.deleteAll();
     }
 
     @Nested
