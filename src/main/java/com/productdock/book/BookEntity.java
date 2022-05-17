@@ -3,6 +3,7 @@ package com.productdock.book;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -34,4 +35,8 @@ public class BookEntity {
     )
     private Set<TopicEntity> topics;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @Singular
+    @JoinColumn(name = "bookId")
+    private List<ReviewEntity> reviews;
 }
