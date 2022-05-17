@@ -168,6 +168,17 @@ class BookApiTest {
 
         @Test
         @WithMockUser
+        void createReview_whenCommentAndRatingMissing() throws Exception {
+            var reviewDtoJson =
+                    "{\"bookId\":null," +
+                            "\"userId\":\"::userId::\"," +
+                            "\"userFullName\":\"::userFullName::\"," +
+                            "\"recommendation\":[]}";
+            makeBookReviewRequest(reviewDtoJson).andExpect(status().isOk());
+        }
+
+        @Test
+        @WithMockUser
         void createReview_whenReviewIsValid() throws Exception {
             var reviewDtoJson =
                     "{\"bookId\":null," +
