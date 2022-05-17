@@ -169,12 +169,7 @@ class BookApiTest {
             var bookId = givenAnyBook();
             givenReviewForBook(bookId);
 
-            mockMvc.perform(get("/api/catalog/books/" + bookId)
-                            .with(jwt().jwt(jwt -> {
-                                jwt.claim("email", "::userId::");
-                                jwt.claim("name", "::userFullName::");
-                            })))
-                    .andExpect(status().isOk())
+            makeGetBookRequest(bookId)
                     .andExpect(content().json(
                             "{\"id\":" + bookId + "," +
                                     "\"title\":\"::title::\"," +
@@ -207,6 +202,15 @@ class BookApiTest {
 
     }
 
+    private ResultActions makeGetBookRequest(Long bookId) throws Exception {
+        return mockMvc.perform(get("/api/catalog/books/" + bookId)
+                        .with(jwt().jwt(jwt -> {
+                            jwt.claim("email", "::userId::");
+                            jwt.claim("name", "::userFullName::");
+                        })))
+                .andExpect(status().isOk());
+    }
+
     @Nested
     class CreateReviewForBook {
 
@@ -226,8 +230,18 @@ class BookApiTest {
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
                     "\"rating\":1," +
-                    "\"recommendation\":[]}";
+                    "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+            makeGetBookRequest(bookId)
+                    .andExpect(content().json(
+                            "{\"id\":" + bookId + "," +
+                                    "\"title\":\"::title::\"," +
+                                    "\"author\":\"::author::\"," +
+                                    "\"cover\": null," +
+                                    "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
+                                    "\"rating\":1," +
+                                    "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
+                                    "\"comment\": \"::comment::\"}]}"));
         }
 
         @Test
