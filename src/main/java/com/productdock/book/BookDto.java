@@ -23,7 +23,7 @@ public class BookDto {
 
     @AllArgsConstructor
     public static class RatingDto {
-        public Double rating;
-        public Integer ratingsCount;
+        public Double score;
+        public Integer count;
     }
 }

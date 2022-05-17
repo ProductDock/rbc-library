@@ -6,6 +6,6 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class Rating {
-    private double rating;
-    private int ratingsCount;
+    private double score;
+    private int count;
 }
