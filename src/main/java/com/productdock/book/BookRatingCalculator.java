@@ -6,10 +6,10 @@ public class BookRatingCalculator {
 
     private BookRatingCalculator(){}
 
-    public static BookDto.RatingDto calculateBookRating(List<BookDto.ReviewDto> reviewDtos) {
-        var reviews = reviewDtos.stream().filter(review -> review.rating != null);
-        double rating = reviews.map(r -> (double) r.rating).reduce(0.0, Double::sum);
-        rating /= reviews.count();
-        return new BookDto.RatingDto(rating, (int) reviews.count());
+    public static Rating calculateBookRating(List<ReviewEntity> reviewDtos) {
+        var reviewsCount = (int) reviewDtos.stream().filter(review -> review.getRating() != null).count();
+        double rating = reviewDtos.stream().filter(review -> review.getRating() != null).map(r -> (double) r.getRating()).reduce(0.0, Double::sum);
+        rating /= reviewsCount;
+        return new Rating(rating, reviewsCount);
     }
 }

@@ -14,7 +14,7 @@ public class BookService {
 
     private BookRepository bookRepository;
     private BookMapper bookMapper;
-
+    private RatingMapper ratingMapper;
 
     private static final int PAGE_SIZE = 18;
 
@@ -36,8 +36,9 @@ public class BookService {
         if (book.isEmpty()) {
             return null;
         }
+        var rating = BookRatingCalculator.calculateBookRating(book.get().getReviews());
         var bookDto = bookMapper.toDto(book.get());
-        bookDto.rating = BookRatingCalculator.calculateBookRating(bookDto.reviews);
+        bookDto.rating = ratingMapper.toDto(rating);
         return bookDto;
     }
 }
