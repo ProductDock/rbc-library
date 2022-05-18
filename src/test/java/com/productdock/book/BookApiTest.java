@@ -178,7 +178,10 @@ class BookApiTest {
                                     "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
                                     "\"rating\":2," +
                                     "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
-                                    "\"comment\": \"::comment::\"}]}"));
+                                    "\"comment\": \"::comment::\"}]," +
+                                    "\"rating\":" +
+                                    "{\"score\": 2.0," +
+                                    "\"count\": 1}}"));
         }
 
         private Long givenAnyBook() {
