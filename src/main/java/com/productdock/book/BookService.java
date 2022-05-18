@@ -17,7 +17,6 @@ public class BookService {
     private BookRepository bookRepository;
     private BookMapper bookMapper;
     private RatingDtoMapper ratingDtoMapper;
-    @Autowired
     private BookRatingCalculator bookRatingCalculator;
 
     private static final int PAGE_SIZE = 18;
