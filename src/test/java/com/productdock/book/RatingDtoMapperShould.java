@@ -8,7 +8,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.productdock.book.data.provider.RatingMother.defaultRating;
-import static com.productdock.book.data.provider.ReviewEntityMother.defaultReviewEntity;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {RatingDtoMapperImpl.class})
