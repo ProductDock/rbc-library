@@ -1,0 +1,19 @@
+cors:
+  allowed:
+    origins: http://library.productdock.rs
+
+spring:
+  cloud:
+    gcp:
+      sql:
+        database-name: catalog
+        instance-connection-name: prod-pd-library:europe-west3:prod-pd-library-mysql
+
+  logging:
+    level:
+      com:
+        google:
+          cloud:
+            sql:
+              core:
+                CoreSocketFactory: WARN
