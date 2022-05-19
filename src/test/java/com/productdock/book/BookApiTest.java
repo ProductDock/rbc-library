@@ -1,12 +1,10 @@
 package com.productdock.book;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.productdock.book.data.provider.KafkaTestBase;
 import net.bytebuddy.utility.RandomString;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -14,11 +12,19 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static com.productdock.book.data.provider.BookEntityMother.*;
 import static com.productdock.book.data.provider.ReviewEntityMother.defaultReviewEntityBuilder;
 import static java.util.Arrays.stream;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,11 +32,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles({"in-memory-db"})
-class BookApiTest {
+class BookApiTest extends KafkaTestBase {
 
     public static final int RESULTS_PAGE_SIZE = 19;
+    public static final String TEST_FILE = "testRating.txt";
     public static final String FIRST_PAGE = "0";
     public static final String SECOND_PAGE = "1";
 
@@ -52,6 +58,12 @@ class BookApiTest {
     final void before() {
         reviewRepository.deleteAll();
         bookRepository.deleteAll();
+    }
+
+    @AfterAll
+    static void after() {
+        File f = new File(TEST_FILE);
+        f.delete();
     }
 
     @Nested
@@ -245,6 +257,31 @@ class BookApiTest {
                                     "\"rating\":1," +
                                     "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
                                     "\"comment\": \"::comment::\"}]}"));
+
+            await()
+                    .atMost(Duration.ofSeconds(4))
+                    .until(ifFileExists(TEST_FILE));
+
+            var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
+            assertThat(bookRatingMessage.getBookId()).isEqualTo(bookId);
+            assertThat(bookRatingMessage.getRating()).isEqualTo(1);
+            assertThat(bookRatingMessage.getRatingsCount()).isEqualTo(1);
+        }
+
+        private Callable<Boolean> ifFileExists(String testFile) {
+            Callable<Boolean> checkForFile = () -> {
+                File f = new File(testFile);
+                return f.isFile();
+            };
+            return checkForFile;
+        }
+
+        private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {
+            FileInputStream fileInputStream = new FileInputStream(testFile);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            var bookRatingMessage = (BookRatingMessage) objectInputStream.readObject();
+            objectInputStream.close();
+            return bookRatingMessage;
         }
 
         @Test
