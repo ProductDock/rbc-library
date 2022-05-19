@@ -12,7 +12,6 @@ public class ReviewService {
 
     private ReviewRepository reviewRepository;
     private ReviewMapper reviewMapper;
-    private BookRepository bookRepository;
     private BookRatingCalculator calculator;
     private Publisher publisher;
 
@@ -32,11 +31,8 @@ public class ReviewService {
 
     @SneakyThrows
     private void publishNewBookRating(Long bookId) {
-        var book = bookRepository.findById(bookId);
-        if (book.isEmpty()) {
-            return;
-        }
-        var rating = calculator.calculate(book.get().getReviews());
+        var reviews = reviewRepository.findByBookId(bookId);
+        var rating = calculator.calculate(reviews);
         publisher.sendMessage(new BookRatingMessage(bookId, rating.getScore(), rating.getCount()));
     }
 

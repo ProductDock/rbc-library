@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class RecordProducer {
+public class RatingProducer {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
