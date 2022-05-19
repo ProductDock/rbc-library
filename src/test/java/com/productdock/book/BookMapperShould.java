@@ -10,8 +10,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.productdock.book.data.provider.BookEntityMother.defaultBookBuilder;
 import static com.productdock.book.data.provider.ReviewEntityMother.defaultReviewEntity;
-import static com.productdock.book.data.provider.TopicEntityMother.defaultTopic;
 import static com.productdock.book.data.provider.TopicEntityMother.defaultTopicBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {BookMapperImpl.class, ReviewDtoMapperImpl.class})
@@ -42,14 +42,16 @@ class BookMapperShould {
 
     @Test
     void mapBookEntityToBookDto_whenTopicsPresent() {
-        var topic1 = defaultTopic();
-        var topic2 = defaultTopicBuilder().name("::topic-2::").build();
-        var bookEntity = defaultBookBuilder().topic(topic1).topic(topic2).build();
+        var designTopic = topicWithName("DESIGN");
+        var marketingTopic = topicWithName("MARKETING");
+        var bookEntity = defaultBookBuilder().topic(designTopic).topic(marketingTopic).build();
 
         var bookDto = bookMapper.toDto(bookEntity);
 
-        try (var softly = new AutoCloseableSoftAssertions()) {
-            softly.assertThat(bookDto.topics).containsExactlyInAnyOrder(topic1.getName(), topic2.getName());
-        }
+        assertThat(bookDto.topics).containsExactlyInAnyOrder(designTopic.getName(), marketingTopic.getName());
+    }
+
+    private TopicEntity topicWithName(String name) {
+        return defaultTopicBuilder().name(name).build();
     }
 }
