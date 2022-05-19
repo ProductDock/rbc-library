@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Data
 public class BookRatingMessage implements Serializable {
 
-    private String bookId;
+    private Long bookId;
     private Double rating;
     private int ratingsCount;
 }
