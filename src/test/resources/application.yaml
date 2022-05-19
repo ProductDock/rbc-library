@@ -11,6 +11,14 @@ spring:
           issuer-uri: http://placeholder
           jwk-set-uri: http://placeholder
 
+  kafka:
+    bootstrap-servers: localhost:9091
+    consumer:
+      auto-offset-reset: earliest
+      group-id: rbc-library
+    topic:
+      book-rating: embedded-book-rating
+
 cors:
   allowed:
     origins: localhost:3000
