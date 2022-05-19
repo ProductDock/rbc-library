@@ -14,6 +14,6 @@ import java.io.Serializable;
 public class BookRatingMessage implements Serializable {
 
     private String bookId;
-    private Short rating;
+    private Double rating;
     private int ratingsCount;
 }
