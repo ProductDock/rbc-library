@@ -10,6 +10,8 @@ public class BookDto {
     public String title;
     public String author;
     public String cover;
+    public String description;
+    public List<String> topics;
     public List<ReviewDto> reviews;
     public RatingDto rating;
 

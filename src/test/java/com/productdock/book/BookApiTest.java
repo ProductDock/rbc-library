@@ -18,6 +18,8 @@ import java.util.List;
 
 import static com.productdock.book.data.provider.BookEntityMother.*;
 import static com.productdock.book.data.provider.ReviewEntityMother.defaultReviewEntityBuilder;
+import static com.productdock.book.data.provider.TopicEntityMother.defaultTopic;
+import static com.productdock.book.data.provider.TopicEntityMother.defaultTopicBuilder;
 import static java.util.Arrays.stream;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -159,7 +161,9 @@ class BookApiTest {
                             "{\"id\":" + bookId + "," +
                                     "\"title\":\"::title::\"," +
                                     "\"author\":\"::author::\"," +
+                                    "\"description\": \"::description::\"," +
                                     "\"cover\":\"http://cover\"," +
+                                    "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
                                     "\"reviews\": []}"));
         }
 
@@ -175,6 +179,8 @@ class BookApiTest {
                                     "\"title\":\"::title::\"," +
                                     "\"author\":\"::author::\"," +
                                     "\"cover\":\"http://cover\"," +
+                                    "\"description\": \"::description::\"," +
+                                    "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
                                     "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
                                     "\"rating\":2," +
                                     "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
@@ -185,9 +191,12 @@ class BookApiTest {
         }
 
         private Long givenAnyBook() {
-            var book = bookWithAnyCover().build();
+            var marketingTopic = givenTopicWithName("MARKETING");
+            var designTopic = givenTopicWithName("DESIGN");
+            var book = bookWithAnyCover().topic(marketingTopic).topic(designTopic).build();
             return bookRepository.save(book).getId();
         }
+
 
         private void givenReviewForBook(Long bookId) {
             var review = defaultReviewEntityBuilder()
@@ -212,6 +221,10 @@ class BookApiTest {
                             jwt.claim("name", "::userFullName::");
                         })))
                 .andExpect(status().isOk());
+    }
+
+    private TopicEntity givenTopicWithName(String name) {
+        return defaultTopicBuilder().name(name).build();
     }
 
     @Nested
@@ -241,6 +254,7 @@ class BookApiTest {
                                     "\"title\":\"::title::\"," +
                                     "\"author\":\"::author::\"," +
                                     "\"cover\": null," +
+                                    "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
                                     "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
                                     "\"rating\":1," +
                                     "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
@@ -292,9 +306,12 @@ class BookApiTest {
         }
 
         private Long givenAnyBook() {
-            var book = defaultBookBuilder().build();
+            var marketingTopic = givenTopicWithName("MARKETING");
+            var designTopic = givenTopicWithName("DESIGN");
+            var book = defaultBookBuilder().topic(marketingTopic).topic(designTopic).build();
             return bookRepository.save(book).getId();
         }
+
     }
 
 }

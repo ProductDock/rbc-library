@@ -26,6 +26,8 @@ public class BookEntity {
 
     private String cover;
 
+    private String description;
+
     @Singular
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
