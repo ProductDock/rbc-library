@@ -1,5 +1,7 @@
 package com.productdock.book;
 
+import lombok.AllArgsConstructor;
+
 import java.util.List;
 
 public class BookDto {
@@ -9,6 +11,7 @@ public class BookDto {
     public String author;
     public String cover;
     public List<ReviewDto> reviews;
+    public RatingDto rating;
 
     public static class ReviewDto {
 
@@ -16,5 +19,11 @@ public class BookDto {
         public Short rating;
         public List<Recommendation> recommendation;
         public String comment;
+    }
+
+    @AllArgsConstructor
+    public static class RatingDto {
+        public Double score;
+        public Integer count;
     }
 }

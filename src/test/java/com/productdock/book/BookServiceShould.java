@@ -31,6 +31,12 @@ class BookServiceShould {
     @Mock
     private BookMapper bookMapper;
 
+    @Mock
+    private RatingDtoMapper ratingDtoMapper;
+
+    @Mock
+    private BookRatingCalculator bookRatingCalculator;
+
     @Test
     void getBooksByTopics() {
         var topicsFilter = Optional.of(List.of("TOPIC"));
@@ -65,9 +71,15 @@ class BookServiceShould {
         long bookId = 1L;
         var entity = mock(BookEntity.class);
         var dto = mock(BookDto.class);
+        var reviews = List.of(mock(ReviewEntity.class));
+        var rating = mock(Rating.class);
+        var ratingDto = mock(BookDto.RatingDto.class);
 
         given(bookRepository.findById(bookId)).willReturn(Optional.of(entity));
+        given(entity.getReviews()).willReturn(reviews);
+        given(bookRatingCalculator.calculate(reviews)).willReturn(rating);
         given(bookMapper.toDto(entity)).willReturn(dto);
+        given(ratingDtoMapper.toDto(rating)).willReturn(ratingDto);
 
         var result = bookService.findById(bookId);
 

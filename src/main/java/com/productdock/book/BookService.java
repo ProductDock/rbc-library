@@ -1,10 +1,12 @@
 package com.productdock.book;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +16,8 @@ public class BookService {
 
     private BookRepository bookRepository;
     private BookMapper bookMapper;
+    private RatingDtoMapper ratingDtoMapper;
+    private BookRatingCalculator bookRatingCalculator;
 
     private static final int PAGE_SIZE = 18;
 
@@ -35,6 +39,9 @@ public class BookService {
         if (book.isEmpty()) {
             return null;
         }
-        return bookMapper.toDto(book.get());
+        var rating = bookRatingCalculator.calculate(book.get().getReviews());
+        var bookDto = bookMapper.toDto(book.get());
+        bookDto.rating = ratingDtoMapper.toDto(rating);
+        return bookDto;
     }
 }
