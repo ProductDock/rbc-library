@@ -12,12 +12,12 @@ import java.util.concurrent.ExecutionException;
 public class Publisher {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final RatingProducer recordProducer;
+    private final JsonRecordProducer recordProducer;
 
     @Value("${spring.kafka.topic.book-rating}")
     private String kafkaTopic;
 
-    public Publisher(KafkaTemplate<String, String> kafkaTemplate, RatingProducer recordProducer) {
+    public Publisher(KafkaTemplate<String, String> kafkaTemplate, JsonRecordProducer recordProducer) {
         this.kafkaTemplate = kafkaTemplate;
         this.recordProducer = recordProducer;
     }
