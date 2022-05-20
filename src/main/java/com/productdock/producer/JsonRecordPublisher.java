@@ -1,7 +1,6 @@
 package com.productdock.producer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
