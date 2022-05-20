@@ -1,7 +1,7 @@
 package com.productdock.book;
 
 import com.productdock.exception.BookReviewException;
-import com.productdock.producer.Publisher;
+import com.productdock.producer.JsonRecordPublisher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -31,7 +31,7 @@ class ReviewServiceShould {
     private BookRatingCalculator calculator;
 
     @Mock
-    private Publisher ratingPublisher;
+    private JsonRecordPublisher ratingJsonRecordPublisher;
 
     @Mock
     private ReviewMapper reviewMapper;
@@ -56,7 +56,7 @@ class ReviewServiceShould {
         reviewService.saveReview(reviewDtoMock);
 
         verify(reviewRepository).save(reviewEntityMock);
-        verify(ratingPublisher).sendMessage(bookRatingMessageCaptor.capture());
+        verify(ratingJsonRecordPublisher).sendMessage(bookRatingMessageCaptor.capture());
 
         var bookRatingMessageValue = bookRatingMessageCaptor.getValue();
         assertThat(bookRatingMessageValue.getBookId()).isEqualTo(reviewDtoMock.bookId);
@@ -73,7 +73,7 @@ class ReviewServiceShould {
         reviewService.saveReview(reviewDtoMock);
 
         verify(reviewRepository).save(reviewEntityMock);
-        verify(ratingPublisher, times(0)).sendMessage(any());
+        verify(ratingJsonRecordPublisher, times(0)).sendMessage(any());
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.productdock.book;
 
 import com.productdock.exception.BookReviewException;
-import com.productdock.producer.Publisher;
+import com.productdock.producer.JsonRecordPublisher;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ public class ReviewService {
     private ReviewRepository reviewRepository;
     private ReviewMapper reviewMapper;
     private BookRatingCalculator calculator;
-    private Publisher publisher;
+    private JsonRecordPublisher jsonRecordPublisher;
 
 
     public void saveReview(ReviewDto reviewDto) {
@@ -33,7 +33,7 @@ public class ReviewService {
     private void publishNewBookRating(Long bookId) {
         var reviews = reviewRepository.findByBookId(bookId);
         var rating = calculator.calculate(reviews);
-        publisher.sendMessage(new BookRatingMessage(bookId, rating.getScore(), rating.getCount()));
+        jsonRecordPublisher.sendMessage(new BookRatingMessage(bookId, rating.getScore(), rating.getCount()));
     }
 
 }
