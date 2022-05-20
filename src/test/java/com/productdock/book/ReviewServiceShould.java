@@ -33,7 +33,7 @@ class ReviewServiceShould {
     private BookRatingCalculator calculator;
 
     @Mock
-    private JsonRecordPublisher ratingJsonRecordPublisher;
+    private JsonRecordPublisher jsonRecordPublisher;
 
     @Mock
     private ReviewMapper reviewMapper;
@@ -62,7 +62,7 @@ class ReviewServiceShould {
     }
 
     private void assertThatValidMessagesPublishedToKafka() throws ExecutionException, InterruptedException, JsonProcessingException {
-        verify(ratingJsonRecordPublisher).sendMessage(any(), bookRatingMessageCaptor.capture());
+        verify(jsonRecordPublisher).sendMessage(any(), bookRatingMessageCaptor.capture());
 
         var bookRatingMessageValue = bookRatingMessageCaptor.getValue();
         assertThat(bookRatingMessageValue.getBookId()).isEqualTo(reviewDtoMock.bookId);
@@ -79,7 +79,7 @@ class ReviewServiceShould {
         reviewService.saveReview(reviewDtoMock);
 
         verify(reviewRepository).save(reviewEntityMock);
-        verify(ratingJsonRecordPublisher, times(0)).sendMessage(eq("book-rating"), any());
+        verify(jsonRecordPublisher, times(0)).sendMessage(eq("book-rating"), any());
     }
 
     @Test
