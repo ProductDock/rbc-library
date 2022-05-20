@@ -12,12 +12,12 @@ public class JsonRecordProducer {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public ProducerRecord<String, String> createKafkaRecord(String topic, Object object) throws JsonProcessingException {
-        var serialisedMessage = serialiseMessage(object);
+    public ProducerRecord<String, String> createKafkaRecord(String topic, Object message) throws JsonProcessingException {
+        var serialisedMessage = serialiseMessage(message);
         return new ProducerRecord<>(topic, UUID.randomUUID().toString(), serialisedMessage);
     }
 
-    private String serialiseMessage(Object object) throws JsonProcessingException {
-        return OBJECT_MAPPER.writeValueAsString(object);
+    private String serialiseMessage(Object message) throws JsonProcessingException {
+        return OBJECT_MAPPER.writeValueAsString(message);
     }
 }

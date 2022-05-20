@@ -14,8 +14,8 @@ public class JsonRecordPublisher {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final JsonRecordProducer recordProducer;
 
-    public void sendMessage(String kafkaTopic, Object object) throws ExecutionException, InterruptedException, JsonProcessingException {
-        var kafkaRecord = recordProducer.createKafkaRecord(kafkaTopic, object);
+    public void sendMessage(String kafkaTopic, Object message) throws ExecutionException, InterruptedException, JsonProcessingException {
+        var kafkaRecord = recordProducer.createKafkaRecord(kafkaTopic, message);
         kafkaTemplate.send(kafkaRecord).get();
     }
 }
