@@ -78,10 +78,6 @@ INSERT INTO book (title, author, cover) VALUES ('Building Microservices: Designi
 INSERT INTO book (title, author, cover) VALUES ('Design Patterns: Elements of Reusable Object-Oriented Software', 'Erich Gamma, Richard Helm, Raplh Johnson, John Vlissides', 'https://images-na.ssl-images-amazon.com/images/I/51szD9HC9pL._SX395_BO1,204,203,200_.jpg');
 INSERT INTO book (title, author, cover) VALUES ('OCP Oracle Certified Professional Java SE 11 Developer Complete Study Guide: Exam 1Z0-815, Exam 1Z0-816, and Exam 1Z0-817', 'Jeanne Boyarsky, Scott Selikoff', 'https://images-na.ssl-images-amazon.com/images/I/51X+6RFvoDL._SX397_BO1,204,203,200_.jpg');
 
-INSERT INTO book (title, author, cover) VALUES ('Idealan timski igrač', 'Patrik Lencioni', 'https://www.delfi.rs/_img/artikli/2019/11/idealan_timski_igrac_vv.jpg');
-
-UPDATE book SET title='Book of Vaadin', author='Vaadin Team', cover='https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1353276778l/16157237.jpg'  WHERE id = 37;
-
 CREATE TABLE topic (
    id bigint not null auto_increment,
    name varchar(255) not null,
@@ -193,6 +189,10 @@ CREATE TABLE review (
     PRIMARY KEY(book_id, user_id),
     FOREIGN KEY (book_id) REFERENCES book(id)
 );
+
+INSERT INTO book (title, author, cover) VALUES ('Idealan timski igrač', 'Patrik Lencioni', 'https://www.delfi.rs/_img/artikli/2019/11/idealan_timski_igrac_vv.jpg');
+
+UPDATE book SET title='Book of Vaadin', author='Vaadin Team', cover='https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1353276778l/16157237.jpg'  WHERE id = 37;
 
 ALTER TABLE book
 ADD description varchar(3000);
