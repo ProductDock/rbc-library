@@ -15,7 +15,7 @@ spring:
       client-id: kafka-message-producer
       acks: all
     topic:
-      book-rating: ${kafka.topic.book-rating:book-rating}
+      book-rating: book-rating
 
   jpa:
     hibernate:
