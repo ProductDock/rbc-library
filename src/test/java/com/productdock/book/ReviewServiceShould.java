@@ -1,5 +1,6 @@
 package com.productdock.book;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.productdock.exception.BookReviewException;
 import com.productdock.producer.JsonRecordPublisher;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -56,6 +58,10 @@ class ReviewServiceShould {
         reviewService.saveReview(reviewDtoMock);
 
         verify(reviewRepository).save(reviewEntityMock);
+        assertThatValidMessagesPublishedToKafka();
+    }
+
+    private void assertThatValidMessagesPublishedToKafka() throws ExecutionException, InterruptedException, JsonProcessingException {
         verify(ratingJsonRecordPublisher).sendMessage(bookRatingMessageCaptor.capture());
 
         var bookRatingMessageValue = bookRatingMessageCaptor.getValue();
