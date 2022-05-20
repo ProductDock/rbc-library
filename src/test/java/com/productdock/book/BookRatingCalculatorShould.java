@@ -28,12 +28,12 @@ class BookRatingCalculatorShould {
     }
 
     @Test
-    void returnRatingZero_whenNoReviewsWithRating(){
+    void returnRatingNull_whenNoReviewsWithRating(){
         var reviews = List.of(ReviewEntity.builder().build());
 
         var rating = bookRatingCalculator.calculate(reviews);
 
-        assertThat(rating.getScore()).isZero();
+        assertThat(rating.getScore()).isNull();
         assertThat(rating.getCount()).isZero();
     }
 

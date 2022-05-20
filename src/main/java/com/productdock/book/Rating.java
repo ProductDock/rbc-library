@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class Rating {
-    private double score;
+    private Double score;
     private int count;
 }

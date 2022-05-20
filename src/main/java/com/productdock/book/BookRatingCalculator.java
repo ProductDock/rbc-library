@@ -11,7 +11,7 @@ public class BookRatingCalculator {
     public Rating calculate(List<ReviewEntity> reviews) {
         var reviewsCount = (int) getRatedReviews(reviews).count();
         if (reviewsCount == 0) {
-            return new Rating(0, reviewsCount);
+            return new Rating();
         }
         double rating = getRatedReviews(reviews).mapToDouble(ReviewEntity::getRating).average().orElse(0.0);
         return new Rating(rating, reviewsCount);
