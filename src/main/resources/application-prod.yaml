@@ -9,11 +9,4 @@ spring:
         database-name: catalog
         instance-connection-name: prod-pd-library:europe-west3:prod-pd-library-mysql
 
-  logging:
-    level:
-      com:
-        google:
-          cloud:
-            sql:
-              core:
-                CoreSocketFactory: WARN
+  logging.level.c.g.cloud.sql.core.CoreSocketFactory: WARN
