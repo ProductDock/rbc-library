@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  DATABASE_PASSWORD: ${{ 'PASSWORD='secrets.DATABASE_PASSWORD }}
+  DATABASE_PASSWORD: 'PASSWORD=${{ secrets.DATABASE_PASSWORD }}'
 
 jobs:
   build-prod:
