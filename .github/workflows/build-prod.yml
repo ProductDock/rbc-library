@@ -7,12 +7,12 @@ on:
   workflow_dispatch:
 
 env:
-  DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+  DATABASE_PASSWORD: ${{ PASSWORD=secrets.DATABASE_PASSWORD }}
 
 jobs:
   build-prod:
     uses: ProductDock/rbc-github-workflows/.github/workflows/build-prod.yml@main
     with:
       update-script: /home/pd-library/update-catalog-image.sh
-      docker-build-args: --build-arg PASSWORD=$DATABASE_PASSWORD
+      docker-build-args: --build-arg $DATABASE_PASSWORD
     secrets: inherit
