@@ -5,7 +5,7 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
-RUN ["./mvnw", "package", "-P", "$ACTIVE_PROFILE"]
+RUN ./mvnw package -P "$ACTIVE_PROFILE"
 FROM openjdk:17-jdk-alpine
 ARG PASSWORD
 ARG ACTIVE_PROFILE
