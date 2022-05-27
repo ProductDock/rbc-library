@@ -1,6 +1,9 @@
 package com.productdock.book;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +22,8 @@ public class BookService {
     private RatingDtoMapper ratingDtoMapper;
     private BookRatingCalculator bookRatingCalculator;
 
+    static Logger logger = LoggerFactory.getLogger(BookService.class);
+
     private static final int PAGE_SIZE = 18;
 
     public SearchBooksResponse getBooks(Optional<List<String>> topics, int page) {
@@ -35,6 +40,7 @@ public class BookService {
     }
 
     public BookDto findById(Long bookId) {
+        logger.info("Fetched book with book id: {}", bookId);
         Optional<BookEntity> book = bookRepository.findById(bookId);
         if (book.isEmpty()) {
             return null;
