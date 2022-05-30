@@ -23,7 +23,7 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
 
     @GetMapping("/{bookId}")
     public BookDto getBook(@PathVariable("bookId") Long bookId) {
-        logger.warn("Fetched book in api by id: {}", bookId);
+        logger.debug("GET request received - api/catalog/books/{}", bookId);
         return bookService.findById(bookId);
     }
 
@@ -32,6 +32,7 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
             @PathVariable("bookId") final Long bookId,
             @Valid @RequestBody ReviewDto reviewDto,
             Authentication authentication) {
+        logger.debug("POST request received - api/catalog/books/{}/reviews, Payload: {}", bookId, reviewDto);
         reviewDto.bookId = bookId;
         reviewDto.userId = ((Jwt) authentication.getCredentials()).getClaim("email");
         reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim("name");
