@@ -31,6 +31,7 @@ public class BookService {
                 .stream()
                 .map(bookMapper::toDto)
                 .toList();
+        log.debug("Fetched a collection of books");
         return new SearchBooksResponse(booksPage.getTotalElements(), books);
     }
 

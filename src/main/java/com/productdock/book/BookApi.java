@@ -16,6 +16,7 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
 
     @GetMapping
     public SearchBooksResponse getBooks(@RequestParam(required = false) Optional<List<String>> topics, @RequestParam int page) {
+        log.debug("GET request received - api/catalog/books");
         return bookService.getBooks(topics, page);
     }
 
