@@ -1,10 +1,11 @@
 FROM openjdk:17-jdk-alpine AS builder
 WORKDIR /app
+ARG ACTIVE_PROFILE
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
-RUN ["./mvnw", "package", "-P", "prod"]
+RUN ./mvnw package -P "$ACTIVE_PROFILE"
 FROM openjdk:17-jdk-alpine
 ARG PASSWORD
 ARG ACTIVE_PROFILE
