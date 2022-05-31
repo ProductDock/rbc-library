@@ -1,3 +1,8 @@
+DROP TABLE book_topic;
+DROP TABLE topic;
+DROP TABLE review;
+DROP TABLE book;
+
 CREATE TABLE book (
     id bigint not null auto_increment,
     title varchar(255) not null,
@@ -139,8 +144,7 @@ INSERT into book_topic (book_id, topic_id) VALUES (33,2);
 INSERT into book_topic (book_id, topic_id) VALUES (34,5);
 INSERT into book_topic (book_id, topic_id) VALUES (35,5);
 INSERT into book_topic (book_id, topic_id) VALUES (36,2);
-INSERT into book_topic (book_id, topic_id) VALUES (37,2);
-INSERT into book_topic (book_id, topic_id) VALUES (37,3);
+INSERT into book_topic (book_id, topic_id) VALUES (37,1);
 INSERT into book_topic (book_id, topic_id) VALUES (38,2);
 INSERT into book_topic (book_id, topic_id) VALUES (38,3);
 INSERT into book_topic (book_id, topic_id) VALUES (39,2);
