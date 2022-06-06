@@ -1,8 +1,3 @@
-DROP TABLE book_topic;
-DROP TABLE topic;
-DROP TABLE review;
-DROP TABLE book;
-
 CREATE TABLE book (
     id bigint not null auto_increment,
     title varchar(255) not null,
