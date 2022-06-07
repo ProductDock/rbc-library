@@ -25,9 +25,9 @@ class ReviewDtoMapperShould {
         try (var softly = new AutoCloseableSoftAssertions()) {
             softly.assertThat(reviewDto.comment).isEqualTo(reviewEntity.getComment());
             softly.assertThat(reviewDto.userFullName).isEqualTo(reviewEntity.getUserFullName());
+            softly.assertThat(reviewDto.userId).isEqualTo(reviewEntity.getReviewCompositeKey().getUserId());
             softly.assertThat(reviewDto.rating).isEqualTo(reviewEntity.getRating());
             softly.assertThat(reviewDto.recommendation).containsExactlyInAnyOrder(Recommendation.MEDIOR, Recommendation.JUNIOR);
-
         }
     }
 }

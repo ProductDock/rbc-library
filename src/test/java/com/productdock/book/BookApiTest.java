@@ -17,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.time.Duration;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -28,6 +30,7 @@ import static java.util.Arrays.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,6 +44,8 @@ class BookApiTest extends KafkaTestBase {
     public static final String TEST_FILE = "testRating.txt";
     public static final String FIRST_PAGE = "0";
     public static final String SECOND_PAGE = "1";
+    public static final String FIRST_REVIEWER = "user1";
+    public static final String SECOND_REVIEWER = "user2";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -183,7 +188,12 @@ class BookApiTest extends KafkaTestBase {
         @WithMockUser
         void getBook_whenIdExistAndReviewsExist() throws Exception {
             var bookId = givenAnyBook();
-            givenReviewForBook(bookId);
+            var calendar = Calendar.getInstance();
+
+            calendar.set(2022, Calendar.APRIL, 5);
+            givenReviewForBook(bookId, FIRST_REVIEWER, calendar.getTime());
+            calendar.set(2022, Calendar.JUNE, 5);
+            givenReviewForBook(bookId, SECOND_REVIEWER, calendar.getTime());
 
             makeGetBookRequest(bookId)
                     .andExpect(content().json(
@@ -194,12 +204,19 @@ class BookApiTest extends KafkaTestBase {
                                     "\"description\": \"::description::\"," +
                                     "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
                                     "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
+                                    "\"userId\":\"" + SECOND_REVIEWER +"\"," +
+                                    "\"rating\":2," +
+                                    "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
+                                    "\"comment\": \"::comment::\"}," +
+                                    "{\"userFullName\":\"::userFullName::\"," +
+                                    "\"userId\":\"" + FIRST_REVIEWER +"\"," +
                                     "\"rating\":2," +
                                     "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
                                     "\"comment\": \"::comment::\"}]," +
                                     "\"rating\":" +
                                     "{\"score\": 2.0," +
-                                    "\"count\": 1}}"));
+                                    "\"count\": 2}}"))
+                    .andExpect(jsonPath("$.reviews[0].userId", is(SECOND_REVIEWER)));
         }
 
         private Long givenAnyBook() {
@@ -210,15 +227,16 @@ class BookApiTest extends KafkaTestBase {
         }
 
 
-        private void givenReviewForBook(Long bookId) {
+        private void givenReviewForBook(Long bookId, String reviewerId, Date reviewDate) {
             var review = defaultReviewEntityBuilder()
                     .reviewCompositeKey(ReviewEntity.ReviewCompositeKey.builder()
                             .bookId(bookId)
-                            .userId("::userId::")
+                            .userId(reviewerId)
                             .build())
                     .userFullName("::userFullName::")
                     .rating((short) 2)
                     .comment("::comment::")
+                    .date(reviewDate)
                     .recommendation(3).build();
 
             reviewRepository.save(review);
