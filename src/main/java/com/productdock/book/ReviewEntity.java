@@ -10,6 +10,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Date;
 
 
 @Builder
@@ -34,6 +35,8 @@ public class ReviewEntity {
     private Short rating;
 
     private Integer recommendation;
+
+    private Date date = new Date();
 
     @Data
     @NoArgsConstructor
