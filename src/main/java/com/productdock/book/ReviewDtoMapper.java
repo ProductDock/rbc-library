@@ -11,6 +11,7 @@ import java.util.List;
 public interface ReviewDtoMapper {
 
     @Mapping(source = "recommendation", target = "recommendation", qualifiedByName = "intValueToRecommendationList")
+    @Mapping(source = "reviewCompositeKey.userId", target = "userId")
     BookDto.ReviewDto toDto(ReviewEntity review);
 
     @Named("intValueToRecommendationList")
