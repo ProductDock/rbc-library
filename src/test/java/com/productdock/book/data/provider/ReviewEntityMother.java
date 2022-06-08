@@ -2,6 +2,9 @@ package com.productdock.book.data.provider;
 
 import com.productdock.book.ReviewEntity;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class ReviewEntityMother {
 
     private static final Long defaultBookId = 1L;
@@ -12,6 +15,9 @@ public class ReviewEntityMother {
     private static final Integer defaultRecommendation = 3;
 
     public static ReviewEntity.ReviewEntityBuilder defaultReviewEntityBuilder() {
+        var calendar = Calendar.getInstance();
+        calendar.set(2022, Calendar.APRIL, 5);
+
         return ReviewEntity.builder()
                 .reviewCompositeKey(ReviewEntity.ReviewCompositeKey.builder()
                         .bookId(defaultBookId)
@@ -20,6 +26,7 @@ public class ReviewEntityMother {
                 .userFullName(defaultUserFullName)
                 .comment(defaultComment)
                 .rating(defaultRating)
+                .date(calendar.getTime())
                 .recommendation(defaultRecommendation);
     }
 

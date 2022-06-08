@@ -17,6 +17,7 @@ public class BookDto {
 
     public static class ReviewDto {
 
+        public String userId;
         public String userFullName;
         public Short rating;
         public List<Recommendation> recommendation;

@@ -40,5 +40,6 @@ public class BookEntity {
     @OneToMany(fetch = FetchType.EAGER)
     @Singular
     @JoinColumn(name = "bookId")
+    @OrderBy("date DESC")
     private List<ReviewEntity> reviews;
 }
