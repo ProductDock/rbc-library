@@ -24,3 +24,7 @@ spring:
 server:
   error:
     include-message: always
+
+logging:
+  level:
+    com.productdock: ${logging.level:INFO}
