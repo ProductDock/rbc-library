@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,9 +41,11 @@ class ReviewServiceShould {
 
     private static final ReviewDto reviewDtoMock = mock(ReviewDto.class);
     private static final ReviewEntity reviewEntityMock = mock(ReviewEntity.class);
+    private static final Optional<ReviewEntity> existingReviewEntityMock = Optional.of(mock(ReviewEntity.class));
     private static final List reviewListMock = mock(List.class);
     private static final Rating ratingMock = mock(Rating.class);
-    private static final String BOOK_REVIEW_EXCEPTION_MESSAGE = "The user cannot enter more than one comment for a particular book.";
+    private static final String SAVE_BOOK_REVIEW_EXCEPTION_MESSAGE = "The user cannot enter more than one comment for a particular book.";
+    private static final String EDIT_BOOK_REVIEW_EXCEPTION_MESSAGE = "Review not found";
 
     @Captor
     private ArgumentCaptor<BookRatingMessage> bookRatingMessageCaptor;
@@ -56,6 +59,21 @@ class ReviewServiceShould {
         given(calculator.calculate(reviewListMock)).willReturn(ratingMock);
 
         reviewService.saveReview(reviewDtoMock);
+
+        verify(reviewRepository).save(reviewEntityMock);
+        assertThatValidMessagesPublishedToKafka();
+    }
+
+    @Test
+    void editReview() throws Exception {
+        given(reviewMapper.toEntity(reviewDtoMock)).willReturn(reviewEntityMock);
+        given(reviewRepository.findById(reviewEntityMock.getReviewCompositeKey())).willReturn(existingReviewEntityMock);
+        given(reviewRepository.findByBookId(reviewDtoMock.bookId)).willReturn(reviewListMock);
+        given(reviewEntityMock.getRating()).willReturn((short) 1);
+        given(existingReviewEntityMock.get().getRating()).willReturn((short) 2);
+        given(calculator.calculate(reviewListMock)).willReturn(ratingMock);
+
+        reviewService.editReview(reviewDtoMock);
 
         verify(reviewRepository).save(reviewEntityMock);
         assertThatValidMessagesPublishedToKafka();
@@ -89,6 +107,31 @@ class ReviewServiceShould {
 
         assertThatThrownBy(() -> reviewService.saveReview(reviewDtoMock))
                 .isInstanceOf(BookReviewException.class)
-                .hasMessage(BOOK_REVIEW_EXCEPTION_MESSAGE);
+                .hasMessage(SAVE_BOOK_REVIEW_EXCEPTION_MESSAGE);
     }
+
+
+    @Test
+    void editReview_whenRatingNotChanged() throws Exception {
+        given(reviewMapper.toEntity(reviewDtoMock)).willReturn(reviewEntityMock);
+        given(reviewRepository.findById(reviewEntityMock.getReviewCompositeKey())).willReturn(existingReviewEntityMock);
+        given(reviewEntityMock.getRating()).willReturn((short) 1);
+        given(existingReviewEntityMock.get().getRating()).willReturn((short) 1);
+
+        reviewService.editReview(reviewDtoMock);
+
+        verify(reviewRepository).save(reviewEntityMock);
+        verify(jsonRecordPublisher, times(0)).sendMessage(eq("book-rating"), any());
+    }
+
+    @Test
+    void editReview_whenReviewNotExist() throws Exception {
+        given(reviewMapper.toEntity(reviewDtoMock)).willReturn(reviewEntityMock);
+        given(reviewRepository.findById(reviewEntityMock.getReviewCompositeKey())).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> reviewService.editReview(reviewDtoMock))
+                .isInstanceOf(BookReviewException.class)
+                .hasMessage(EDIT_BOOK_REVIEW_EXCEPTION_MESSAGE);
+    }
+
 }
