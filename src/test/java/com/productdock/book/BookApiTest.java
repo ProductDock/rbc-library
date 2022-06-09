@@ -24,7 +24,6 @@ import java.util.concurrent.Callable;
 
 import static com.productdock.book.data.provider.BookEntityMother.*;
 import static com.productdock.book.data.provider.ReviewEntityMother.defaultReviewEntityBuilder;
-import static com.productdock.book.data.provider.TopicEntityMother.defaultTopic;
 import static com.productdock.book.data.provider.TopicEntityMother.defaultTopicBuilder;
 import static java.util.Arrays.stream;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,8 +31,7 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -46,6 +44,7 @@ class BookApiTest extends KafkaTestBase {
     public static final String SECOND_PAGE = "1";
     public static final String FIRST_REVIEWER = "user1";
     public static final String SECOND_REVIEWER = "user2";
+    public static final String DEFAULT_USER_ID = "::userId::";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -247,7 +246,7 @@ class BookApiTest extends KafkaTestBase {
     private ResultActions makeGetBookRequest(Long bookId) throws Exception {
         return mockMvc.perform(get("/api/catalog/books/" + bookId)
                         .with(jwt().jwt(jwt -> {
-                            jwt.claim("email", "::userId::");
+                            jwt.claim("email", DEFAULT_USER_ID);
                             jwt.claim("name", "::userFullName::");
                         })))
                 .andExpect(status().isOk());
@@ -350,14 +349,86 @@ class BookApiTest extends KafkaTestBase {
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
 
-        private ResultActions makeBookReviewRequest(String reviewDtoJson, Long bookId) throws Exception {
-            return mockMvc.perform(post("/api/catalog/books/" + bookId + "/reviews")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(reviewDtoJson)
-                    .with(jwt().jwt(jwt -> {
-                        jwt.claim("email", "::userId::");
-                        jwt.claim("name", "::userFullName::");
-                    })));
+        private Long givenAnyBook() {
+            var marketingTopic = givenTopicWithName("MARKETING");
+            var designTopic = givenTopicWithName("DESIGN");
+            var book = defaultBookBuilder().topic(marketingTopic).topic(designTopic).build();
+            return bookRepository.save(book).getId();
+        }
+
+    }
+
+    @Nested
+    class EditBookReview {
+
+        @Test
+        @WithMockUser
+        void editReview_whenUserIdNotValid() throws Exception {
+            var bookId = givenAnyBook();
+            var editReviewDtoJson =
+                    "{\"recommendation\":[]}";
+            makeEditBookReviewRequest(editReviewDtoJson, bookId, "::wrongId::").andExpect(status().isForbidden());
+        }
+
+        @Test
+        @WithMockUser
+        void editReview_whenReviewIsValid() throws Exception {
+            var bookId = givenAnyBook();
+            var reviewDtoJson =
+                    "{\"comment\":\"::comment::\"," +
+                    "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
+            makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+            var editReviewDtoJson =
+                    "{\"comment\":\"::new-comment::\"," +
+                    "\"rating\":2," +
+                    "\"recommendation\":[\"MEDIOR\",\"SENIOR\"]}";
+            makeEditBookReviewRequest(editReviewDtoJson, bookId, DEFAULT_USER_ID);
+
+            makeGetBookRequest(bookId)
+                    .andExpect(content().json(
+                            "{\"id\":" + bookId + "," +
+                                    "\"title\":\"::title::\"," +
+                                    "\"author\":\"::author::\"," +
+                                    "\"cover\": null," +
+                                    "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                    "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
+                                    "\"rating\":2," +
+                                    "\"recommendation\": [\"MEDIOR\",\"SENIOR\"]," +
+                                    "\"comment\": \"::new-comment::\"}]}"));
+
+            await()
+                    .atMost(Duration.ofSeconds(4))
+                    .until(ifFileExists(TEST_FILE));
+
+            var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
+            assertThat(bookRatingMessage.getBookId()).isEqualTo(bookId);
+            assertThat(bookRatingMessage.getRating()).isEqualTo(2);
+            assertThat(bookRatingMessage.getRatingsCount()).isEqualTo(1);
+        }
+
+        private Callable<Boolean> ifFileExists(String testFile) {
+            Callable<Boolean> checkForFile = () -> {
+                File f = new File(testFile);
+                return f.isFile();
+            };
+            return checkForFile;
+        }
+
+        private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {
+            FileInputStream fileInputStream = new FileInputStream(testFile);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            var bookRatingMessage = (BookRatingMessage) objectInputStream.readObject();
+            objectInputStream.close();
+            return bookRatingMessage;
+        }
+
+        @Test
+        @WithMockUser
+        void returnBadRequest_whenReviewNotExist() throws Exception {
+            var bookId = givenAnyBook();
+            var editReviewDtoJson =
+                    "{\"recommendation\":[]}";
+            makeEditBookReviewRequest(editReviewDtoJson, bookId, DEFAULT_USER_ID).andExpect(status().isBadRequest());
         }
 
         private Long givenAnyBook() {
@@ -367,6 +438,27 @@ class BookApiTest extends KafkaTestBase {
             return bookRepository.save(book).getId();
         }
 
+        private ResultActions makeEditBookReviewRequest(String reviewDtoJson, Long bookId, String userId) throws Exception {
+            return mockMvc.perform(put("/api/catalog/books/" + bookId + "/reviews")
+                            .queryParam("k_book", String.valueOf(bookId))
+                            .queryParam("k_user", userId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(reviewDtoJson)
+                    .with(jwt().jwt(jwt -> {
+                        jwt.claim("email", DEFAULT_USER_ID);
+                        jwt.claim("name", "::userFullName::");
+                    })));
+        }
+    }
+
+    private ResultActions makeBookReviewRequest(String reviewDtoJson, Long bookId) throws Exception {
+        return mockMvc.perform(post("/api/catalog/books/" + bookId + "/reviews")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(reviewDtoJson)
+                .with(jwt().jwt(jwt -> {
+                    jwt.claim("email", DEFAULT_USER_ID);
+                    jwt.claim("name", "::userFullName::");
+                })));
     }
 
 }

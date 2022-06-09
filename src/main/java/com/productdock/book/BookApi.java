@@ -1,5 +1,6 @@
 package com.productdock.book;
 
+import com.productdock.exception.ForbiddenAccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -38,4 +39,23 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
         reviewService.saveReview(reviewDto);
     }
 
+    @PutMapping("/{bookId}/reviews")
+    public void editReviewForBook(
+            @RequestParam("k_book") final Long bookId,
+            @RequestParam("k_user") final String userId,
+            @Valid @RequestBody ReviewDto reviewDto,
+            Authentication authentication) {
+        log.debug("PUT request received - api/catalog/books/{}/reviews?k_book={}&k_user={}, Payload: {}", bookId, bookId, userId, reviewDto);
+        String loggedUserEmail = ((Jwt) authentication.getCredentials()).getClaim("email");
+
+        if (!loggedUserEmail.equals(userId)) {
+            log.warn("User with id:{}, tried to access forbidden resource [review] with id: [{},{}]", loggedUserEmail, bookId, userId);
+            throw new ForbiddenAccessException("You don't have access for resource");
+        }
+
+        reviewDto.bookId = bookId;
+        reviewDto.userId = loggedUserEmail;
+        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim("name");
+        reviewService.editReview(reviewDto);
+    }
 }
