@@ -15,6 +15,9 @@ import java.util.Optional;
 @RequestMapping("/api/catalog/books")
 public record BookApi(BookService bookService, ReviewService reviewService) {
 
+    public static final String USER_EMAIL = "email";
+    public static final String USER_NAME = "name";
+
     @GetMapping
     public SearchBooksResponse getBooks(@RequestParam(required = false) Optional<List<String>> topics, @RequestParam int page) {
         log.debug("GET request received - api/catalog/books");
@@ -34,8 +37,8 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
             Authentication authentication) {
         log.debug("POST request received - api/catalog/books/{}/reviews, Payload: {}", bookId, reviewDto);
         reviewDto.bookId = bookId;
-        reviewDto.userId = ((Jwt) authentication.getCredentials()).getClaim("email");
-        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim("name");
+        reviewDto.userId = ((Jwt) authentication.getCredentials()).getClaim(USER_EMAIL);
+        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim(USER_NAME);
         reviewService.saveReview(reviewDto);
     }
 
@@ -46,7 +49,7 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
             @Valid @RequestBody ReviewDto reviewDto,
             Authentication authentication) {
         log.debug("PUT request received - api/catalog/books/{}/reviews?k_book={}&k_user={}, Payload: {}", bookId, bookId, userId, reviewDto);
-        String loggedUserEmail = ((Jwt) authentication.getCredentials()).getClaim("email");
+        String loggedUserEmail = ((Jwt) authentication.getCredentials()).getClaim(USER_EMAIL);
 
         if (!loggedUserEmail.equals(userId)) {
             log.warn("User with id:{}, tried to access forbidden resource [review] with id: [{},{}]", loggedUserEmail, bookId, userId);
@@ -55,7 +58,23 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
 
         reviewDto.bookId = bookId;
         reviewDto.userId = loggedUserEmail;
-        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim("name");
+        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim(USER_NAME);
         reviewService.editReview(reviewDto);
+    }
+
+    @DeleteMapping("/{bookId}/reviews")
+    public void deleteReviewForBook(
+            @RequestParam("k_book") final Long bookId,
+            @RequestParam("k_user") final String userId,
+            Authentication authentication) {
+        log.debug("DELETE request received - api/catalog/books/{}/reviews?k_book={}&k_user={}", bookId, bookId, userId);
+        String loggedUserEmail = ((Jwt) authentication.getCredentials()).getClaim(USER_EMAIL);
+
+        if (!loggedUserEmail.equals(userId)) {
+            log.warn("User with id:{}, tried to access forbidden resource [review] with id: [{},{}]", loggedUserEmail, bookId, userId);
+            throw new ForbiddenAccessException("You don't have access for resource");
+        }
+
+        reviewService.deleteReview(bookId, userId);
     }
 }

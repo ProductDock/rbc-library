@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-
 import static com.productdock.book.data.provider.ReviewDtoMother.defaultReviewDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -81,4 +80,32 @@ class BookApiShould {
                 .isInstanceOf(ForbiddenAccessException.class)
                 .hasMessage(WRONG_USER_ID_EXCEPTION_MESSAGE);
     }
+
+    @Test
+    void deleteReviewForBook() {
+        var authenticationMock = mock(Authentication.class);
+        var jwtMock = mock(Jwt.class);
+
+        when(authenticationMock.getCredentials()).thenReturn(jwtMock);
+        when(jwtMock.getClaim("email")).thenReturn(DEFAULT_USER_EMAIL);
+
+        bookApi.deleteReviewForBook(DEFAULT_BOOK_ID, DEFAULT_USER_EMAIL, authenticationMock);
+
+        verify(reviewService).deleteReview(DEFAULT_BOOK_ID, DEFAULT_USER_EMAIL);
+    }
+
+    @Test
+    void deleteReviewForBook_whenWrongUserId() {
+        var authenticationMock = mock(Authentication.class);
+        var jwtMock = mock(Jwt.class);
+
+        when(authenticationMock.getCredentials()).thenReturn(jwtMock);
+        when(jwtMock.getClaim("email")).thenReturn(DEFAULT_USER_EMAIL);
+
+        assertThatThrownBy(() -> bookApi.deleteReviewForBook(DEFAULT_BOOK_ID, "::wrongId::", authenticationMock))
+                .isInstanceOf(ForbiddenAccessException.class)
+                .hasMessage(WRONG_USER_ID_EXCEPTION_MESSAGE);
+    }
+
+
 }

@@ -3,7 +3,10 @@ package com.productdock.book;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.productdock.book.data.provider.KafkaTestBase;
 import net.bytebuddy.utility.RandomString;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -203,12 +206,12 @@ class BookApiTest extends KafkaTestBase {
                                     "\"description\": \"::description::\"," +
                                     "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
                                     "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
-                                    "\"userId\":\"" + SECOND_REVIEWER +"\"," +
+                                    "\"userId\":\"" + SECOND_REVIEWER + "\"," +
                                     "\"rating\":2," +
                                     "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
                                     "\"comment\": \"::comment::\"}," +
                                     "{\"userFullName\":\"::userFullName::\"," +
-                                    "\"userId\":\"" + FIRST_REVIEWER +"\"," +
+                                    "\"userId\":\"" + FIRST_REVIEWER + "\"," +
                                     "\"rating\":2," +
                                     "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
                                     "\"comment\": \"::comment::\"}]," +
@@ -274,8 +277,8 @@ class BookApiTest extends KafkaTestBase {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
-                    "\"rating\":1," +
-                    "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
+                            "\"rating\":1," +
+                            "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
             makeGetBookRequest(bookId)
                     .andExpect(content().json(
@@ -321,8 +324,8 @@ class BookApiTest extends KafkaTestBase {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
-                    "\"rating\":null," +
-                    "\"recommendation\":[]}";
+                            "\"rating\":null," +
+                            "\"recommendation\":[]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
@@ -333,8 +336,8 @@ class BookApiTest extends KafkaTestBase {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"" + RandomString.make(501) + "\"," +
-                    "\"rating\":null," +
-                    "\"recommendation\":[]}";
+                            "\"rating\":null," +
+                            "\"recommendation\":[]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
 
@@ -344,8 +347,8 @@ class BookApiTest extends KafkaTestBase {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
-                    "\"rating\":7," +
-                    "\"recommendation\":[]}";
+                            "\"rating\":7," +
+                            "\"recommendation\":[]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
         }
 
@@ -376,12 +379,12 @@ class BookApiTest extends KafkaTestBase {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
-                    "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
+                            "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
             var editReviewDtoJson =
                     "{\"comment\":\"::new-comment::\"," +
-                    "\"rating\":2," +
-                    "\"recommendation\":[\"MEDIOR\",\"SENIOR\"]}";
+                            "\"rating\":2," +
+                            "\"recommendation\":[\"MEDIOR\",\"SENIOR\"]}";
             makeEditBookReviewRequest(editReviewDtoJson, bookId, DEFAULT_USER_ID);
 
             makeGetBookRequest(bookId)
@@ -440,10 +443,59 @@ class BookApiTest extends KafkaTestBase {
 
         private ResultActions makeEditBookReviewRequest(String reviewDtoJson, Long bookId, String userId) throws Exception {
             return mockMvc.perform(put("/api/catalog/books/" + bookId + "/reviews")
-                            .queryParam("k_book", String.valueOf(bookId))
-                            .queryParam("k_user", userId)
+                    .queryParam("k_book", String.valueOf(bookId))
+                    .queryParam("k_user", userId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(reviewDtoJson)
+                    .with(jwt().jwt(jwt -> {
+                        jwt.claim("email", DEFAULT_USER_ID);
+                        jwt.claim("name", "::userFullName::");
+                    })));
+        }
+    }
+
+    @Nested
+    class DeleteBookReview {
+
+        @Test
+        @WithMockUser
+        void deleteReview_whenUserIdNotValid() throws Exception {
+            var bookId = givenAnyBook();
+            makeDeleteBookReviewRequest(bookId, "::wrongId::").andExpect(status().isForbidden());
+        }
+
+        @Test
+        @WithMockUser
+        void deleteReview_whenReviewIsValid() throws Exception {
+            var bookId = givenAnyBook();
+            var reviewDtoJson =
+                    "{\"comment\":\"::comment::\"," +
+                            "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
+            makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+            makeDeleteBookReviewRequest(bookId, DEFAULT_USER_ID).andExpect(status().isOk());
+
+            makeGetBookRequest(bookId).andExpect(status().isOk());
+        }
+
+        @Test
+        @WithMockUser
+        void returnBadRequest_whenReviewNotExist() throws Exception {
+            var bookId = givenAnyBook();
+            makeDeleteBookReviewRequest(bookId, DEFAULT_USER_ID).andExpect(status().isBadRequest());
+        }
+
+        private Long givenAnyBook() {
+            var marketingTopic = givenTopicWithName("MARKETING");
+            var designTopic = givenTopicWithName("DESIGN");
+            var book = defaultBookBuilder().topic(marketingTopic).topic(designTopic).build();
+            return bookRepository.save(book).getId();
+        }
+
+        private ResultActions makeDeleteBookReviewRequest(Long bookId, String userId) throws Exception {
+            return mockMvc.perform(delete("/api/catalog/books/" + bookId + "/reviews")
+                    .queryParam("k_book", String.valueOf(bookId))
+                    .queryParam("k_user", userId)
+                    .contentType(MediaType.APPLICATION_JSON)
                     .with(jwt().jwt(jwt -> {
                         jwt.claim("email", DEFAULT_USER_ID);
                         jwt.claim("name", "::userFullName::");

@@ -3,7 +3,6 @@ package com.productdock.book.data.provider;
 import com.productdock.book.ReviewEntity;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class ReviewEntityMother {
 

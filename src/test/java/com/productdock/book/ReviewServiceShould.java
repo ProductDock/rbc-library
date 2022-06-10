@@ -42,10 +42,11 @@ class ReviewServiceShould {
     private static final ReviewDto reviewDtoMock = mock(ReviewDto.class);
     private static final ReviewEntity reviewEntityMock = mock(ReviewEntity.class);
     private static final Optional<ReviewEntity> existingReviewEntityMock = Optional.of(mock(ReviewEntity.class));
+    private static final ReviewEntity.ReviewCompositeKey reviewCompositeKey = mock(ReviewEntity.ReviewCompositeKey.class);
     private static final List reviewListMock = mock(List.class);
     private static final Rating ratingMock = mock(Rating.class);
     private static final String SAVE_BOOK_REVIEW_EXCEPTION_MESSAGE = "The user cannot enter more than one comment for a particular book.";
-    private static final String EDIT_BOOK_REVIEW_EXCEPTION_MESSAGE = "Review not found";
+    private static final String MISSING_BOOK_REVIEW_EXCEPTION_MESSAGE = "Review not found";
 
     @Captor
     private ArgumentCaptor<BookRatingMessage> bookRatingMessageCaptor;
@@ -77,6 +78,27 @@ class ReviewServiceShould {
 
         verify(reviewRepository).save(reviewEntityMock);
         assertThatValidMessagesPublishedToKafka();
+    }
+
+    @Test
+    void deleteReview() throws Exception {
+        var reviewCompositeKey = new ReviewEntity.ReviewCompositeKey(1L, "::userId::");
+        given(reviewRepository.findById(reviewCompositeKey)).willReturn(existingReviewEntityMock);
+
+        reviewService.deleteReview(1L, "::userId::");
+
+        verify(reviewRepository).deleteById(reviewCompositeKey);
+    }
+
+    @Test
+    void deleteReview_whenReviewNotExist() throws Exception {
+        var reviewCompositeKey = new ReviewEntity.ReviewCompositeKey(1L, "::userId::");
+        given(reviewRepository.findById(reviewCompositeKey)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> reviewService.deleteReview(1L, "::userId::"))
+                .isInstanceOf(BookReviewException.class)
+                .hasMessage(MISSING_BOOK_REVIEW_EXCEPTION_MESSAGE);
+
     }
 
     private void assertThatValidMessagesPublishedToKafka() throws ExecutionException, InterruptedException, JsonProcessingException {
@@ -131,7 +153,7 @@ class ReviewServiceShould {
 
         assertThatThrownBy(() -> reviewService.editReview(reviewDtoMock))
                 .isInstanceOf(BookReviewException.class)
-                .hasMessage(EDIT_BOOK_REVIEW_EXCEPTION_MESSAGE);
+                .hasMessage(MISSING_BOOK_REVIEW_EXCEPTION_MESSAGE);
     }
 
 }

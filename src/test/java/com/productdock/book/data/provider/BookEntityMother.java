@@ -9,7 +9,7 @@ public class BookEntityMother {
     private static final String defaultAuthor = "::author::";
     private static final String defaultDescription = "::description::";
     private static final String defaultCover = null;
-    
+
     public static BookEntity.BookEntityBuilder defaultBookBuilder() {
         return BookEntity.builder()
                 .id(defaultId)
