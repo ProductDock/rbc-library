@@ -82,18 +82,18 @@ class ReviewServiceShould {
 
     @Test
     void deleteReview() throws Exception {
-        var reviewCompositeKey2 = new ReviewEntity.ReviewCompositeKey(1L, "::userId::");
-        given(reviewRepository.findById(reviewCompositeKey2)).willReturn(existingReviewEntityMock);
+        var reviewCompositeKey = new ReviewEntity.ReviewCompositeKey(1L, "::userId::");
+        given(reviewRepository.findById(reviewCompositeKey)).willReturn(existingReviewEntityMock);
 
         reviewService.deleteReview(1L, "::userId::");
 
-        verify(reviewRepository).deleteById(reviewCompositeKey2);
+        verify(reviewRepository).deleteById(reviewCompositeKey);
     }
 
     @Test
     void deleteReview_whenReviewNotExist() throws Exception {
-        var reviewCompositeKey2 = new ReviewEntity.ReviewCompositeKey(1L, "::userId::");
-        given(reviewRepository.findById(reviewCompositeKey2)).willReturn(Optional.empty());
+        var reviewCompositeKey = new ReviewEntity.ReviewCompositeKey(1L, "::userId::");
+        given(reviewRepository.findById(reviewCompositeKey)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> reviewService.deleteReview(1L, "::userId::"))
                 .isInstanceOf(BookReviewException.class)
