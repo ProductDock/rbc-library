@@ -8,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -58,11 +56,23 @@ public class ReviewService {
         publishNewBookRating(reviewDto.bookId);
     }
 
+    public void deleteReview(Long bookId, String userId) {
+        var reviewCompositeKey = new ReviewEntity.ReviewCompositeKey(bookId, userId);
+        var existingReview = reviewRepository.findById(reviewCompositeKey);
+
+        if (existingReview.isEmpty()) {
+            log.warn("The User with id:{} is trying to delete a not existing review with id:[{},{}]",
+                    userId, bookId, userId);
+            throw new BookReviewException("Review not found");
+        }
+
+        reviewRepository.deleteById(reviewCompositeKey);
+    }
+
     @SneakyThrows
     private void publishNewBookRating(Long bookId) {
         var reviews = reviewRepository.findByBookId(bookId);
         var rating = calculator.calculate(reviews);
         jsonRecordPublisher.sendMessage(kafkaTopic, new BookRatingMessage(bookId, rating.getScore(), rating.getCount()));
     }
-
 }

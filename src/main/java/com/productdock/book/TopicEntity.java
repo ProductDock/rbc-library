@@ -10,13 +10,13 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name= "topic")
+@Table(name = "topic")
 public class TopicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String name;
 }

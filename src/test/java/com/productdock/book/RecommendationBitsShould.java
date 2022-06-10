@@ -18,7 +18,7 @@ class RecommendationBitsShould {
         assertThat(getIntRepresentation(recommendations)).isEqualTo(output);
     }
 
-    static Stream<Arguments> recommendationListParametersProvider(){
+    static Stream<Arguments> recommendationListParametersProvider() {
         return Stream.of(
                 Arguments.of(List.of(JUNIOR), 1),
                 Arguments.of(List.of(MEDIOR), 2),
@@ -26,7 +26,7 @@ class RecommendationBitsShould {
                 Arguments.of(List.of(JUNIOR, MEDIOR), 3),
                 Arguments.of(List.of(SENIOR, MEDIOR), 6),
                 Arguments.of(List.of(SENIOR, JUNIOR, MEDIOR), 7)
-                );
+        );
     }
 
     private int getIntRepresentation(List<Recommendation> recommendationList) {
@@ -39,7 +39,7 @@ class RecommendationBitsShould {
         assertThat(getRecommendations(intRepresentation)).containsExactlyInAnyOrderElementsOf(output);
     }
 
-    static Stream<Arguments> recommendationBitsParametersProvider(){
+    static Stream<Arguments> recommendationBitsParametersProvider() {
         return Stream.of(
                 Arguments.of(1, List.of(JUNIOR)),
                 Arguments.of(2, List.of(MEDIOR)),

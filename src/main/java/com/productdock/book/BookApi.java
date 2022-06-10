@@ -58,4 +58,20 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
         reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim("name");
         reviewService.editReview(reviewDto);
     }
+
+    @DeleteMapping("/{bookId}/reviews")
+    public void deleteReviewForBook(
+            @RequestParam("k_book") final Long bookId,
+            @RequestParam("k_user") final String userId,
+            Authentication authentication) {
+        log.debug("DELETE request received - api/catalog/books/{}/reviews?k_book={}&k_user={}", bookId, bookId, userId);
+        String loggedUserEmail = ((Jwt) authentication.getCredentials()).getClaim("email");
+
+        if (!loggedUserEmail.equals(userId)) {
+            log.warn("User with id:{}, tried to access forbidden resource [review] with id: [{},{}]", loggedUserEmail, bookId, userId);
+            throw new ForbiddenAccessException("You don't have access for resource");
+        }
+
+        reviewService.deleteReview(bookId, userId);
+    }
 }

@@ -24,7 +24,7 @@ public class ReviewEntity {
     @EmbeddedId
     private ReviewCompositeKey reviewCompositeKey;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String userFullName;
 
     @Size(max = 500)

@@ -15,13 +15,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles({"mock-db"})
 class SecurityConfigTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-  @Test
-  void givenUnauthenticated_thenUnauthorizedResponse() throws Exception {
-    mockMvc.perform(get("/api/books"))
-            .andExpect(status().isUnauthorized());
-  }
+    @Test
+    void givenUnauthenticated_thenUnauthorizedResponse() throws Exception {
+        mockMvc.perform(get("/api/books"))
+                .andExpect(status().isUnauthorized());
+    }
 
 }

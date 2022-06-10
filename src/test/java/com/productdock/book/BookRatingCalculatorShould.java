@@ -18,7 +18,7 @@ class BookRatingCalculatorShould {
     private BookRatingCalculator bookRatingCalculator;
 
     @Test
-    void calculateBookRating(){
+    void calculateBookRating() {
         var reviews = Arrays.asList(defaultReviewEntity(), defaultReviewEntity());
 
         var rating = bookRatingCalculator.calculate(reviews);
@@ -28,7 +28,7 @@ class BookRatingCalculatorShould {
     }
 
     @Test
-    void returnRatingNull_whenNoReviewsWithRating(){
+    void returnRatingNull_whenNoReviewsWithRating() {
         var reviews = List.of(ReviewEntity.builder().build());
 
         var rating = bookRatingCalculator.calculate(reviews);
