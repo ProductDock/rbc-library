@@ -42,6 +42,7 @@ class ReviewServiceShould {
     private static final ReviewDto reviewDtoMock = mock(ReviewDto.class);
     private static final ReviewEntity reviewEntityMock = mock(ReviewEntity.class);
     private static final Optional<ReviewEntity> existingReviewEntityMock = Optional.of(mock(ReviewEntity.class));
+    private static final ReviewEntity.ReviewCompositeKey reviewCompositeKey = mock(ReviewEntity.ReviewCompositeKey.class);
     private static final List reviewListMock = mock(List.class);
     private static final Rating ratingMock = mock(Rating.class);
     private static final String SAVE_BOOK_REVIEW_EXCEPTION_MESSAGE = "The user cannot enter more than one comment for a particular book.";
@@ -89,8 +90,6 @@ class ReviewServiceShould {
         given(calculator.calculate(reviewListMock)).willReturn(ratingMock);
 
         reviewService.deleteReview(1L, "::userId::");
-
-
 
         verify(reviewRepository).deleteById(reviewCompositeKey);
     }
