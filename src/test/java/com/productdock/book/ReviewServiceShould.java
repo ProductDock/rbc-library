@@ -104,6 +104,7 @@ class ReviewServiceShould {
         reviewService.deleteReview(1L, "::userId::");
 
         verify(reviewRepository).deleteById(reviewCompositeKey);
+        verify(reviewRepository, times(0)).findByBookId(1L);
     }
 
     @Test
