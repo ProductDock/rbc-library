@@ -302,22 +302,6 @@ class BookApiTest extends KafkaTestBase {
             assertThat(bookRatingMessage.getRatingsCount()).isEqualTo(1);
         }
 
-        private Callable<Boolean> ifFileExists(String testFile) {
-            Callable<Boolean> checkForFile = () -> {
-                File f = new File(testFile);
-                return f.isFile();
-            };
-            return checkForFile;
-        }
-
-        private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {
-            FileInputStream fileInputStream = new FileInputStream(testFile);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            var bookRatingMessage = (BookRatingMessage) objectInputStream.readObject();
-            objectInputStream.close();
-            return bookRatingMessage;
-        }
-
         @Test
         @WithMockUser
         void returnBadRequest_whenReviewAlreadyExists() throws Exception {
@@ -409,22 +393,6 @@ class BookApiTest extends KafkaTestBase {
             assertThat(bookRatingMessage.getRatingsCount()).isEqualTo(1);
         }
 
-        private Callable<Boolean> ifFileExists(String testFile) {
-            Callable<Boolean> checkForFile = () -> {
-                File f = new File(testFile);
-                return f.isFile();
-            };
-            return checkForFile;
-        }
-
-        private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {
-            FileInputStream fileInputStream = new FileInputStream(testFile);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            var bookRatingMessage = (BookRatingMessage) objectInputStream.readObject();
-            objectInputStream.close();
-            return bookRatingMessage;
-        }
-
         @Test
         @WithMockUser
         void returnBadRequest_whenReviewNotExist() throws Exception {
@@ -470,11 +438,18 @@ class BookApiTest extends KafkaTestBase {
             var bookId = givenAnyBook();
             var reviewDtoJson =
                     "{\"comment\":\"::comment::\"," +
+                            "\"rating\":3," +
                             "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
             makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
             makeDeleteBookReviewRequest(bookId, DEFAULT_USER_ID).andExpect(status().isOk());
+            await()
+                    .atMost(Duration.ofSeconds(4))
+                    .until(ifFileExists(TEST_FILE));
 
-            makeGetBookRequest(bookId).andExpect(status().isOk());
+            var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
+            assertThat(bookRatingMessage.getBookId()).isEqualTo(bookId);
+            assertThat(bookRatingMessage.getRating()).isNull();
+            assertThat(bookRatingMessage.getRatingsCount()).isZero();
         }
 
         @Test
@@ -511,6 +486,22 @@ class BookApiTest extends KafkaTestBase {
                     jwt.claim("email", DEFAULT_USER_ID);
                     jwt.claim("name", "::userFullName::");
                 })));
+    }
+
+    private Callable<Boolean> ifFileExists(String testFile) {
+        Callable<Boolean> checkForFile = () -> {
+            File f = new File(testFile);
+            return f.isFile();
+        };
+        return checkForFile;
+    }
+
+    private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(testFile);
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+        var bookRatingMessage = (BookRatingMessage) objectInputStream.readObject();
+        objectInputStream.close();
+        return bookRatingMessage;
     }
 
 }

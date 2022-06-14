@@ -67,6 +67,11 @@ public class ReviewService {
         }
 
         reviewRepository.deleteById(reviewCompositeKey);
+        log.debug("Deleted a review: [{}]", existingReview);
+        if (existingReview.get().getRating() == null) {
+            return;
+        }
+        publishNewBookRating(bookId);
     }
 
     @SneakyThrows
