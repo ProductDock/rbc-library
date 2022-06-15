@@ -81,13 +81,30 @@ class ReviewServiceShould {
     }
 
     @Test
-    void deleteReview() throws Exception {
+    void deleteReview() {
         var reviewCompositeKey = new ReviewEntity.ReviewCompositeKey(1L, "::userId::");
         given(reviewRepository.findById(reviewCompositeKey)).willReturn(existingReviewEntityMock);
+        given(reviewRepository.findByBookId(1L)).willReturn(reviewListMock);
+        given(existingReviewEntityMock.get().getRating()).willReturn((short) 2);
+        given(reviewEntityMock.getRating()).willReturn((short) 1);
+        given(calculator.calculate(reviewListMock)).willReturn(ratingMock);
 
         reviewService.deleteReview(1L, "::userId::");
 
         verify(reviewRepository).deleteById(reviewCompositeKey);
+    }
+
+    @Test
+    void deleteReview_whenRatingIsNull() {
+        var reviewCompositeKey = new ReviewEntity.ReviewCompositeKey(1L, "::userId::");
+        given(reviewRepository.findById(reviewCompositeKey)).willReturn(existingReviewEntityMock);
+        given(existingReviewEntityMock.get().getRating()).willReturn(null);
+        given(reviewEntityMock.getRating()).willReturn((short) 1);
+
+        reviewService.deleteReview(1L, "::userId::");
+
+        verify(reviewRepository).deleteById(reviewCompositeKey);
+        verify(reviewRepository, times(0)).findByBookId(1L);
     }
 
     @Test
