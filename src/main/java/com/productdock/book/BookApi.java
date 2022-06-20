@@ -42,13 +42,13 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
         reviewService.saveReview(reviewDto);
     }
 
-    @PutMapping("/{bookId}/reviews")
+    @PutMapping("/{bookId}/reviews/{userId}")
     public void editReviewForBook(
-            @RequestParam("k_book") final Long bookId,
-            @RequestParam("k_user") final String userId,
+            @PathVariable("bookId") final Long bookId,
+            @PathVariable("userId") final String userId,
             @Valid @RequestBody ReviewDto reviewDto,
             Authentication authentication) {
-        log.debug("PUT request received - api/catalog/books/{}/reviews?k_book={}&k_user={}, Payload: {}", bookId, bookId, userId, reviewDto);
+        log.debug("PUT request received - api/catalog/books/{}/reviews/{}, Payload: {}", bookId, userId, reviewDto);
         String loggedUserEmail = ((Jwt) authentication.getCredentials()).getClaim(USER_EMAIL);
 
         if (!loggedUserEmail.equals(userId)) {
