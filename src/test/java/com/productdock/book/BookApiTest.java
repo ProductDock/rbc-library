@@ -410,9 +410,7 @@ class BookApiTest extends KafkaTestBase {
         }
 
         private ResultActions makeEditBookReviewRequest(String reviewDtoJson, Long bookId, String userId) throws Exception {
-            return mockMvc.perform(put("/api/catalog/books/" + bookId + "/reviews")
-                    .queryParam("k_book", String.valueOf(bookId))
-                    .queryParam("k_user", userId)
+            return mockMvc.perform(put("/api/catalog/books/" + bookId + "/reviews/" + userId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(reviewDtoJson)
                     .with(jwt().jwt(jwt -> {
