@@ -465,9 +465,7 @@ class BookApiTest extends KafkaTestBase {
         }
 
         private ResultActions makeDeleteBookReviewRequest(Long bookId, String userId) throws Exception {
-            return mockMvc.perform(delete("/api/catalog/books/" + bookId + "/reviews")
-                    .queryParam("k_book", String.valueOf(bookId))
-                    .queryParam("k_user", userId)
+            return mockMvc.perform(delete("/api/catalog/books/" + bookId + "/reviews/" + userId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .with(jwt().jwt(jwt -> {
                         jwt.claim("email", DEFAULT_USER_ID);
