@@ -18,6 +18,7 @@
 		<sonar.organization>productdock</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.projectKey>ProductDock_rbc-library</sonar.projectKey>
+		<sonar.test.inclusions>**/*Should.java, **/*Test.java, **/*It.java</sonar.test.inclusions>
 		<mapstruct.version>1.4.2.Final</mapstruct.version>
 	</properties>
 	<dependencies>
