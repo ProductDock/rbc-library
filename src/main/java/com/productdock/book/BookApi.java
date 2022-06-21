@@ -62,12 +62,12 @@ public record BookApi(BookService bookService, ReviewService reviewService) {
         reviewService.editReview(reviewDto);
     }
 
-    @DeleteMapping("/{bookId}/reviews")
+    @DeleteMapping("/{bookId}/reviews/{userId}")
     public void deleteReviewForBook(
-            @RequestParam("k_book") final Long bookId,
-            @RequestParam("k_user") final String userId,
+            @PathVariable("bookId") final Long bookId,
+            @PathVariable("userId") final String userId,
             Authentication authentication) {
-        log.debug("DELETE request received - api/catalog/books/{}/reviews?k_book={}&k_user={}", bookId, bookId, userId);
+        log.debug("DELETE request received - api/catalog/books/{}/reviews/{}", bookId, userId);
         String loggedUserEmail = ((Jwt) authentication.getCredentials()).getClaim(USER_EMAIL);
 
         if (!loggedUserEmail.equals(userId)) {
