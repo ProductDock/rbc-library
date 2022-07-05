@@ -1,6 +1,12 @@
 package com.productdock.book;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.productdock.adapter.in.web.mapper.ReviewMapper;
+import com.productdock.adapter.out.kafka.BookRatingMessage;
+import com.productdock.adapter.out.postresql.BookJpaRepository;
+import com.productdock.adapter.out.postresql.ReviewJpaRepository;
+import com.productdock.adapter.out.postresql.entity.ReviewEntity;
+import com.productdock.adapter.out.postresql.entity.TopicEntity;
 import com.productdock.book.data.provider.KafkaTestBase;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.AfterAll;
@@ -22,7 +28,6 @@ import java.io.ObjectInputStream;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.productdock.book.data.provider.BookEntityMother.*;
@@ -41,27 +46,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles({"in-memory-db"})
 class BookApiTest extends KafkaTestBase {
 
-    public static final int RESULTS_PAGE_SIZE = 19;
     public static final String TEST_FILE = "testRating.txt";
-    public static final String FIRST_PAGE = "0";
-    public static final String SECOND_PAGE = "1";
     public static final String FIRST_REVIEWER = "user1";
     public static final String SECOND_REVIEWER = "user2";
     public static final String DEFAULT_USER_ID = "::userId::";
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookJpaRepository bookRepository;
 
     @Autowired
-    private ReviewRepository reviewRepository;
-
-    @Autowired
-    private ReviewMapper reviewMapper;
+    private ReviewJpaRepository reviewRepository;
 
     @BeforeEach
     final void before() {
@@ -73,97 +70,6 @@ class BookApiTest extends KafkaTestBase {
     static void after() {
         File f = new File(TEST_FILE);
         f.delete();
-    }
-
-    @Nested
-    class SearchWithFilters {
-
-        @Test
-        @WithMockUser
-        void getSecondPage_whenEmptyResults() throws Exception {
-            mockMvc.perform(get("/api/catalog/books")
-                            .param("page", SECOND_PAGE)
-                            .param("topics", "MARKETING")
-                            .param("topics", "DESIGN"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json("{\"count\":0,\"books\":[]}"));
-        }
-
-        @Test
-        @WithMockUser
-        void getFirstPage_whenThereAreResults() throws Exception {
-            givenABookBelongingToTopic("Title Product", "PRODUCT");
-            givenABookBelongingToTopic("Title Marketing", "MARKETING");
-            givenABookBelongingToTopic("Title Design", "DESIGN");
-            givenABookBelongingToTopic("Title Product & Marketing", "PRODUCT", "MARKETING");
-
-            mockMvc.perform(get("/api/catalog/books")
-                            .param("page", FIRST_PAGE)
-                            .param("topics", "MARKETING")
-                            .param("topics", "DESIGN"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.count").value(3))
-                    .andExpect(jsonPath("$.books").value(hasSize(3)))
-                    .andExpect(jsonPath("$.books[0].title").value("Title Marketing"))
-                    .andExpect(jsonPath("$.books[1].title").value("Title Design"))
-                    .andExpect(jsonPath("$.books[2].title").value("Title Product & Marketing"));
-        }
-
-        private void givenABookBelongingToTopic(String title, String... topicNames) {
-            var topics = createTopicEntitiesWithNames(topicNames);
-            var book = defaultBookBuilder().title(title).topics(topics).build();
-            bookRepository.save(book);
-        }
-
-        private List<TopicEntity> createTopicEntitiesWithNames(String... topicNames) {
-            return stream(topicNames)
-                    .map(topicName -> TopicEntity.builder().name(topicName).build())
-                    .toList();
-        }
-
-    }
-
-    @Nested
-    class GetBooksWithPagination {
-
-        @Test
-        @WithMockUser
-        void getFirstPage_whenEmptyResults() throws Exception {
-            mockMvc.perform(get("/api/catalog/books").param("page", FIRST_PAGE))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json("{\"count\":0,\"books\":[]}"));
-        }
-
-        @Test
-        @WithMockUser
-        void getSecondPage_whenThereAreResults() throws Exception {
-            givenFirstPageOfResults();
-            givenSecondPageOfResults();
-
-            mockMvc.perform(get("/api/catalog/books").param("page", SECOND_PAGE))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.count").value(19))
-                    .andExpect(jsonPath("$.books").value(hasSize(1)))
-                    .andExpect(jsonPath("$.books[0].id").exists())
-                    .andExpect(jsonPath("$.books[0].title").value("Second Page Title"));
-        }
-
-        private void givenFirstPageOfResults() {
-            for (int i = 0; i < RESULTS_PAGE_SIZE - 1; i++) {
-                givenAnyBook();
-            }
-        }
-
-        private void givenAnyBook() {
-            var book = defaultBook();
-            bookRepository.save(book);
-        }
-
-        private void givenSecondPageOfResults() {
-            var book = defaultBookBuilder().title("Second Page Title").build();
-            bookRepository.save(book);
-        }
-
     }
 
     @Nested
@@ -339,7 +245,7 @@ class BookApiTest extends KafkaTestBase {
         private Long givenAnyBook() {
             var marketingTopic = givenTopicWithName("MARKETING");
             var designTopic = givenTopicWithName("DESIGN");
-            var book = defaultBookBuilder().topic(marketingTopic).topic(designTopic).build();
+            var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
             return bookRepository.save(book).getId();
         }
 
@@ -405,7 +311,7 @@ class BookApiTest extends KafkaTestBase {
         private Long givenAnyBook() {
             var marketingTopic = givenTopicWithName("MARKETING");
             var designTopic = givenTopicWithName("DESIGN");
-            var book = defaultBookBuilder().topic(marketingTopic).topic(designTopic).build();
+            var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
             return bookRepository.save(book).getId();
         }
 
@@ -460,7 +366,7 @@ class BookApiTest extends KafkaTestBase {
         private Long givenAnyBook() {
             var marketingTopic = givenTopicWithName("MARKETING");
             var designTopic = givenTopicWithName("DESIGN");
-            var book = defaultBookBuilder().topic(marketingTopic).topic(designTopic).build();
+            var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
             return bookRepository.save(book).getId();
         }
 

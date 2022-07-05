@@ -1,5 +1,6 @@
 package com.productdock.book;
 
+import com.productdock.adapter.out.postresql.entity.ReviewEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
