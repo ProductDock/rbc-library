@@ -1,16 +1,12 @@
 package com.productdock.application.service;
 
-import com.productdock.adapter.out.kafka.BookRatingMessage;
+import com.productdock.application.port.in.PublishNewRatingUseCase;
 import com.productdock.application.port.in.SaveBookReviewUseCase;
-import com.productdock.application.port.out.messaging.BookMessagingOutPort;
-import com.productdock.application.port.out.persistence.BookPersistenceOutPort;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
 import com.productdock.exception.BookReviewException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -19,11 +15,7 @@ import org.springframework.stereotype.Service;
 public class SaveBookReviewService implements SaveBookReviewUseCase {
 
     private final ReviewPersistenceOutPort reviewRepository;
-    private final BookPersistenceOutPort bookRepository;
-    private final BookMessagingOutPort bookOutPort;
-
-    @Value("${spring.kafka.topic.book-rating}")
-    private String kafkaTopic;
+    private final PublishNewRatingUseCase newRatingPublisher;
 
     public void saveReview(Book.Review review) {
         if (reviewRepository.existsById(review.getReviewCompositeKey())) {
@@ -36,12 +28,7 @@ public class SaveBookReviewService implements SaveBookReviewUseCase {
         if (review.getRating() == null) {
             return;
         }
-        publishNewBookRating(review.getReviewCompositeKey().getBookId());
+        newRatingPublisher.publishRating(review.getReviewCompositeKey().getBookId());
     }
 
-    @SneakyThrows
-    private void publishNewBookRating(Long bookId) {
-        var book = bookRepository.findById(bookId).orElseThrow();
-        bookOutPort.sendMessage(kafkaTopic, new BookRatingMessage(bookId, book.getRating().getScore(), book.getRating().getCount()));
-    }
 }
