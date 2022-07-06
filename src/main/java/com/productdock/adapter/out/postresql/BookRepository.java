@@ -15,12 +15,12 @@ import java.util.Optional;
 @AllArgsConstructor
 public class BookRepository implements BookPersistenceOutPort {
 
-    private BookJpaRepository bookRepository;
+    private BookJpaRepository jpaRepository;
     private BookMapper bookMapper;
 
     @Override
     public Optional<Book> findById(Long bookId){
-        Optional<BookEntity> bookEntity = bookRepository.findById(bookId);
+        Optional<BookEntity> bookEntity = jpaRepository.findById(bookId);
         if (bookEntity.isEmpty()) {
             log.debug("Unable to find a book with book id: {}", bookId);
             return Optional.empty();

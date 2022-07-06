@@ -1,9 +1,7 @@
 package com.productdock.adapter.in.web;
 
-import com.productdock.domain.Recommendation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;

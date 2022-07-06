@@ -5,7 +5,7 @@ import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-public class ReviewCompositeKeyMapperShould {
+class ReviewCompositeKeyMapperShould {
 
     private ReviewCompositeKeyMapper reviewCompositeKeyMapper = Mappers.getMapper(ReviewCompositeKeyMapper.class);
     private static final Long BOOK_ID = 1L;

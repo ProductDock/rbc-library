@@ -16,20 +16,20 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ReviewRepository implements ReviewPersistenceOutPort {
 
-    private ReviewJpaRepository reviewRepository;
+    private ReviewJpaRepository jpaRepository;
     private ReviewCompositeKeyMapper reviewCompositeKeyMapper;
     private BookReviewMapper reviewMapper;
 
     @Override
     public boolean existsById(Book.Review.ReviewCompositeKey compositeKey) {
         var compositeKeyEntity = reviewCompositeKeyMapper.toEntity(compositeKey);
-        return reviewRepository.existsById(compositeKeyEntity);
+        return jpaRepository.existsById(compositeKeyEntity);
     }
 
     @Override
     public Optional<Book.Review> findById(Book.Review.ReviewCompositeKey compositeKey) {
         var compositeKeyEntity = reviewCompositeKeyMapper.toEntity(compositeKey);
-        var reviewEntity= reviewRepository.findById(compositeKeyEntity);
+        var reviewEntity= jpaRepository.findById(compositeKeyEntity);
         if (reviewEntity.isEmpty()) {
             log.debug("Unable to find a review with composite key: {}", compositeKey);
             throw new BookReviewException("Review not found");
@@ -40,12 +40,12 @@ public class ReviewRepository implements ReviewPersistenceOutPort {
     @Override
     public void deleteById(Book.Review.ReviewCompositeKey compositeKey) {
         var compositeKeyEntity = reviewCompositeKeyMapper.toEntity(compositeKey);
-        reviewRepository.deleteById(compositeKeyEntity);
+        jpaRepository.deleteById(compositeKeyEntity);
     }
 
     @Override
     public void save(Book.Review review) {
         var reviewEntity = reviewMapper.toEntity(review);
-        reviewRepository.save(reviewEntity);
+        jpaRepository.save(reviewEntity);
     }
 }
