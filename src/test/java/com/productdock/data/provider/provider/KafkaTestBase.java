@@ -1,4 +1,4 @@
-package com.productdock.book.data.provider;
+package com.productdock.data.provider.provider;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.kafka.test.context.EmbeddedKafka;

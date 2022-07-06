@@ -1,8 +1,8 @@
-package com.productdock.book;
+package com.productdock.domain;
 
 import org.junit.jupiter.api.Test;
 
-import static com.productdock.book.Recommendation.*;
+import static com.productdock.domain.Recommendation.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RecommendationShould {

@@ -1,6 +1,9 @@
-package com.productdock.book;
+package com.productdock.adapter.in.web.mapper;
 
-import com.productdock.adapter.out.postresql.entity.ReviewEntity;
+import com.productdock.domain.Recommendation;
+import com.productdock.domain.RecommendationBits;
+import com.productdock.adapter.in.web.ReviewDto;
+import com.productdock.domain.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -9,22 +12,22 @@ import org.mapstruct.ReportingPolicy;
 import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
-public interface ReviewMapper {
+public interface ReviewDtoMapper {
 
     @Mapping(source = "bookId", target = "reviewCompositeKey.bookId")
     @Mapping(source = "userId", target = "reviewCompositeKey.userId")
     @Mapping(source = "recommendation", target = "recommendation", qualifiedByName = "recommendationListToIntValue")
-    ReviewEntity toEntity(ReviewDto reviewDto);
+    Book.Review toDomain(ReviewDto reviewDto);
 
     @Named("recommendationListToIntValue")
     static Integer recommendationListToIntValue(List<Recommendation> list) {
         return RecommendationBits.from(list).toInt();
     }
 
-    @Mapping(source = "reviewCompositeKey.bookId", target = "bookId")
-    @Mapping(source = "reviewCompositeKey.userId", target = "userId")
     @Mapping(source = "recommendation", target = "recommendation", qualifiedByName = "intValueToRecommendationList")
-    ReviewDto toDto(ReviewEntity reviewEntity);
+    @Mapping(source = "reviewCompositeKey.userId", target = "userId")
+    @Mapping(source = "reviewCompositeKey.bookId", target = "bookId")
+    ReviewDto toDto(Book.Review review);
 
     @Named("intValueToRecommendationList")
     static List<Recommendation> intValueToRecommendationList(Integer intRepresentation) {

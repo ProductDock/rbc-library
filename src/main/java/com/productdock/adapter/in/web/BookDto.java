@@ -1,9 +1,16 @@
-package com.productdock.book;
+package com.productdock.adapter.in.web;
 
+import com.productdock.domain.Recommendation;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookDto {
 
     public Long id;
@@ -15,16 +22,9 @@ public class BookDto {
     public List<ReviewDto> reviews;
     public RatingDto rating;
 
-    public static class ReviewDto {
-
-        public String userId;
-        public String userFullName;
-        public Short rating;
-        public List<Recommendation> recommendation;
-        public String comment;
-    }
-
+    @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class RatingDto {
         public Double score;
         public Integer count;

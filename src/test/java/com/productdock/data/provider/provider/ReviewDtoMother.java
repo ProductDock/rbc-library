@@ -1,19 +1,19 @@
-package com.productdock.book.data.provider;
+package com.productdock.data.provider.provider;
 
-import com.productdock.book.Recommendation;
-import com.productdock.book.ReviewDto;
+import com.productdock.domain.Recommendation;
+import com.productdock.adapter.in.web.ReviewDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewDtoMother {
 
-    private static final Long defaultBookId = null;
+    private static final Long defaultBookId = 1L;
     private static final String defaultUserId = "::userId::";
     private static final String defaultUserFullName = "::userFullName::";
     private static final String defaultComment = "::comment::";
-    private static final Short defaultRating = null;
-    private static final List<Recommendation> defaultRecommendation = new ArrayList<>();
+    private static final Short defaultRating = 5;
+    private static final List<Recommendation> defaultRecommendation = List.of(Recommendation.JUNIOR, Recommendation.MEDIOR);
 
     public static ReviewDto.ReviewDtoBuilder defaultReviewDtoBuilder() {
         return ReviewDto.builder()

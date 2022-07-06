@@ -1,6 +1,11 @@
-package com.productdock.book.data.provider;
+package com.productdock.data.provider.provider;
 
-import com.productdock.book.BookEntity;
+import com.productdock.adapter.out.postresql.entity.BookEntity;
+import com.productdock.adapter.out.postresql.entity.ReviewEntity;
+
+import java.util.List;
+
+import static com.productdock.data.provider.provider.ReviewEntityMother.defaultReviewEntity;
 
 public class BookEntityMother {
 
@@ -8,9 +13,9 @@ public class BookEntityMother {
     private static final String defaultTitle = "::title::";
     private static final String defaultAuthor = "::author::";
     private static final String defaultDescription = "::description::";
-    private static final String defaultCover = null;
+    private static final String defaultCover = "::cover::";
 
-    public static BookEntity.BookEntityBuilder defaultBookBuilder() {
+    public static BookEntity.BookEntityBuilder defaultBookEntityBuilder() {
         return BookEntity.builder()
                 .id(defaultId)
                 .title(defaultTitle)
@@ -19,8 +24,8 @@ public class BookEntityMother {
                 .description(defaultDescription);
     }
 
-    public static BookEntity defaultBook() {
-        return defaultBookBuilder().build();
+    public static BookEntity defaultBookEntity() {
+        return defaultBookEntityBuilder().build();
     }
 
     public static BookEntity.BookEntityBuilder bookWithAnyCover() {

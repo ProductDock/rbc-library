@@ -1,13 +1,11 @@
-package com.productdock.book;
+package com.productdock.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.productdock.adapter.in.web.mapper.ReviewMapper;
 import com.productdock.adapter.out.kafka.BookRatingMessage;
 import com.productdock.adapter.out.postresql.BookJpaRepository;
 import com.productdock.adapter.out.postresql.ReviewJpaRepository;
 import com.productdock.adapter.out.postresql.entity.ReviewEntity;
 import com.productdock.adapter.out.postresql.entity.TopicEntity;
-import com.productdock.book.data.provider.KafkaTestBase;
+import com.productdock.data.provider.provider.KafkaTestBase;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,13 +28,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Callable;
 
-import static com.productdock.book.data.provider.BookEntityMother.*;
-import static com.productdock.book.data.provider.ReviewEntityMother.defaultReviewEntityBuilder;
-import static com.productdock.book.data.provider.TopicEntityMother.defaultTopicBuilder;
-import static java.util.Arrays.stream;
+import static com.productdock.data.provider.provider.BookEntityMother.*;
+import static com.productdock.data.provider.provider.ReviewEntityMother.defaultReviewEntityBuilder;
+import static com.productdock.data.provider.provider.TopicEntityMother.defaultTopicBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -87,7 +83,7 @@ class BookApiTest extends KafkaTestBase {
                                     "\"title\":\"::title::\"," +
                                     "\"author\":\"::author::\"," +
                                     "\"description\": \"::description::\"," +
-                                    "\"cover\":\"http://cover\"," +
+                                    "\"cover\":\"::cover::\"," +
                                     "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
                                     "\"reviews\": []}"));
         }
@@ -108,7 +104,7 @@ class BookApiTest extends KafkaTestBase {
                             "{\"id\":" + bookId + "," +
                                     "\"title\":\"::title::\"," +
                                     "\"author\":\"::author::\"," +
-                                    "\"cover\":\"http://cover\"," +
+                                    "\"cover\":\"::cover::\"," +
                                     "\"description\": \"::description::\"," +
                                     "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
                                     "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
@@ -130,7 +126,7 @@ class BookApiTest extends KafkaTestBase {
         private Long givenAnyBook() {
             var marketingTopic = givenTopicWithName("MARKETING");
             var designTopic = givenTopicWithName("DESIGN");
-            var book = bookWithAnyCover().topic(marketingTopic).topic(designTopic).build();
+            var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
             return bookRepository.save(book).getId();
         }
 
@@ -191,7 +187,7 @@ class BookApiTest extends KafkaTestBase {
                             "{\"id\":" + bookId + "," +
                                     "\"title\":\"::title::\"," +
                                     "\"author\":\"::author::\"," +
-                                    "\"cover\": null," +
+                                    "\"cover\": \"::cover::\"," +
                                     "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
                                     "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
                                     "\"rating\":1," +
@@ -282,7 +278,7 @@ class BookApiTest extends KafkaTestBase {
                             "{\"id\":" + bookId + "," +
                                     "\"title\":\"::title::\"," +
                                     "\"author\":\"::author::\"," +
-                                    "\"cover\": null," +
+                                    "\"cover\": \"::cover::\"," +
                                     "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
                                     "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
                                     "\"rating\":2," +

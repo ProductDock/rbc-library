@@ -1,6 +1,6 @@
-package com.productdock.book.data.provider;
+package com.productdock.data.provider.provider;
 
-import com.productdock.book.TopicEntity;
+import com.productdock.adapter.out.postresql.entity.TopicEntity;
 
 public class TopicEntityMother {
 

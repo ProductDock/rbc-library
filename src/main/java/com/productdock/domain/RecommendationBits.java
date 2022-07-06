@@ -1,4 +1,4 @@
-package com.productdock.book;
+package com.productdock.domain;
 
 import java.util.List;
 
