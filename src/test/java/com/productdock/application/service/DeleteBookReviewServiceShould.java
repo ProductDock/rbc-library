@@ -52,5 +52,6 @@ class DeleteBookReviewServiceShould {
         service.deleteReview(BOOK_ID, USER_ID);
 
         verify(reviewRepository).deleteById(key);
+        verify(newRatingPublisher).publishRating(BOOK_ID);
     }
 }

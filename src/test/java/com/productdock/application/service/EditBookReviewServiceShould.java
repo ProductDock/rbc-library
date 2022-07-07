@@ -50,5 +50,6 @@ class EditBookReviewServiceShould {
         service.editReview(review);
 
         verify(reviewRepository).save(review);
+        verify(newRatingPublisher).publishRating(BOOK_ID);
     }
 }

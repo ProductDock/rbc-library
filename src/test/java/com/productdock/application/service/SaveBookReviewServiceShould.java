@@ -33,10 +33,22 @@ class SaveBookReviewServiceShould {
     private PublishNewRatingUseCase newRatingPublisher;
 
     @Test
-    void saveReview() {
+    void saveReviewWhenRatingExist() {
         given(REVIEW.getReviewCompositeKey()).willReturn(REVIEW_COMPOSITE_KEY);
         given(reviewRepository.existsById(REVIEW_COMPOSITE_KEY)).willReturn(false);
         given(REVIEW_COMPOSITE_KEY.getBookId()).willReturn(BOOK_ID);
+
+        service.saveReview(REVIEW);
+
+        verify(reviewRepository).save(REVIEW);
+        verify(newRatingPublisher).publishRating(BOOK_ID);
+    }
+
+    @Test
+    void saveReviewWhenRatingDoNotExist() {
+        given(REVIEW.getReviewCompositeKey()).willReturn(REVIEW_COMPOSITE_KEY);
+        given(reviewRepository.existsById(REVIEW_COMPOSITE_KEY)).willReturn(false);
+        given(REVIEW.getRating()).willReturn(null);
 
         service.saveReview(REVIEW);
 
