@@ -30,7 +30,6 @@ import java.util.concurrent.Callable;
 
 import static com.productdock.data.provider.BookEntityMother.defaultBookEntityBuilder;
 import static com.productdock.data.provider.ReviewEntityMother.defaultReviewEntityBuilder;
-import static com.productdock.data.provider.TopicEntityMother.defaultTopicBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.is;
@@ -158,7 +157,7 @@ class BookApiTest extends KafkaTestBase {
     }
 
     private TopicEntity givenTopicWithName(String name) {
-        return defaultTopicBuilder().name(name).build();
+        return TopicEntity.builder().name(name).build();
     }
 
     @Nested
