@@ -1,10 +1,10 @@
-package com.productdock.data.provider.provider;
+package com.productdock.data.provider;
 
 import com.productdock.domain.Book;
 
 import java.util.List;
 
-import static com.productdock.data.provider.provider.ReviewMother.defaultReview;
+import static com.productdock.data.provider.ReviewMother.defaultReview;
 
 public class BookMother {
     private static final Long defaultId = null;
@@ -12,7 +12,6 @@ public class BookMother {
     private static final String defaultAuthor = "::author::";
     private static final String defaultDescription = "::description::";
     private static final String defaultCover = null;
-    private static final List<String> defaultTopics = List.of("::topic::");
     private static final List<Book.Review> defaultReviews = List.of(defaultReview());
 
     public static Book.BookBuilder defaultBookBuilder() {
@@ -22,8 +21,7 @@ public class BookMother {
                 .author(defaultAuthor)
                 .cover(defaultCover)
                 .description(defaultDescription)
-                .reviews(defaultReviews)
-                .topics(defaultTopics);
+                .reviews(defaultReviews);
     }
 
     public static Book defaultBook() {

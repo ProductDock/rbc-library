@@ -4,8 +4,8 @@ import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import static com.productdock.data.provider.provider.ReviewEntityMother.defaultReviewEntity;
-import static com.productdock.data.provider.provider.ReviewMother.defaultReview;
+import static com.productdock.data.provider.ReviewEntityMother.defaultReviewEntity;
+import static com.productdock.data.provider.ReviewMother.defaultReview;
 
 class ReviewMapperShould {
 

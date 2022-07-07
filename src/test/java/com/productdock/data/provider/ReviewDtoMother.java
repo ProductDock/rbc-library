@@ -1,9 +1,8 @@
-package com.productdock.data.provider.provider;
+package com.productdock.data.provider;
 
-import com.productdock.domain.Recommendation;
 import com.productdock.adapter.in.web.ReviewDto;
+import com.productdock.domain.Recommendation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewDtoMother {

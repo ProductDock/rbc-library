@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.productdock.data.provider.provider.ReviewMother.defaultReview;
+import static com.productdock.data.provider.ReviewMother.defaultReview;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BookShould {
@@ -13,7 +13,7 @@ class BookShould {
     private static final Book.Review REVIEW = defaultReview();
 
     @Test
-    void calculateRatingWhenNoReviewsWithRating(){
+    void calculateRatingWhenNoReviewsWithRating() {
         var book = Book.builder().reviews(List.of(EMPTY_REVIEW)).build();
 
         book.calculateRating();
@@ -23,7 +23,7 @@ class BookShould {
     }
 
     @Test
-    void calculateRatingWhenReviewsWithRatingExist(){
+    void calculateRatingWhenReviewsWithRatingExist() {
         var book = Book.builder().reviews(List.of(REVIEW, REVIEW, REVIEW)).build();
 
         book.calculateRating();

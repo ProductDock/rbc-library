@@ -1,7 +1,7 @@
 package com.productdock.adapter.out.postresql;
 
-import com.productdock.adapter.out.postresql.mapper.ReviewMapper;
 import com.productdock.adapter.out.postresql.mapper.ReviewCompositeKeyMapper;
+import com.productdock.adapter.out.postresql.mapper.ReviewMapper;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
 import com.productdock.exception.BookReviewException;
@@ -29,7 +29,7 @@ public class ReviewRepository implements ReviewPersistenceOutPort {
     @Override
     public Optional<Book.Review> findById(Book.Review.ReviewCompositeKey compositeKey) {
         var compositeKeyEntity = reviewCompositeKeyMapper.toEntity(compositeKey);
-        var reviewEntity= jpaRepository.findById(compositeKeyEntity);
+        var reviewEntity = jpaRepository.findById(compositeKeyEntity);
         if (reviewEntity.isEmpty()) {
             log.debug("Unable to find a review with composite key: {}", compositeKey);
             throw new BookReviewException("Review not found");

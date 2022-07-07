@@ -1,4 +1,4 @@
-package com.productdock.data.provider.provider;
+package com.productdock.data.provider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.productdock.adapter.out.kafka.BookRatingMessage;

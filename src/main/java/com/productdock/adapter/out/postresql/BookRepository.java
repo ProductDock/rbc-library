@@ -19,7 +19,7 @@ public class BookRepository implements BookPersistenceOutPort {
     private BookMapper bookMapper;
 
     @Override
-    public Optional<Book> findById(Long bookId){
+    public Optional<Book> findById(Long bookId) {
         Optional<BookEntity> bookEntity = jpaRepository.findById(bookId);
         if (bookEntity.isEmpty()) {
             log.debug("Unable to find a book with book id: {}", bookId);

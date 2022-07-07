@@ -1,8 +1,6 @@
 package com.productdock.application.service;
 
 import com.productdock.application.port.in.PublishNewRatingUseCase;
-import com.productdock.application.port.out.messaging.BookMessagingOutPort;
-import com.productdock.application.port.out.persistence.BookPersistenceOutPort;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
 import org.junit.jupiter.api.Test;
@@ -35,23 +33,23 @@ class DeleteBookReviewServiceShould {
     private PublishNewRatingUseCase newRatingPublisher;
 
     @Test
-    void deleteReviewWhenReviewHasNoRating(){
+    void deleteReviewWhenReviewHasNoRating() {
         var key = Book.Review.ReviewCompositeKey.builder().bookId(BOOK_ID).userId(USER_ID).build();
         given(reviewRepository.findById(key)).willReturn(REVIEW);
         given(REVIEW.get().getRating()).willReturn(null);
 
-        service.deleteReview(BOOK_ID,USER_ID);
+        service.deleteReview(BOOK_ID, USER_ID);
 
         verify(reviewRepository).deleteById(key);
     }
 
     @Test
-    void deleteReviewAndPublishMessageWhenReviewHasRating(){
+    void deleteReviewAndPublishMessageWhenReviewHasRating() {
         var key = Book.Review.ReviewCompositeKey.builder().bookId(BOOK_ID).userId(USER_ID).build();
         given(reviewRepository.findById(key)).willReturn(REVIEW);
         given(REVIEW.get().getRating()).willReturn(REVIEW_RATING);
 
-        service.deleteReview(BOOK_ID,USER_ID);
+        service.deleteReview(BOOK_ID, USER_ID);
 
         verify(reviewRepository).deleteById(key);
     }

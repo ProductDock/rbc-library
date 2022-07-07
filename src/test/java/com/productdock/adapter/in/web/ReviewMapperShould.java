@@ -5,8 +5,8 @@ import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import static com.productdock.data.provider.provider.ReviewDtoMother.defaultReviewDto;
-import static com.productdock.data.provider.provider.ReviewMother.defaultReview;
+import static com.productdock.data.provider.ReviewDtoMother.defaultReviewDto;
+import static com.productdock.data.provider.ReviewMother.defaultReview;
 import static com.productdock.domain.Recommendation.JUNIOR;
 import static com.productdock.domain.Recommendation.MEDIOR;
 

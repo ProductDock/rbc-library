@@ -16,7 +16,7 @@ public interface BookMapper {
     Book toDomain(BookEntity source);
 
     @AfterMapping
-    default void setRating(@MappingTarget Book book){
+    default void setRating(@MappingTarget Book book) {
         book.calculateRating();
     }
 
@@ -24,4 +24,5 @@ public interface BookMapper {
     static List<String> topicEntitiesToTopicNameList(Set<TopicEntity> topics) {
         return topics.stream().map(TopicEntity::getName).toList();
     }
+
 }

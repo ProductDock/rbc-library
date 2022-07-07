@@ -32,7 +32,7 @@ class BookRepositoryShould {
     private BookMapper bookMapper;
 
     @Test
-    void findBookWhenIdExist(){
+    void findBookWhenIdExist() {
         given(bookJpaRepository.findById(BOOK_ID)).willReturn(BOOK_ENTITY);
         given(bookMapper.toDomain(BOOK_ENTITY.get())).willReturn(BOOK);
 
@@ -42,7 +42,7 @@ class BookRepositoryShould {
     }
 
     @Test
-    void findBookWhenIdNotExist(){
+    void findBookWhenIdNotExist() {
         given(bookJpaRepository.findById(BOOK_ID)).willReturn(Optional.empty());
 
         var book = bookRepository.findById(BOOK_ID);

@@ -1,8 +1,8 @@
 package com.productdock.adapter.out.postresql;
 
 import com.productdock.adapter.out.postresql.entity.ReviewEntity;
-import com.productdock.adapter.out.postresql.mapper.ReviewMapper;
 import com.productdock.adapter.out.postresql.mapper.ReviewCompositeKeyMapper;
+import com.productdock.adapter.out.postresql.mapper.ReviewMapper;
 import com.productdock.domain.Book;
 import com.productdock.exception.BookReviewException;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class ReviewRepositoryShould {
     private ReviewMapper reviewMapper;
 
     @Test
-    void findReviewWhenIdExist(){
+    void findReviewWhenIdExist() {
         given(reviewCompositeKeyMapper.toEntity(REVIEW_COMPOSITE_KEY)).willReturn(REVIEW_COMPOSITE_KEY_ENTITY);
         given(reviewJpaRepository.findById(REVIEW_COMPOSITE_KEY_ENTITY)).willReturn(REVIEW_ENTITY);
         given(reviewMapper.toDomain(REVIEW_ENTITY.get())).willReturn(REVIEW);
@@ -51,7 +51,7 @@ class ReviewRepositoryShould {
     }
 
     @Test
-    void throwReviewNotFoundExceptionWhenNoIdExist(){
+    void throwReviewNotFoundExceptionWhenNoIdExist() {
         given(reviewCompositeKeyMapper.toEntity(REVIEW_COMPOSITE_KEY)).willReturn(REVIEW_COMPOSITE_KEY_ENTITY);
         given(reviewJpaRepository.findById(REVIEW_COMPOSITE_KEY_ENTITY)).willReturn(Optional.empty());
 

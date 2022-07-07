@@ -1,11 +1,10 @@
-package com.productdock.data.provider.provider;
+package com.productdock.data.provider;
 
-import com.productdock.adapter.out.postresql.entity.ReviewEntity;
+import com.productdock.domain.Book;
 
 import java.util.Calendar;
 
-public class ReviewEntityMother {
-
+public class ReviewMother {
     private static final Long defaultBookId = 1L;
     private static final String defaultUserId = "::userId::";
     private static final String defaultUserFullName = "::userFullName::";
@@ -13,24 +12,22 @@ public class ReviewEntityMother {
     private static final Short defaultRating = 2;
     private static final Integer defaultRecommendation = 3;
 
-    public static ReviewEntity.ReviewEntityBuilder defaultReviewEntityBuilder() {
+    public static Book.Review.ReviewBuilder defaultReviewBuilder() {
         var calendar = Calendar.getInstance();
         calendar.set(2022, Calendar.APRIL, 5);
 
-        return ReviewEntity.builder()
-                .reviewCompositeKey(ReviewEntity.ReviewCompositeKey.builder()
+        return Book.Review.builder()
+                .reviewCompositeKey(Book.Review.ReviewCompositeKey.builder()
                         .bookId(defaultBookId)
                         .userId(defaultUserId)
                         .build())
                 .userFullName(defaultUserFullName)
                 .comment(defaultComment)
                 .rating(defaultRating)
-                .date(calendar.getTime())
                 .recommendation(defaultRecommendation);
     }
 
-    public static ReviewEntity defaultReviewEntity() {
-        return defaultReviewEntityBuilder().build();
+    public static Book.Review defaultReview() {
+        return defaultReviewBuilder().build();
     }
-
 }

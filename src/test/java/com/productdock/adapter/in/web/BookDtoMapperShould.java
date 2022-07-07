@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static com.productdock.data.provider.provider.BookMother.defaultBook;
+import static com.productdock.data.provider.BookMother.defaultBook;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {BookDtoMapperImpl.class, ReviewDtoMapperImpl.class})

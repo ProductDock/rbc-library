@@ -27,7 +27,7 @@ class GetBookServiceShould {
     private BookPersistenceOutPort bookRepository;
 
     @Test
-    void getBookById(){
+    void getBookById() {
         given(bookRepository.findById(BOOK_ID)).willReturn(BOOK);
 
         var book = getBookService.getById(BOOK_ID);

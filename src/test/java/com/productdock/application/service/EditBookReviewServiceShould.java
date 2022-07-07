@@ -29,7 +29,7 @@ class EditBookReviewServiceShould {
     private PublishNewRatingUseCase newRatingPublisher;
 
     @Test
-    void editReviewWhenRatingNotEdited(){
+    void editReviewWhenRatingNotEdited() {
         var reviewCompositeKey = Book.Review.ReviewCompositeKey.builder().bookId(BOOK_ID).build();
         var review = Book.Review.builder().rating((short) 5).reviewCompositeKey(reviewCompositeKey).build();
         var existingReview = Book.Review.builder().rating((short) 5).build();
@@ -40,8 +40,8 @@ class EditBookReviewServiceShould {
         verify(reviewRepository).save(review);
     }
 
-   @Test
-    void editReviewWhenRatingEdited(){
+    @Test
+    void editReviewWhenRatingEdited() {
         var reviewCompositeKey = Book.Review.ReviewCompositeKey.builder().bookId(BOOK_ID).build();
         var review = Book.Review.builder().rating((short) 5).reviewCompositeKey(reviewCompositeKey).build();
         var existingReview = Book.Review.builder().rating((short) 3).build();

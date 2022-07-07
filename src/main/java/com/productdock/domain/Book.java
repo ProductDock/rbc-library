@@ -41,7 +41,7 @@ public class Book {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Review{
+    public static class Review {
         private ReviewCompositeKey reviewCompositeKey;
         private String userFullName;
         private String comment;

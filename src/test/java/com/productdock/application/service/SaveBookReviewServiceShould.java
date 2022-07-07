@@ -33,7 +33,7 @@ class SaveBookReviewServiceShould {
     private PublishNewRatingUseCase newRatingPublisher;
 
     @Test
-    void saveReview(){
+    void saveReview() {
         given(REVIEW.getReviewCompositeKey()).willReturn(REVIEW_COMPOSITE_KEY);
         given(reviewRepository.existsById(REVIEW_COMPOSITE_KEY)).willReturn(false);
         given(REVIEW_COMPOSITE_KEY.getBookId()).willReturn(BOOK_ID);
@@ -44,7 +44,7 @@ class SaveBookReviewServiceShould {
     }
 
     @Test
-    void throwExceptionWhenReviewWithCompositeKeyExist(){
+    void throwExceptionWhenReviewWithCompositeKeyExist() {
         given(REVIEW.getReviewCompositeKey()).willReturn(REVIEW_COMPOSITE_KEY);
         given(reviewRepository.existsById(REVIEW_COMPOSITE_KEY)).willReturn(true);
 
