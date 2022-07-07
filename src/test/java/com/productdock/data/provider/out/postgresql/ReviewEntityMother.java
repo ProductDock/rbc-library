@@ -1,4 +1,4 @@
-package com.productdock.data.provider;
+package com.productdock.data.provider.out.postgresql;
 
 import com.productdock.adapter.out.postresql.entity.ReviewEntity;
 

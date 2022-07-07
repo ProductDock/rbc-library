@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.productdock.data.provider.ReviewMother.defaultReview;
+import static com.productdock.data.provider.out.postgresql.ReviewMother.defaultReview;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BookShould {

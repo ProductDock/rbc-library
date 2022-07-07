@@ -9,8 +9,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
-import static com.productdock.data.provider.BookEntityMother.defaultBookEntityBuilder;
-import static com.productdock.data.provider.ReviewEntityMother.defaultReviewEntity;
+import static com.productdock.data.provider.out.postgresql.BookEntityMother.defaultBookEntityBuilder;
+import static com.productdock.data.provider.out.postgresql.ReviewEntityMother.defaultReviewEntity;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {BookMapperImpl.class, ReviewMapperImpl.class})

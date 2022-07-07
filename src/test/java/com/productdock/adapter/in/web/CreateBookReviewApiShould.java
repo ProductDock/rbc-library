@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import static com.productdock.data.provider.ReviewDtoMother.defaultReviewDto;
+import static com.productdock.data.provider.in.web.ReviewDtoMother.defaultReviewDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;

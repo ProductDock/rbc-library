@@ -1,10 +1,10 @@
-package com.productdock.data.provider;
+package com.productdock.data.provider.domain;
 
 import com.productdock.domain.Book;
 
 import java.util.List;
 
-import static com.productdock.data.provider.ReviewMother.defaultReview;
+import static com.productdock.data.provider.out.postgresql.ReviewMother.defaultReview;
 
 public class BookMother {
     private static final Long defaultId = null;
