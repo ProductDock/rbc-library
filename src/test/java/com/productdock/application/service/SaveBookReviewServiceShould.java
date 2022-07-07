@@ -21,6 +21,7 @@ class SaveBookReviewServiceShould {
     private static final Book.Review.ReviewCompositeKey REVIEW_COMPOSITE_KEY = mock(Book.Review.ReviewCompositeKey.class);
     private static final Book.Review REVIEW = mock(Book.Review.class);
     private static final Long BOOK_ID = 1L;
+    private static final Short RATING = 5;
     private static final String USER_LEFT_REVIEW_FOR_BOOK = "The user cannot enter more than one comment for a particular book.";
 
     @InjectMocks
@@ -37,6 +38,7 @@ class SaveBookReviewServiceShould {
         given(REVIEW.getReviewCompositeKey()).willReturn(REVIEW_COMPOSITE_KEY);
         given(reviewRepository.existsById(REVIEW_COMPOSITE_KEY)).willReturn(false);
         given(REVIEW_COMPOSITE_KEY.getBookId()).willReturn(BOOK_ID);
+        given(REVIEW.getRating()).willReturn(RATING);
 
         service.saveReview(REVIEW);
 
