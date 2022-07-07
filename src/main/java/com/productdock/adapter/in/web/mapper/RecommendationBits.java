@@ -1,4 +1,4 @@
-package com.productdock.domain;
+package com.productdock.adapter.in.web.mapper;
 
 import java.util.List;
 

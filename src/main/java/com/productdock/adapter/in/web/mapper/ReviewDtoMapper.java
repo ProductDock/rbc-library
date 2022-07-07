@@ -2,8 +2,6 @@ package com.productdock.adapter.in.web.mapper;
 
 import com.productdock.adapter.in.web.ReviewDto;
 import com.productdock.domain.Book;
-import com.productdock.domain.Recommendation;
-import com.productdock.domain.RecommendationBits;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

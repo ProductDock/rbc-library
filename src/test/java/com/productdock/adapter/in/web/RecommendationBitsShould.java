@@ -1,5 +1,7 @@
-package com.productdock.domain;
+package com.productdock.adapter.in.web;
 
+import com.productdock.adapter.in.web.mapper.Recommendation;
+import com.productdock.adapter.in.web.mapper.RecommendationBits;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -7,7 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.productdock.domain.Recommendation.*;
+import static com.productdock.adapter.in.web.mapper.Recommendation.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RecommendationBitsShould {

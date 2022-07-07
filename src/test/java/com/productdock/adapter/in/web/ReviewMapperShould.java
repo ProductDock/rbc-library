@@ -7,8 +7,8 @@ import org.mapstruct.factory.Mappers;
 
 import static com.productdock.data.provider.ReviewDtoMother.defaultReviewDto;
 import static com.productdock.data.provider.ReviewMother.defaultReview;
-import static com.productdock.domain.Recommendation.JUNIOR;
-import static com.productdock.domain.Recommendation.MEDIOR;
+import static com.productdock.adapter.in.web.mapper.Recommendation.JUNIOR;
+import static com.productdock.adapter.in.web.mapper.Recommendation.MEDIOR;
 
 class ReviewMapperShould {
 

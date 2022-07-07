@@ -1,8 +1,8 @@
-package com.productdock.domain;
+package com.productdock.adapter.in.web;
 
 import org.junit.jupiter.api.Test;
 
-import static com.productdock.domain.Recommendation.*;
+import static com.productdock.adapter.in.web.mapper.Recommendation.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RecommendationShould {

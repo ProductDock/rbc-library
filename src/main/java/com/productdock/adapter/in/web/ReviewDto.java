@@ -1,6 +1,6 @@
 package com.productdock.adapter.in.web;
 
-import com.productdock.domain.Recommendation;
+import com.productdock.adapter.in.web.mapper.Recommendation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
