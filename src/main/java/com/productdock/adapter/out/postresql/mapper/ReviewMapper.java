@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
-public interface BookReviewMapper {
+public interface ReviewMapper {
 
     @Mapping(source = "reviewCompositeKey.userId", target = "reviewCompositeKey.userId")
     @Mapping(source = "reviewCompositeKey.bookId", target = "reviewCompositeKey.bookId")

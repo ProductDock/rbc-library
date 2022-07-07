@@ -7,16 +7,16 @@ import org.mapstruct.factory.Mappers;
 import static com.productdock.data.provider.provider.ReviewEntityMother.defaultReviewEntity;
 import static com.productdock.data.provider.provider.ReviewMother.defaultReview;
 
-class BookReviewMapperShould {
+class ReviewMapperShould {
 
-    private BookReviewMapper bookReviewMapper = Mappers.getMapper(BookReviewMapper.class);
+    private ReviewMapper reviewMapper = Mappers.getMapper(ReviewMapper.class);
 
     @Test
     void mapReviewEntityToReview() {
 
         var reviewEntity = defaultReviewEntity();
 
-        var review = bookReviewMapper.toDomain(reviewEntity);
+        var review = reviewMapper.toDomain(reviewEntity);
 
         try (var softly = new AutoCloseableSoftAssertions()) {
             softly.assertThat(review.getReviewCompositeKey().getUserId()).isEqualTo(reviewEntity.getReviewCompositeKey().getUserId());
@@ -33,7 +33,7 @@ class BookReviewMapperShould {
 
         var review = defaultReview();
 
-        var reviewEntity = bookReviewMapper.toEntity(review);
+        var reviewEntity = reviewMapper.toEntity(review);
 
         try (var softly = new AutoCloseableSoftAssertions()) {
             softly.assertThat(reviewEntity.getReviewCompositeKey().getUserId()).isEqualTo(review.getReviewCompositeKey().getUserId());

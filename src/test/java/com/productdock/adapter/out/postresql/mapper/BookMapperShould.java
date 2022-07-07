@@ -9,12 +9,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
-import static com.productdock.data.provider.provider.BookEntityMother.defaultBookEntity;
 import static com.productdock.data.provider.provider.BookEntityMother.defaultBookEntityBuilder;
 import static com.productdock.data.provider.provider.ReviewEntityMother.defaultReviewEntity;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {BookMapperImpl.class, BookReviewMapperImpl.class})
+@ContextConfiguration(classes = {BookMapperImpl.class, ReviewMapperImpl.class})
 class BookMapperShould {
 
     @Autowired

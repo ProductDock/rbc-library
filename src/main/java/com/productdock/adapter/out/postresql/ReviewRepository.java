@@ -1,6 +1,6 @@
 package com.productdock.adapter.out.postresql;
 
-import com.productdock.adapter.out.postresql.mapper.BookReviewMapper;
+import com.productdock.adapter.out.postresql.mapper.ReviewMapper;
 import com.productdock.adapter.out.postresql.mapper.ReviewCompositeKeyMapper;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
@@ -18,7 +18,7 @@ public class ReviewRepository implements ReviewPersistenceOutPort {
 
     private ReviewJpaRepository jpaRepository;
     private ReviewCompositeKeyMapper reviewCompositeKeyMapper;
-    private BookReviewMapper reviewMapper;
+    private ReviewMapper reviewMapper;
 
     @Override
     public boolean existsById(Book.Review.ReviewCompositeKey compositeKey) {

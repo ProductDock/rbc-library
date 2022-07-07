@@ -9,7 +9,7 @@ import org.mapstruct.*;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", uses = {BookReviewMapper.class}, builder = @Builder(disableBuilder = true))
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", uses = {ReviewMapper.class}, builder = @Builder(disableBuilder = true))
 public interface BookMapper {
 
     @Mapping(source = "topics", target = "topics", qualifiedByName = "topicEntitiesToTopicNameList")

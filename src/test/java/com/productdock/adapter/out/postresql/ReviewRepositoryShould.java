@@ -1,7 +1,7 @@
 package com.productdock.adapter.out.postresql;
 
 import com.productdock.adapter.out.postresql.entity.ReviewEntity;
-import com.productdock.adapter.out.postresql.mapper.BookReviewMapper;
+import com.productdock.adapter.out.postresql.mapper.ReviewMapper;
 import com.productdock.adapter.out.postresql.mapper.ReviewCompositeKeyMapper;
 import com.productdock.domain.Book;
 import com.productdock.exception.BookReviewException;
@@ -37,7 +37,7 @@ class ReviewRepositoryShould {
     private ReviewCompositeKeyMapper reviewCompositeKeyMapper;
 
     @Mock
-    private BookReviewMapper reviewMapper;
+    private ReviewMapper reviewMapper;
 
     @Test
     void findReviewWhenIdExist(){
