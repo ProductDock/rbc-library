@@ -1,6 +1,5 @@
 package com.productdock.application.service;
 
-import com.productdock.adapter.out.kafka.BookRatingMessage;
 import com.productdock.application.port.in.PublishNewRatingUseCase;
 import com.productdock.application.port.out.messaging.BookMessagingOutPort;
 import com.productdock.application.port.out.persistence.BookPersistenceOutPort;

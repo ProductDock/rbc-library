@@ -5,10 +5,10 @@ import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import static com.productdock.data.provider.in.web.ReviewDtoMother.defaultReviewDto;
-import static com.productdock.data.provider.out.postgresql.ReviewMother.defaultReview;
 import static com.productdock.adapter.in.web.mapper.Recommendation.JUNIOR;
 import static com.productdock.adapter.in.web.mapper.Recommendation.MEDIOR;
+import static com.productdock.data.provider.in.web.ReviewDtoMother.defaultReviewDto;
+import static com.productdock.data.provider.out.postgresql.ReviewMother.defaultReview;
 
 class ReviewMapperShould {
 
