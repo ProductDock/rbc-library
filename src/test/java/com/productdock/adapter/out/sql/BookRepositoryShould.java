@@ -1,7 +1,7 @@
-package com.productdock.adapter.out.postgresql;
+package com.productdock.adapter.out.sql;
 
-import com.productdock.adapter.out.postgresql.entity.BookEntity;
-import com.productdock.adapter.out.postgresql.mapper.BookMapper;
+import com.productdock.adapter.out.sql.entity.BookEntity;
+import com.productdock.adapter.out.sql.mapper.BookMapper;
 import com.productdock.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

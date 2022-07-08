@@ -1,7 +1,7 @@
 package com.productdock.adapter.in.web;
 
 import com.productdock.application.port.in.DeleteBookReviewUseCase;
-import com.productdock.exception.ForbiddenAccessException;
+import com.productdock.domain.exception.ForbiddenAccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;

@@ -1,10 +1,10 @@
-package com.productdock.adapter.out.postgresql;
+package com.productdock.adapter.out.sql;
 
-import com.productdock.adapter.out.postgresql.entity.ReviewEntity;
-import com.productdock.adapter.out.postgresql.mapper.ReviewCompositeKeyMapper;
-import com.productdock.adapter.out.postgresql.mapper.ReviewMapper;
+import com.productdock.adapter.out.sql.entity.ReviewEntity;
+import com.productdock.adapter.out.sql.mapper.ReviewCompositeKeyMapper;
+import com.productdock.adapter.out.sql.mapper.ReviewMapper;
 import com.productdock.domain.Book;
-import com.productdock.exception.BookReviewException;
+import com.productdock.domain.exception.BookReviewException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

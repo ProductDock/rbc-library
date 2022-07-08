@@ -1,6 +1,6 @@
 package com.productdock.data.provider.out.postgresql;
 
-import com.productdock.adapter.out.postgresql.entity.BookEntity;
+import com.productdock.adapter.out.sql.entity.BookEntity;
 
 public class BookEntityMother {
 

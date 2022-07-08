@@ -1,4 +1,4 @@
-package com.productdock.adapter.out.postgresql.mapper;
+package com.productdock.adapter.out.sql.mapper;
 
 import com.productdock.domain.Book;
 import org.assertj.core.api.AutoCloseableSoftAssertions;

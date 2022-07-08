@@ -1,7 +1,7 @@
 package com.productdock.adapter.in.web;
 
 import com.productdock.application.port.in.DeleteBookReviewUseCase;
-import com.productdock.exception.ForbiddenAccessException;
+import com.productdock.domain.exception.ForbiddenAccessException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

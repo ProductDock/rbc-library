@@ -1,4 +1,4 @@
-package com.productdock.adapter.out.postgresql.entity;
+package com.productdock.adapter.out.sql.entity;
 
 import lombok.*;
 

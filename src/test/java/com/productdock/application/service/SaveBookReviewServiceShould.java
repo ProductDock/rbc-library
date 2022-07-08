@@ -3,7 +3,7 @@ package com.productdock.application.service;
 import com.productdock.application.port.in.PublishNewRatingUseCase;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
-import com.productdock.exception.BookReviewException;
+import com.productdock.domain.exception.BookReviewException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

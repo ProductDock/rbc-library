@@ -4,7 +4,7 @@ import com.productdock.application.port.in.PublishNewRatingUseCase;
 import com.productdock.application.port.in.SaveBookReviewUseCase;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
-import com.productdock.exception.BookReviewException;
+import com.productdock.domain.exception.BookReviewException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

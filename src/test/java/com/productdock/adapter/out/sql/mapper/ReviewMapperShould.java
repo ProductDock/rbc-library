@@ -1,4 +1,4 @@
-package com.productdock.adapter.out.postgresql.mapper;
+package com.productdock.adapter.out.sql.mapper;
 
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.Test;

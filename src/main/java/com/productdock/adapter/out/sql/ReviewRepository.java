@@ -1,10 +1,10 @@
-package com.productdock.adapter.out.postgresql;
+package com.productdock.adapter.out.sql;
 
-import com.productdock.adapter.out.postgresql.mapper.ReviewCompositeKeyMapper;
-import com.productdock.adapter.out.postgresql.mapper.ReviewMapper;
+import com.productdock.adapter.out.sql.mapper.ReviewCompositeKeyMapper;
+import com.productdock.adapter.out.sql.mapper.ReviewMapper;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
-import com.productdock.exception.BookReviewException;
+import com.productdock.domain.exception.BookReviewException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

@@ -1,7 +1,7 @@
-package com.productdock.adapter.out.postgresql.mapper;
+package com.productdock.adapter.out.sql.mapper;
 
 
-import com.productdock.adapter.out.postgresql.entity.ReviewEntity;
+import com.productdock.adapter.out.sql.entity.ReviewEntity;
 import com.productdock.domain.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
