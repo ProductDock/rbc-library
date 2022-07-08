@@ -25,7 +25,7 @@ public class PublishNewRatingService implements PublishNewRatingUseCase {
     @SneakyThrows
     public void publishRating(Long bookId) {
         var book = bookRepository.findById(bookId).orElseThrow();
-        bookMessagingOutPort.sendMessage(kafkaTopic, new BookRatingMessage(bookId, book.getRating().getScore(), book.getRating().getCount()));
+        bookMessagingOutPort.sendMessage(kafkaTopic, book);
     }
 
 }
