@@ -27,10 +27,10 @@ public class Book {
         var reviewsCount = (int) getRatedReviews(reviews).count();
         if (reviewsCount == 0) {
             rating = new Rating();
-        } else {
-            var score = getRatedReviews(reviews).mapToDouble(Review::getRating).average().orElse(0.0);
-            rating = new Rating(score, reviewsCount);
+            return;
         }
+        var score = getRatedReviews(reviews).mapToDouble(Review::getRating).average().orElse(0.0);
+        rating = new Rating(score, reviewsCount);
     }
 
     private Stream<Review> getRatedReviews(List<Review> reviews) {
