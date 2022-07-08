@@ -1,6 +1,6 @@
 package com.productdock.data.provider.out.postgresql;
 
-import com.productdock.adapter.out.postresql.entity.ReviewEntity;
+import com.productdock.adapter.out.postgresql.entity.ReviewEntity;
 
 import java.util.Calendar;
 

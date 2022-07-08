@@ -1,6 +1,6 @@
-package com.productdock.adapter.out.postresql;
+package com.productdock.adapter.out.postgresql;
 
-import com.productdock.adapter.out.postresql.entity.BookEntity;
+import com.productdock.adapter.out.postgresql.entity.BookEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

@@ -1,7 +1,7 @@
-package com.productdock.adapter.out.postresql;
+package com.productdock.adapter.out.postgresql;
 
-import com.productdock.adapter.out.postresql.mapper.ReviewCompositeKeyMapper;
-import com.productdock.adapter.out.postresql.mapper.ReviewMapper;
+import com.productdock.adapter.out.postgresql.mapper.ReviewCompositeKeyMapper;
+import com.productdock.adapter.out.postgresql.mapper.ReviewMapper;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
 import com.productdock.exception.BookReviewException;

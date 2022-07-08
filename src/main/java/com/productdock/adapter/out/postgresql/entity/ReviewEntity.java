@@ -1,4 +1,4 @@
-package com.productdock.adapter.out.postresql.entity;
+package com.productdock.adapter.out.postgresql.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

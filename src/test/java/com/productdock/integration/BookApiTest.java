@@ -1,10 +1,10 @@
 package com.productdock.integration;
 
 import com.productdock.adapter.out.kafka.BookRatingMessage;
-import com.productdock.adapter.out.postresql.BookJpaRepository;
-import com.productdock.adapter.out.postresql.ReviewJpaRepository;
-import com.productdock.adapter.out.postresql.entity.ReviewEntity;
-import com.productdock.adapter.out.postresql.entity.TopicEntity;
+import com.productdock.adapter.out.postgresql.BookJpaRepository;
+import com.productdock.adapter.out.postgresql.ReviewJpaRepository;
+import com.productdock.adapter.out.postgresql.entity.ReviewEntity;
+import com.productdock.adapter.out.postgresql.entity.TopicEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.AfterAll;

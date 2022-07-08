@@ -1,8 +1,8 @@
-package com.productdock.adapter.out.postresql.mapper;
+package com.productdock.adapter.out.postgresql.mapper;
 
 
-import com.productdock.adapter.out.postresql.entity.BookEntity;
-import com.productdock.adapter.out.postresql.entity.TopicEntity;
+import com.productdock.adapter.out.postgresql.entity.BookEntity;
+import com.productdock.adapter.out.postgresql.entity.TopicEntity;
 import com.productdock.domain.Book;
 import org.mapstruct.*;
 

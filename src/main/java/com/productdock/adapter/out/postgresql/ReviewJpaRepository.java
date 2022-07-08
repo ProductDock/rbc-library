@@ -1,6 +1,6 @@
-package com.productdock.adapter.out.postresql;
+package com.productdock.adapter.out.postgresql;
 
-import com.productdock.adapter.out.postresql.entity.ReviewEntity;
+import com.productdock.adapter.out.postgresql.entity.ReviewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
