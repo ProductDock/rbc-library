@@ -21,16 +21,14 @@ public class Book {
     private String description;
     private List<String> topics;
     private List<Review> reviews;
-    private Rating rating;
 
-    public void calculateRating() {
+    public Rating getRating() {
         var reviewsCount = (int) getRatedReviews(reviews).count();
         if (reviewsCount == 0) {
-            rating = new Rating();
-            return;
+            return new Rating();
         }
         var score = getRatedReviews(reviews).mapToDouble(Review::getRating).average().orElse(0.0);
-        rating = new Rating(score, reviewsCount);
+        return new Rating(score, reviewsCount);
     }
 
     private Stream<Review> getRatedReviews(List<Review> reviews) {

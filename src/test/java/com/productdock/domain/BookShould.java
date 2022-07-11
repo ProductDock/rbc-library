@@ -16,19 +16,19 @@ class BookShould {
     void calculateRatingWhenNoReviewsWithRating() {
         var book = Book.builder().reviews(List.of(EMPTY_REVIEW)).build();
 
-        book.calculateRating();
+        Book.Rating rating = book.getRating();
 
-        assertThat(book.getRating().getScore()).isNull();
-        assertThat(book.getRating().getCount()).isZero();
+        assertThat(rating.getScore()).isNull();
+        assertThat(rating.getCount()).isZero();
     }
 
     @Test
     void calculateRatingWhenReviewsWithRatingExist() {
         var book = Book.builder().reviews(List.of(REVIEW, REVIEW, REVIEW)).build();
 
-        book.calculateRating();
+        Book.Rating rating = book.getRating();
 
-        assertThat(book.getRating().getScore()).isEqualTo(2);
-        assertThat(book.getRating().getCount()).isEqualTo(3);
+        assertThat(rating.getScore()).isEqualTo(2);
+        assertThat(rating.getCount()).isEqualTo(3);
     }
 }

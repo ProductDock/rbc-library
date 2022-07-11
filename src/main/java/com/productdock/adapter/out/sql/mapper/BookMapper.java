@@ -15,11 +15,6 @@ public interface BookMapper {
     @Mapping(source = "topics", target = "topics", qualifiedByName = "topicEntitiesToTopicNameList")
     Book toDomain(BookEntity source);
 
-    @AfterMapping
-    default void setRating(@MappingTarget Book book) {
-        book.calculateRating();
-    }
-
     @Named("topicEntitiesToTopicNameList")
     static List<String> topicEntitiesToTopicNameList(Set<TopicEntity> topics) {
         return topics.stream().map(TopicEntity::getName).toList();
