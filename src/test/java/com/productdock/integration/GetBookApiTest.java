@@ -1,7 +1,7 @@
 package com.productdock.integration;
 
-import com.productdock.adapter.out.sql.BookJpaRepository;
-import com.productdock.adapter.out.sql.ReviewJpaRepository;
+import com.productdock.adapter.out.sql.BookRepository;
+import com.productdock.adapter.out.sql.ReviewRepository;
 import com.productdock.adapter.out.sql.entity.ReviewJpaEntity;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
@@ -17,8 +17,8 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.productdock.data.provider.out.postgresql.BookEntityMother.defaultBookEntityBuilder;
-import static com.productdock.data.provider.out.postgresql.ReviewEntityMother.defaultReviewEntityBuilder;
+import static com.productdock.data.provider.out.sql.BookEntityMother.defaultBookEntityBuilder;
+import static com.productdock.data.provider.out.sql.ReviewJpaEntityMother.defaultReviewEntityBuilder;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -31,10 +31,10 @@ class GetBookApiTest extends KafkaTestBase {
     public static final String SECOND_REVIEWER = "user2";
 
     @Autowired
-    private BookJpaRepository bookRepository;
+    private BookRepository bookRepository;
 
     @Autowired
-    private ReviewJpaRepository reviewRepository;
+    private ReviewRepository reviewRepository;
 
     @Autowired
     private RequestProducer requestProducer;

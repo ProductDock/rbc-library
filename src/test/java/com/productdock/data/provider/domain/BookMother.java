@@ -4,7 +4,7 @@ import com.productdock.domain.Book;
 
 import java.util.List;
 
-import static com.productdock.data.provider.out.postgresql.ReviewMother.defaultReview;
+import static com.productdock.data.provider.out.sql.ReviewMother.defaultReview;
 
 public class BookMother {
     private static final Long defaultId = null;

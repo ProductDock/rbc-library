@@ -1,4 +1,4 @@
-package com.productdock.data.provider.out.postgresql;
+package com.productdock.data.provider.out.sql;
 
 import com.productdock.adapter.out.sql.entity.BookJpaEntity;
 
@@ -10,7 +10,7 @@ public class BookEntityMother {
     private static final String defaultDescription = "::description::";
     private static final String defaultCover = "::cover::";
 
-    public static BookJpaEntity.BookEntityBuilder defaultBookEntityBuilder() {
+    public static BookJpaEntity.BookJpaEntityBuilder defaultBookEntityBuilder() {
         return BookJpaEntity.builder()
                 .id(defaultId)
                 .title(defaultTitle)

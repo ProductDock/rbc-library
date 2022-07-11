@@ -1,8 +1,8 @@
 package com.productdock.integration;
 
 import com.productdock.adapter.out.kafka.BookRatingMessage;
-import com.productdock.adapter.out.sql.BookJpaRepository;
-import com.productdock.adapter.out.sql.ReviewJpaRepository;
+import com.productdock.adapter.out.sql.BookRepository;
+import com.productdock.adapter.out.sql.ReviewRepository;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import org.junit.jupiter.api.AfterAll;
@@ -20,7 +20,7 @@ import java.io.ObjectInputStream;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static com.productdock.data.provider.out.postgresql.BookEntityMother.defaultBookEntityBuilder;
+import static com.productdock.data.provider.out.sql.BookEntityMother.defaultBookEntityBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -34,10 +34,10 @@ class EditBookReviewApiTest extends KafkaTestBase {
     public static final String DEFAULT_USER_ID = "::userId::";
 
     @Autowired
-    private BookJpaRepository bookRepository;
+    private BookRepository bookRepository;
 
     @Autowired
-    private ReviewJpaRepository reviewRepository;
+    private ReviewRepository reviewRepository;
 
     @Autowired
     private RequestProducer requestProducer;
