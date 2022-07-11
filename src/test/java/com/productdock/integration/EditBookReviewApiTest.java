@@ -10,11 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,8 +23,6 @@ import java.util.concurrent.Callable;
 import static com.productdock.data.provider.out.postgresql.BookEntityMother.defaultBookEntityBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,13 +34,13 @@ class EditBookReviewApiTest extends KafkaTestBase {
     public static final String DEFAULT_USER_ID = "::userId::";
 
     @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
     private BookJpaRepository bookRepository;
 
     @Autowired
     private ReviewJpaRepository reviewRepository;
+
+    @Autowired
+    private RequestProducer requestProducer;
 
     @BeforeEach
     final void before() {
@@ -65,7 +60,7 @@ class EditBookReviewApiTest extends KafkaTestBase {
         var bookId = givenAnyBook();
         var editReviewDtoJson =
                 "{\"recommendation\":[]}";
-        makeEditBookReviewRequest(editReviewDtoJson, bookId, "::wrongId::").andExpect(status().isForbidden());
+        requestProducer.makeEditBookReviewRequest(editReviewDtoJson, bookId, "::wrongId::").andExpect(status().isForbidden());
     }
 
     @Test
@@ -75,14 +70,14 @@ class EditBookReviewApiTest extends KafkaTestBase {
         var reviewDtoJson =
                 "{\"comment\":\"::comment::\"," +
                         "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
-        makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
         var editReviewDtoJson =
                 "{\"comment\":\"::new-comment::\"," +
                         "\"rating\":2," +
                         "\"recommendation\":[\"MEDIOR\",\"SENIOR\"]}";
-        makeEditBookReviewRequest(editReviewDtoJson, bookId, DEFAULT_USER_ID);
+        requestProducer.makeEditBookReviewRequest(editReviewDtoJson, bookId, DEFAULT_USER_ID);
 
-        makeGetBookRequest(bookId)
+        requestProducer.makeGetBookRequest(bookId)
                 .andExpect(content().json(
                         "{\"id\":" + bookId + "," +
                                 "\"title\":\"::title::\"," +
@@ -110,7 +105,7 @@ class EditBookReviewApiTest extends KafkaTestBase {
         var bookId = givenAnyBook();
         var editReviewDtoJson =
                 "{\"recommendation\":[]}";
-        makeEditBookReviewRequest(editReviewDtoJson, bookId, DEFAULT_USER_ID).andExpect(status().isBadRequest());
+        requestProducer.makeEditBookReviewRequest(editReviewDtoJson, bookId, DEFAULT_USER_ID).andExpect(status().isBadRequest());
     }
 
     private Long givenAnyBook() {
@@ -120,34 +115,6 @@ class EditBookReviewApiTest extends KafkaTestBase {
         return bookRepository.save(book).getId();
     }
 
-    private ResultActions makeEditBookReviewRequest(String reviewDtoJson, Long bookId, String userId) throws Exception {
-        return mockMvc.perform(put("/api/catalog/books/" + bookId + "/reviews/" + userId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(reviewDtoJson)
-                .with(jwt().jwt(jwt -> {
-                    jwt.claim("email", DEFAULT_USER_ID);
-                    jwt.claim("name", "::userFullName::");
-                })));
-    }
-
-    private ResultActions makeGetBookRequest(Long bookId) throws Exception {
-        return mockMvc.perform(get("/api/catalog/books/" + bookId)
-                        .with(jwt().jwt(jwt -> {
-                            jwt.claim("email", DEFAULT_USER_ID);
-                            jwt.claim("name", "::userFullName::");
-                        })))
-                .andExpect(status().isOk());
-    }
-
-    private ResultActions makeBookReviewRequest(String reviewDtoJson, Long bookId) throws Exception {
-        return mockMvc.perform(post("/api/catalog/books/" + bookId + "/reviews")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(reviewDtoJson)
-                .with(jwt().jwt(jwt -> {
-                    jwt.claim("email", DEFAULT_USER_ID);
-                    jwt.claim("name", "::userFullName::");
-                })));
-    }
 
     private Callable<Boolean> ifFileExists(String testFile) {
         Callable<Boolean> checkForFile = () -> {

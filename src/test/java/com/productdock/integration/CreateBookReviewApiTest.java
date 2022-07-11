@@ -11,11 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,9 +24,6 @@ import java.util.concurrent.Callable;
 import static com.productdock.data.provider.out.postgresql.BookEntityMother.defaultBookEntityBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,16 +32,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CreateBookReviewApiTest extends KafkaTestBase {
 
     public static final String TEST_FILE = "testRating.txt";
-    public static final String DEFAULT_USER_ID = "::userId::";
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Autowired
     private BookJpaRepository bookRepository;
 
     @Autowired
     private ReviewJpaRepository reviewRepository;
+
+    @Autowired
+    private RequestProducer requestProducer;
 
     @BeforeEach
     final void before() {
@@ -67,7 +60,7 @@ class CreateBookReviewApiTest extends KafkaTestBase {
         var bookId = givenAnyBook();
         var reviewDtoJson =
                 "{\"recommendation\":[]}";
-        makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
     }
 
     @Test
@@ -78,8 +71,8 @@ class CreateBookReviewApiTest extends KafkaTestBase {
                 "{\"comment\":\"::comment::\"," +
                         "\"rating\":1," +
                         "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
-        makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
-        makeGetBookRequest(bookId)
+        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+        requestProducer.makeGetBookRequest(bookId)
                 .andExpect(content().json(
                         "{\"id\":" + bookId + "," +
                                 "\"title\":\"::title::\"," +
@@ -109,8 +102,8 @@ class CreateBookReviewApiTest extends KafkaTestBase {
                 "{\"comment\":\"::comment::\"," +
                         "\"rating\":null," +
                         "\"recommendation\":[]}";
-        makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
-        makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -121,7 +114,7 @@ class CreateBookReviewApiTest extends KafkaTestBase {
                 "{\"comment\":\"" + RandomString.make(501) + "\"," +
                         "\"rating\":null," +
                         "\"recommendation\":[]}";
-        makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -132,7 +125,7 @@ class CreateBookReviewApiTest extends KafkaTestBase {
                 "{\"comment\":\"::comment::\"," +
                         "\"rating\":7," +
                         "\"recommendation\":[]}";
-        makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
     }
 
     private Long givenAnyBook() {
@@ -140,16 +133,6 @@ class CreateBookReviewApiTest extends KafkaTestBase {
         var designTopic = givenTopicWithName("DESIGN");
         var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
         return bookRepository.save(book).getId();
-    }
-
-    private ResultActions makeBookReviewRequest(String reviewDtoJson, Long bookId) throws Exception {
-        return mockMvc.perform(post("/api/catalog/books/" + bookId + "/reviews")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(reviewDtoJson)
-                .with(jwt().jwt(jwt -> {
-                    jwt.claim("email", DEFAULT_USER_ID);
-                    jwt.claim("name", "::userFullName::");
-                })));
     }
 
     private Callable<Boolean> ifFileExists(String testFile) {
@@ -166,15 +149,6 @@ class CreateBookReviewApiTest extends KafkaTestBase {
         var bookRatingMessage = (BookRatingMessage) objectInputStream.readObject();
         objectInputStream.close();
         return bookRatingMessage;
-    }
-
-    private ResultActions makeGetBookRequest(Long bookId) throws Exception {
-        return mockMvc.perform(get("/api/catalog/books/" + bookId)
-                        .with(jwt().jwt(jwt -> {
-                            jwt.claim("email", DEFAULT_USER_ID);
-                            jwt.claim("name", "::userFullName::");
-                        })))
-                .andExpect(status().isOk());
     }
 
     private TopicEntity givenTopicWithName(String name) {

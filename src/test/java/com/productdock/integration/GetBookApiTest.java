@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.File;
 import java.util.Calendar;
@@ -22,8 +20,6 @@ import java.util.Date;
 import static com.productdock.data.provider.out.postgresql.BookEntityMother.defaultBookEntityBuilder;
 import static com.productdock.data.provider.out.postgresql.ReviewEntityMother.defaultReviewEntityBuilder;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -33,16 +29,15 @@ class GetBookApiTest extends KafkaTestBase {
     public static final String TEST_FILE = "testRating.txt";
     public static final String FIRST_REVIEWER = "user1";
     public static final String SECOND_REVIEWER = "user2";
-    public static final String DEFAULT_USER_ID = "::userId::";
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Autowired
     private BookJpaRepository bookRepository;
 
     @Autowired
     private ReviewJpaRepository reviewRepository;
+
+    @Autowired
+    private RequestProducer requestProducer;
 
     @BeforeEach
     final void before() {
@@ -61,7 +56,7 @@ class GetBookApiTest extends KafkaTestBase {
     void getBook_whenIdExistAndNoReviews() throws Exception {
         var bookId = givenAnyBook();
 
-        mockMvc.perform(get("/api/catalog/books/" + bookId))
+        requestProducer.makeGetBookRequest(bookId)
                 .andExpect(status().isOk())
                 .andExpect(content().json(
                         "{\"id\":" + bookId + "," +
@@ -84,7 +79,7 @@ class GetBookApiTest extends KafkaTestBase {
         calendar.set(2022, Calendar.JUNE, 5);
         givenReviewForBook(bookId, SECOND_REVIEWER, calendar.getTime());
 
-        makeGetBookRequest(bookId)
+        requestProducer.makeGetBookRequest(bookId)
                 .andExpect(content().json(
                         "{\"id\":" + bookId + "," +
                                 "\"title\":\"::title::\"," +
@@ -129,15 +124,6 @@ class GetBookApiTest extends KafkaTestBase {
                 .recommendation(3).build();
 
         reviewRepository.save(review);
-    }
-
-    private ResultActions makeGetBookRequest(Long bookId) throws Exception {
-        return mockMvc.perform(get("/api/catalog/books/" + bookId)
-                        .with(jwt().jwt(jwt -> {
-                            jwt.claim("email", DEFAULT_USER_ID);
-                            jwt.claim("name", "::userFullName::");
-                        })))
-                .andExpect(status().isOk());
     }
 
     private TopicEntity givenTopicWithName(String name) {

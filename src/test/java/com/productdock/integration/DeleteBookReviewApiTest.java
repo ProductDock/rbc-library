@@ -10,11 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,9 +23,6 @@ import java.util.concurrent.Callable;
 import static com.productdock.data.provider.out.postgresql.BookEntityMother.defaultBookEntityBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -39,13 +33,13 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
     public static final String DEFAULT_USER_ID = "::userId::";
 
     @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
     private BookJpaRepository bookRepository;
 
     @Autowired
     private ReviewJpaRepository reviewRepository;
+
+    @Autowired
+    private RequestProducer requestProducer;
 
     @BeforeEach
     final void before() {
@@ -63,7 +57,7 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
     @WithMockUser
     void deleteReview_whenUserIdNotValid() throws Exception {
         var bookId = givenAnyBook();
-        makeDeleteBookReviewRequest(bookId, "::wrongId::").andExpect(status().isForbidden());
+        requestProducer.makeDeleteBookReviewRequest(bookId, "::wrongId::").andExpect(status().isForbidden());
     }
 
     @Test
@@ -74,8 +68,8 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
                 "{\"comment\":\"::comment::\"," +
                         "\"rating\":3," +
                         "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
-        makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
-        makeDeleteBookReviewRequest(bookId, DEFAULT_USER_ID).andExpect(status().isOk());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+        requestProducer.makeDeleteBookReviewRequest(bookId, DEFAULT_USER_ID).andExpect(status().isOk());
         await()
                 .atMost(Duration.ofSeconds(4))
                 .until(ifFileExists(TEST_FILE));
@@ -90,7 +84,7 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
     @WithMockUser
     void returnBadRequest_whenReviewNotExist() throws Exception {
         var bookId = givenAnyBook();
-        makeDeleteBookReviewRequest(bookId, DEFAULT_USER_ID).andExpect(status().isBadRequest());
+        requestProducer.makeDeleteBookReviewRequest(bookId, DEFAULT_USER_ID).andExpect(status().isBadRequest());
     }
 
     private Long givenAnyBook() {
@@ -98,25 +92,6 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
         var designTopic = givenTopicWithName("DESIGN");
         var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
         return bookRepository.save(book).getId();
-    }
-
-    private ResultActions makeDeleteBookReviewRequest(Long bookId, String userId) throws Exception {
-        return mockMvc.perform(delete("/api/catalog/books/" + bookId + "/reviews/" + userId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(jwt().jwt(jwt -> {
-                    jwt.claim("email", DEFAULT_USER_ID);
-                    jwt.claim("name", "::userFullName::");
-                })));
-    }
-
-    private ResultActions makeBookReviewRequest(String reviewDtoJson, Long bookId) throws Exception {
-        return mockMvc.perform(post("/api/catalog/books/" + bookId + "/reviews")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(reviewDtoJson)
-                .with(jwt().jwt(jwt -> {
-                    jwt.claim("email", DEFAULT_USER_ID);
-                    jwt.claim("name", "::userFullName::");
-                })));
     }
 
     private Callable<Boolean> ifFileExists(String testFile) {
