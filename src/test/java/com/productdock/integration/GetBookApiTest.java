@@ -2,8 +2,8 @@ package com.productdock.integration;
 
 import com.productdock.adapter.out.sql.BookJpaRepository;
 import com.productdock.adapter.out.sql.ReviewJpaRepository;
-import com.productdock.adapter.out.sql.entity.ReviewEntity;
-import com.productdock.adapter.out.sql.entity.TopicEntity;
+import com.productdock.adapter.out.sql.entity.ReviewJpaEntity;
+import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,7 +113,7 @@ class GetBookApiTest extends KafkaTestBase {
 
     private void givenReviewForBook(Long bookId, String reviewerId, Date reviewDate) {
         var review = defaultReviewEntityBuilder()
-                .reviewCompositeKey(ReviewEntity.ReviewCompositeKey.builder()
+                .reviewCompositeKey(ReviewJpaEntity.ReviewCompositeKey.builder()
                         .bookId(bookId)
                         .userId(reviewerId)
                         .build())
@@ -126,8 +126,8 @@ class GetBookApiTest extends KafkaTestBase {
         reviewRepository.save(review);
     }
 
-    private TopicEntity givenTopicWithName(String name) {
-        return TopicEntity.builder().name(name).build();
+    private TopicJpaEntity givenTopicWithName(String name) {
+        return TopicJpaEntity.builder().name(name).build();
     }
 
 }

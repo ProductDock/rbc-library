@@ -19,7 +19,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "review")
-public class ReviewEntity {
+public class ReviewJpaEntity {
 
     @EmbeddedId
     private ReviewCompositeKey reviewCompositeKey;

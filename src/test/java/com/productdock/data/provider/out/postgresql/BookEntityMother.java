@@ -1,6 +1,6 @@
 package com.productdock.data.provider.out.postgresql;
 
-import com.productdock.adapter.out.sql.entity.BookEntity;
+import com.productdock.adapter.out.sql.entity.BookJpaEntity;
 
 public class BookEntityMother {
 
@@ -10,8 +10,8 @@ public class BookEntityMother {
     private static final String defaultDescription = "::description::";
     private static final String defaultCover = "::cover::";
 
-    public static BookEntity.BookEntityBuilder defaultBookEntityBuilder() {
-        return BookEntity.builder()
+    public static BookJpaEntity.BookEntityBuilder defaultBookEntityBuilder() {
+        return BookJpaEntity.builder()
                 .id(defaultId)
                 .title(defaultTitle)
                 .author(defaultAuthor)
@@ -19,7 +19,7 @@ public class BookEntityMother {
                 .description(defaultDescription);
     }
 
-    public static BookEntity defaultBookEntity() {
+    public static BookJpaEntity defaultBookEntity() {
         return defaultBookEntityBuilder().build();
     }
 

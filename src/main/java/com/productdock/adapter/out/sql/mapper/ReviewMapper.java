@@ -1,6 +1,6 @@
 package com.productdock.adapter.out.sql.mapper;
 
-import com.productdock.adapter.out.sql.entity.ReviewEntity;
+import com.productdock.adapter.out.sql.entity.ReviewJpaEntity;
 import com.productdock.domain.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,10 +11,10 @@ public interface ReviewMapper {
 
     @Mapping(source = "reviewCompositeKey.userId", target = "reviewCompositeKey.userId")
     @Mapping(source = "reviewCompositeKey.bookId", target = "reviewCompositeKey.bookId")
-    Book.Review toDomain(ReviewEntity review);
+    Book.Review toDomain(ReviewJpaEntity review);
 
     @Mapping(source = "reviewCompositeKey.userId", target = "reviewCompositeKey.userId")
     @Mapping(source = "reviewCompositeKey.bookId", target = "reviewCompositeKey.bookId")
-    ReviewEntity toEntity(Book.Review review);
+    ReviewJpaEntity toEntity(Book.Review review);
 
 }

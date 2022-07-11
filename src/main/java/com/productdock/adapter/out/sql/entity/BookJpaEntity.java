@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "book")
-public class BookEntity {
+public class BookJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,11 +35,11 @@ public class BookEntity {
             joinColumns = {@JoinColumn(name = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "topic_id")}
     )
-    private Set<TopicEntity> topics;
+    private Set<TopicJpaEntity> topics;
 
     @OneToMany(fetch = FetchType.EAGER)
     @Singular
     @JoinColumn(name = "bookId")
     @OrderBy("date DESC")
-    private List<ReviewEntity> reviews;
+    private List<ReviewJpaEntity> reviews;
 }

@@ -1,8 +1,8 @@
 package com.productdock.adapter.out.sql.mapper;
 
 
-import com.productdock.adapter.out.sql.entity.BookEntity;
-import com.productdock.adapter.out.sql.entity.TopicEntity;
+import com.productdock.adapter.out.sql.entity.BookJpaEntity;
+import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.domain.Book;
 import org.mapstruct.*;
 
@@ -13,11 +13,11 @@ import java.util.Set;
 public interface BookMapper {
 
     @Mapping(source = "topics", target = "topics", qualifiedByName = "topicEntitiesToTopicNameList")
-    Book toDomain(BookEntity source);
+    Book toDomain(BookJpaEntity source);
 
     @Named("topicEntitiesToTopicNameList")
-    static List<String> topicEntitiesToTopicNameList(Set<TopicEntity> topics) {
-        return topics.stream().map(TopicEntity::getName).toList();
+    static List<String> topicEntitiesToTopicNameList(Set<TopicJpaEntity> topics) {
+        return topics.stream().map(TopicJpaEntity::getName).toList();
     }
 
 }

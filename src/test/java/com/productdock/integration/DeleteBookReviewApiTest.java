@@ -3,7 +3,7 @@ package com.productdock.integration;
 import com.productdock.adapter.out.kafka.BookRatingMessage;
 import com.productdock.adapter.out.sql.BookJpaRepository;
 import com.productdock.adapter.out.sql.ReviewJpaRepository;
-import com.productdock.adapter.out.sql.entity.TopicEntity;
+import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -110,7 +110,7 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
         return bookRatingMessage;
     }
 
-    private TopicEntity givenTopicWithName(String name) {
-        return TopicEntity.builder().name(name).build();
+    private TopicJpaEntity givenTopicWithName(String name) {
+        return TopicJpaEntity.builder().name(name).build();
     }
 }

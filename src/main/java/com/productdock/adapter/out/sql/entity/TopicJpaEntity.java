@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "topic")
-public class TopicEntity {
+public class TopicJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
