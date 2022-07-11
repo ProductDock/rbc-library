@@ -16,6 +16,7 @@ public class EditBookReviewService implements EditBookReviewUseCase {
     private final ReviewPersistenceOutPort reviewRepository;
     private final PublishNewRatingUseCase newRatingPublisher;
 
+    @Override
     public void editReview(Book.Review review) {
         var existingReview = reviewRepository.findById(review.getReviewCompositeKey()).orElseThrow();
 

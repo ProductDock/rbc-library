@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public record GetBookService(BookPersistenceOutPort bookRepository) implements GetBookQuery {
 
+    @Override
     public Book getById(Long bookId) {
         log.debug("Fetched book with book id: {}", bookId);
         return bookRepository.findById(bookId).orElseThrow();

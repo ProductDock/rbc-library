@@ -17,6 +17,7 @@ public class SaveBookReviewService implements SaveBookReviewUseCase {
     private final ReviewPersistenceOutPort reviewRepository;
     private final PublishNewRatingUseCase newRatingPublisher;
 
+    @Override
     public void saveReview(Book.Review review) {
         if (reviewRepository.existsById(review.getReviewCompositeKey())) {
             log.warn("The User with id:{} is trying to add second review for book with id:{}",

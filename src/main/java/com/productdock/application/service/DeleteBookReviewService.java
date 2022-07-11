@@ -16,6 +16,7 @@ public class DeleteBookReviewService implements DeleteBookReviewUseCase {
     private final ReviewPersistenceOutPort reviewRepository;
     private final PublishNewRatingUseCase newRatingPublisher;
 
+    @Override
     public void deleteReview(Long bookId, String userId) {
         var reviewCompositeKey = new Book.Review.ReviewCompositeKey(bookId, userId);
         var existingReview = reviewRepository.findById(reviewCompositeKey).orElseThrow();
