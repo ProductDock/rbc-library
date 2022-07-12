@@ -41,7 +41,6 @@ class ReviewPersistenceAdapterShould {
 
     @Test
     void findReviewWhenIdExist() {
-        var optionalReview = Optional.of(REVIEW);
         given(reviewCompositeKeyMapper.toEntity(REVIEW_COMPOSITE_KEY)).willReturn(REVIEW_COMPOSITE_KEY_ENTITY);
         given(reviewRepository.findById(REVIEW_COMPOSITE_KEY_ENTITY)).willReturn(REVIEW_ENTITY);
         given(reviewMapper.toDomain(REVIEW_ENTITY.get())).willReturn(REVIEW);
