@@ -32,7 +32,7 @@ class GetBookServiceShould {
 
         var book = getBookService.getById(BOOK_ID);
 
-        assertThat(book).isInstanceOf(Book.class);
+        assertThat(book).isEqualTo(BOOK.get());
     }
 
 }
