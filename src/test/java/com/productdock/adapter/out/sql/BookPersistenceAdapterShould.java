@@ -38,8 +38,7 @@ class BookPersistenceAdapterShould {
 
         var book = bookPersistenceAdapter.findById(BOOK_ID);
 
-        assertThat(book).isPresent();
-        assertThat(book).contains(BOOK);
+        assertThat(book).isPresent().contains(BOOK);
     }
 
     @Test

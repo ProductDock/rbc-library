@@ -48,8 +48,7 @@ class ReviewPersistenceAdapterShould {
 
         var review = reviewPersistenceAdapter.findById(REVIEW_COMPOSITE_KEY);
 
-        assertThat(review).isPresent();
-        assertThat(review).contains(REVIEW);
+        assertThat(review).isPresent().contains(REVIEW);
     }
 
     @Test
