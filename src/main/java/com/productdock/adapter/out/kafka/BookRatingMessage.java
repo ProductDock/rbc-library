@@ -2,18 +2,16 @@ package com.productdock.adapter.out.kafka;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-@Data
+@ToString
 public class BookRatingMessage implements Serializable {
 
-    private Long bookId;
-    private Double rating;
-    private int ratingsCount;
+    public final Long bookId;
+    public final Double rating;
+    public final int ratingsCount;
 }
