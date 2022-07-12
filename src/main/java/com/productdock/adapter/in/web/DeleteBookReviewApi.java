@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/catalog/books")
 public record DeleteBookReviewApi(DeleteBookReviewUseCase deleteBookReviewUseCase) {
+
     public static final String USER_EMAIL = "email";
-    public static final String USER_NAME = "name";
 
     @DeleteMapping("/{bookId}/reviews/{userId}")
     public void deleteReviewForBook(
