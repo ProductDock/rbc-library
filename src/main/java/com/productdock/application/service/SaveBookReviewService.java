@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SaveBookReviewService implements SaveBookReviewUseCase {
+class SaveBookReviewService implements SaveBookReviewUseCase {
 
     private final ReviewPersistenceOutPort reviewRepository;
     private final PublishNewRatingService newRatingPublisher;

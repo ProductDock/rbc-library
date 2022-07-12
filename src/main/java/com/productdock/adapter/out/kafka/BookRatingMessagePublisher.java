@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class BookRatingMessagePublisher implements BookMessagingOutPort {
+class BookRatingMessagePublisher implements BookMessagingOutPort {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final KafkaRecordProducer recordProducer;

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/api/catalog/books")
-public record GetBookApi(GetBookQuery getBookQuery, BookDtoMapper bookDtoMapper) {
+record GetBookApi(GetBookQuery getBookQuery, BookDtoMapper bookDtoMapper) {
 
     @GetMapping("/{bookId}")
     public BookDto getBook(@PathVariable("bookId") Long bookId) {

@@ -12,7 +12,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping("/api/catalog/books")
-public record CreateBookReviewApi(SaveBookReviewUseCase saveBookReviewUseCase, ReviewDtoMapper reviewMapper) {
+record CreateBookReviewApi(SaveBookReviewUseCase saveBookReviewUseCase, ReviewDtoMapper reviewMapper) {
     public static final String USER_EMAIL = "email";
     public static final String USER_NAME = "name";
 

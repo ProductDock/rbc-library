@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 @Slf4j
 @AllArgsConstructor
-public class ReviewPersistenceAdapter implements ReviewPersistenceOutPort {
+class ReviewPersistenceAdapter implements ReviewPersistenceOutPort {
 
     private ReviewRepository reviewRepository;
     private ReviewCompositeKeyMapper reviewCompositeKeyMapper;

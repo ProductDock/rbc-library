@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EditBookReviewService implements EditBookReviewUseCase {
+class EditBookReviewService implements EditBookReviewUseCase {
 
     private final ReviewPersistenceOutPort reviewRepository;
     private final PublishNewRatingService newRatingPublisher;

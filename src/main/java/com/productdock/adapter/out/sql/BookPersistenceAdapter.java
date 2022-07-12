@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 @Slf4j
 @AllArgsConstructor
-public class BookPersistenceAdapter implements BookPersistenceOutPort {
+class BookPersistenceAdapter implements BookPersistenceOutPort {
 
     private BookRepository bookRepository;
     private BookMapper bookMapper;

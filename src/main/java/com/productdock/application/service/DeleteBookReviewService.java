@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DeleteBookReviewService implements DeleteBookReviewUseCase {
+class DeleteBookReviewService implements DeleteBookReviewUseCase {
 
     private final ReviewPersistenceOutPort reviewRepository;
     private final PublishNewRatingService newRatingPublisher;

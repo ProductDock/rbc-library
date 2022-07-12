@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class KafkaRecordProducer {
+class KafkaRecordProducer {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

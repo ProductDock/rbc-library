@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public record GetBookService(BookPersistenceOutPort bookRepository) implements GetBookQuery {
+record GetBookService(BookPersistenceOutPort bookRepository) implements GetBookQuery {
 
     @Override
     public Book getById(Long bookId) {
