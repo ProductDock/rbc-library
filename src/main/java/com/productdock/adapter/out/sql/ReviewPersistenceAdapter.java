@@ -29,12 +29,12 @@ public class ReviewPersistenceAdapter implements ReviewPersistenceOutPort {
     @Override
     public Optional<Book.Review> findById(Book.Review.ReviewCompositeKey compositeKey) {
         var compositeKeyEntity = reviewCompositeKeyMapper.toEntity(compositeKey);
-        var reviewEntity = reviewRepository.findById(compositeKeyEntity);
-        if (reviewEntity.isEmpty()) {
+        var review = reviewRepository.findById(compositeKeyEntity).map(reviewJpaEntity -> reviewMapper.toDomain(reviewJpaEntity));
+        if (review.isEmpty()) {
             log.debug("Unable to find a review with composite key: {}", compositeKey);
             throw new BookReviewException("Review not found");
         }
-        return Optional.of(reviewMapper.toDomain(reviewEntity.get()));
+        return review;
     }
 
     @Override

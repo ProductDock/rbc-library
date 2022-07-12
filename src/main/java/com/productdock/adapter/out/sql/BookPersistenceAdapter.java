@@ -1,6 +1,5 @@
 package com.productdock.adapter.out.sql;
 
-import com.productdock.adapter.out.sql.entity.BookJpaEntity;
 import com.productdock.adapter.out.sql.mapper.BookMapper;
 import com.productdock.application.port.out.persistence.BookPersistenceOutPort;
 import com.productdock.domain.Book;
@@ -20,12 +19,7 @@ public class BookPersistenceAdapter implements BookPersistenceOutPort {
 
     @Override
     public Optional<Book> findById(Long bookId) {
-        Optional<BookJpaEntity> bookEntity = bookRepository.findById(bookId);
-        if (bookEntity.isEmpty()) {
-            log.debug("Unable to find a book with book id: {}", bookId);
-            return Optional.empty();
-        }
-        return Optional.of(bookMapper.toDomain(bookEntity.get()));
+        return bookRepository.findById(bookId).map(bookJpaEntity -> bookMapper.toDomain(bookJpaEntity));
     }
 
 }
