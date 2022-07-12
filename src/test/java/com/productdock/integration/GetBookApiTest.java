@@ -37,7 +37,7 @@ class GetBookApiTest extends KafkaTestBase {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private RequestProducer requestProducer;
+    private RestRequestProducer requestProducer;
 
     @BeforeEach
     final void before() {

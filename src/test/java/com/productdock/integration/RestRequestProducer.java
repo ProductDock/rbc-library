@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Component
-class RequestProducer {
+class RestRequestProducer {
 
     public static final String DEFAULT_USER_ID = "::userId::";
 
