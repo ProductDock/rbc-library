@@ -1,6 +1,5 @@
 package com.productdock.application.service;
 
-import com.productdock.application.port.in.PublishNewRatingUseCase;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
 import com.productdock.domain.exception.BookReviewException;
@@ -31,7 +30,7 @@ class SaveBookReviewServiceShould {
     private ReviewPersistenceOutPort reviewRepository;
 
     @Mock
-    private PublishNewRatingUseCase newRatingPublisher;
+    private PublishNewRatingService newRatingPublisher;
 
     @Test
     void saveReviewWhenRatingExist() {

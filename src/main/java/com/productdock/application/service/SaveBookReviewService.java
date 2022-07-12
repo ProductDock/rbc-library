@@ -1,6 +1,5 @@
 package com.productdock.application.service;
 
-import com.productdock.application.port.in.PublishNewRatingUseCase;
 import com.productdock.application.port.in.SaveBookReviewUseCase;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class SaveBookReviewService implements SaveBookReviewUseCase {
 
     private final ReviewPersistenceOutPort reviewRepository;
-    private final PublishNewRatingUseCase newRatingPublisher;
+    private final PublishNewRatingService newRatingPublisher;
 
     @Override
     public void saveReview(Book.Review review) {

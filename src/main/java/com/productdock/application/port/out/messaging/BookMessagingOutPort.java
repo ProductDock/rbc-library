@@ -7,6 +7,6 @@ import java.util.concurrent.ExecutionException;
 
 public interface BookMessagingOutPort {
 
-    void sendMessage(String topic, Book book) throws ExecutionException, InterruptedException, JsonProcessingException;
+    void sendRatingMessage(String topic, Book book) throws ExecutionException, InterruptedException, JsonProcessingException;
 
 }

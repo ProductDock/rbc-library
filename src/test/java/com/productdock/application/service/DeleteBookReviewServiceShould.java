@@ -1,6 +1,5 @@
 package com.productdock.application.service;
 
-import com.productdock.application.port.in.PublishNewRatingUseCase;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ class DeleteBookReviewServiceShould {
     private ReviewPersistenceOutPort reviewRepository;
 
     @Mock
-    private PublishNewRatingUseCase newRatingPublisher;
+    private PublishNewRatingService newRatingPublisher;
 
     @Test
     void deleteReviewWhenReviewHasNoRating() {

@@ -1,7 +1,6 @@
 package com.productdock.application.service;
 
 import com.productdock.application.port.in.DeleteBookReviewUseCase;
-import com.productdock.application.port.in.PublishNewRatingUseCase;
 import com.productdock.application.port.out.persistence.ReviewPersistenceOutPort;
 import com.productdock.domain.Book;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class DeleteBookReviewService implements DeleteBookReviewUseCase {
 
     private final ReviewPersistenceOutPort reviewRepository;
-    private final PublishNewRatingUseCase newRatingPublisher;
+    private final PublishNewRatingService newRatingPublisher;
 
     @Override
     public void deleteReview(Long bookId, String userId) {
