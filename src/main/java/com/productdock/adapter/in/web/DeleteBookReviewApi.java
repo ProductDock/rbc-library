@@ -1,8 +1,8 @@
 package com.productdock.adapter.in.web;
 
 import com.productdock.application.port.in.DeleteBookReviewUseCase;
-import com.productdock.domain.exception.ForbiddenAccessException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +27,7 @@ public record DeleteBookReviewApi(DeleteBookReviewUseCase deleteBookReviewUseCas
 
         if (!loggedUserEmail.equals(userId)) {
             log.warn("User with id:{}, tried to access forbidden resource [review] with id: [{},{}]", loggedUserEmail, bookId, userId);
-            throw new ForbiddenAccessException("You don't have access for resource");
+            throw new AccessDeniedException("You don't have access for resource");
         }
 
         deleteBookReviewUseCase.deleteReview(bookId, userId);

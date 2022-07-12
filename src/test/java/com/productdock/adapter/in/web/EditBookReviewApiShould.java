@@ -3,12 +3,12 @@ package com.productdock.adapter.in.web;
 import com.productdock.adapter.in.web.mapper.ReviewDtoMapper;
 import com.productdock.application.port.in.EditBookReviewUseCase;
 import com.productdock.domain.Book;
-import com.productdock.domain.exception.ForbiddenAccessException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 
@@ -67,7 +67,7 @@ class EditBookReviewApiShould {
         given(jwtMock.getClaim("email")).willReturn(DEFAULT_USER_EMAIL);
 
         assertThatThrownBy(() -> editBookReviewApi.editReviewForBook(DEFAULT_BOOK_ID, "::wrongId::", reviewDto, authenticationMock))
-                .isInstanceOf(ForbiddenAccessException.class)
+                .isInstanceOf(AccessDeniedException.class)
                 .hasMessage(WRONG_USER_ID_EXCEPTION_MESSAGE);
     }
 }
