@@ -18,6 +18,7 @@ public class KafkaRecordPublisher implements BookMessagingOutPort {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final KafkaRecordProducer recordProducer;
 
+    @Override
     public void sendMessage(String kafkaTopic, Book book) throws ExecutionException, InterruptedException, JsonProcessingException {
         var message = new BookRatingMessage(book.getId(), book.getRating().getScore(), book.getRating().getCount());
         var kafkaRecord = recordProducer.createKafkaRecord(kafkaTopic, message);
