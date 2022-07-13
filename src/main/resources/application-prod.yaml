@@ -8,6 +8,13 @@ spring:
       sql:
         database-name: catalog
         instance-connection-name: prod-pd-library:europe-west3:prod-pd-library-mysql
+  flyway:
+    user: root
+    password: root
+    schemas: catalog
+    url: jdbc:mysql://google/prod-pd-library-mysql?cloudSqlInstance=prod-pd-library:europe-west3:prod-pd-library-mysql&socketFactory=com.google.cloud.sql.mysql.SocketFactory
+    locations: classpath:db/migration
+    baselineOnMigrate: true
 
 logging:
   level:

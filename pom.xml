@@ -88,6 +88,15 @@
 			<artifactId>mapstruct-processor</artifactId>
 			<version>${mapstruct.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>8.5.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -140,6 +149,11 @@
 					<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
 					<version>1.2.8.RELEASE</version>
 				</dependency>
+				<dependency>
+					<groupId>com.google.cloud.sql</groupId>
+					<artifactId>mysql-socket-factory-connector-j-8</artifactId>
+					<version>1.6.1</version>
+				</dependency>
 			</dependencies>
 		</profile>
 	</profiles>
@@ -162,6 +176,11 @@
 						<include>**/*It.java</include>
 					</includes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>8.0.0</version>
 			</plugin>
 		</plugins>
 	</build>

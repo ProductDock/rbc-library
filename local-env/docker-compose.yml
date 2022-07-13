@@ -3,7 +3,7 @@ version: '3.1'
 services:
 
   pd-library-catalog-db:
-    image: mysql:5.7-debian
+    image: mysql:8-debian
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root
