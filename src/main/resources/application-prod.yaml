@@ -12,7 +12,7 @@ spring:
     user: root
     password: ${SPRING_DATASOURCE_PASSWORD}
     schemas: catalog
-    url: jdbc:mysql://google/prod-pd-library-mysql?cloudSqlInstance=prod-pd-library:europe-west3:prod-pd-library-mysql&socketFactory=com.google.cloud.sql.mysql.SocketFactory
+    url: jdbc:mysql://google/catalog?cloudSqlInstance=prod-pd-library:europe-west3:prod-pd-library-mysql&socketFactory=com.google.cloud.sql.mysql.SocketFactory
     locations: classpath:db/migration
     baselineOnMigrate: true
 
