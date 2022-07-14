@@ -93,7 +93,6 @@
 			<artifactId>flyway-core</artifactId>
 		</dependency>
 	</dependencies>
-
 	<profiles>
 		<profile>
 			<id>coverage</id>

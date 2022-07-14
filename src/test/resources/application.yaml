@@ -3,6 +3,8 @@ spring:
     gcp:
       sql:
         enabled: false
+  flyway:
+    enabled: false
 
   security:
     oauth2:
