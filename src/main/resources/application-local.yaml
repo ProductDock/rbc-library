@@ -8,6 +8,13 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    user: root
+    password: root
+    schemas: catalog
+    url: jdbc:mysql://${mysql.server.host:0.0.0.0}:3308/catalog
+    locations: classpath:db/migration
+    baselineOnMigrate: true
 
 server:
   port: 8080
