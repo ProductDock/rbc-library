@@ -36,6 +36,7 @@ public class ReviewJpaEntity {
 
     private Integer recommendation;
 
+    @Builder.Default
     private Date date = new Date();
 
     @Data
