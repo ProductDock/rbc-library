@@ -1,10 +1,10 @@
 package com.productdock.adapter.in.web;
 
 import com.productdock.application.port.in.DeleteBookReviewUseCase;
+import com.productdock.library.jwt.validator.UserTokenInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +23,7 @@ record DeleteBookReviewApi(DeleteBookReviewUseCase deleteBookReviewUseCase) {
             @PathVariable("userId") final String userId,
             Authentication authentication) {
         log.debug("DELETE request received - api/catalog/books/{}/reviews/{}", bookId, userId);
-        String loggedUserEmail = ((Jwt) authentication.getCredentials()).getClaim(USER_EMAIL);
+        String loggedUserEmail = ((UserTokenInfo)authentication.getPrincipal()).getEmail();
 
         if (!loggedUserEmail.equals(userId)) {
             log.warn("User with id:{}, tried to access forbidden resource [review] with id: [{},{}]", loggedUserEmail, bookId, userId);

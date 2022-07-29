@@ -1,6 +1,6 @@
 cors:
   allowed:
-    origins: http://localhost:3000
+    origins: http://localhost:8080
 
 spring:
   datasource:
@@ -17,4 +17,9 @@ spring:
     baselineOnMigrate: true
 
 server:
-  port: 8080
+  port: 8082
+
+security:
+  jwt:
+    token:
+      secret-key: pdlib

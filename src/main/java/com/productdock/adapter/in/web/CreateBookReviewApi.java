@@ -2,9 +2,9 @@ package com.productdock.adapter.in.web;
 
 import com.productdock.adapter.in.web.mapper.ReviewDtoMapper;
 import com.productdock.application.port.in.SaveBookReviewUseCase;
+import com.productdock.library.jwt.validator.UserTokenInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,8 +23,8 @@ record CreateBookReviewApi(SaveBookReviewUseCase saveBookReviewUseCase, ReviewDt
             Authentication authentication) {
         log.debug("POST request received - api/catalog/books/{}/reviews, Payload: {}", bookId, reviewDto);
         reviewDto.bookId = bookId;
-        reviewDto.userId = ((Jwt) authentication.getCredentials()).getClaim(USER_EMAIL);
-        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim(USER_NAME);
+        reviewDto.userId = ((UserTokenInfo)authentication.getPrincipal()).getEmail();
+        reviewDto.userFullName = ((UserTokenInfo)authentication.getPrincipal()).getFullName();
         var review = reviewMapper.toDomain(reviewDto);
         saveBookReviewUseCase.saveReview(review);
     }
