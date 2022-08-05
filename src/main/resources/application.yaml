@@ -1,10 +1,4 @@
 spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: accounts.google.com
-          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
 
   kafka:
     enabled: true
@@ -28,3 +22,6 @@ server:
 logging:
   level:
     com.productdock: ${logging.level:INFO}
+
+jwt:
+  public.key: classpath:app.pub
