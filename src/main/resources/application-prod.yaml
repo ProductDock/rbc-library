@@ -19,3 +19,6 @@ spring:
 logging:
   level:
     com.google.cloud.sql.core.CoreSocketFactory: WARN
+
+jwt:
+  public.key: ${catalog.jwt.public-key}

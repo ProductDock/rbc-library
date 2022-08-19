@@ -23,5 +23,3 @@ logging:
   level:
     com.productdock: ${logging.level:INFO}
 
-jwt:
-  public.key: classpath:app.pub
