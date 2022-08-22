@@ -29,3 +29,6 @@ spring:
 cors:
   allowed:
     origins: localhost:3000
+
+jwt:
+  public.key: classpath:test.pub
