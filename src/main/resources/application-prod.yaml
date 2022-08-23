@@ -21,4 +21,4 @@ logging:
     com.google.cloud.sql.core.CoreSocketFactory: WARN
 
 jwt:
-  public.key: ${catalog.jwt.public.key}
+  public.key: file:${catalog.jwt.public.key}
