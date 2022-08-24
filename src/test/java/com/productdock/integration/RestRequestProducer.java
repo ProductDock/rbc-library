@@ -24,7 +24,7 @@ class RestRequestProducer {
                 .content(reviewDtoJson)
                 .with(jwt().jwt(jwt -> {
                     jwt.claim("email", DEFAULT_USER_ID);
-                    jwt.claim("name", "::userFullName::");
+                    jwt.claim("fullName", "::userFullName::");
                 })));
     }
 
@@ -32,7 +32,7 @@ class RestRequestProducer {
         return mockMvc.perform(get("/api/catalog/books/" + bookId)
                         .with(jwt().jwt(jwt -> {
                             jwt.claim("email", DEFAULT_USER_ID);
-                            jwt.claim("name", "::userFullName::");
+                            jwt.claim("fullName", "::userFullName::");
                         })))
                 .andExpect(status().isOk());
     }
@@ -43,7 +43,7 @@ class RestRequestProducer {
                         .param("author", author)
                         .with(jwt().jwt(jwt -> {
                             jwt.claim("email", DEFAULT_USER_ID);
-                            jwt.claim("name", "::userFullName::");
+                            jwt.claim("fullName", "::userFullName::");
                         })))
                 .andExpect(status().isOk());
     }
@@ -54,7 +54,7 @@ class RestRequestProducer {
                 .content(reviewDtoJson)
                 .with(jwt().jwt(jwt -> {
                     jwt.claim("email", DEFAULT_USER_ID);
-                    jwt.claim("name", "::userFullName::");
+                    jwt.claim("fullName", "::userFullName::");
                 })));
     }
 
@@ -63,7 +63,7 @@ class RestRequestProducer {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwt().jwt(jwt -> {
                     jwt.claim("email", DEFAULT_USER_ID);
-                    jwt.claim("name", "::userFullName::");
+                    jwt.claim("fullName", "::userFullName::");
                 })));
     }
 }

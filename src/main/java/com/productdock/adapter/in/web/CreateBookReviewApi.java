@@ -14,7 +14,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/catalog/books")
 record CreateBookReviewApi(SaveBookReviewUseCase saveBookReviewUseCase, ReviewDtoMapper reviewMapper) {
     public static final String USER_EMAIL = "email";
-    public static final String USER_NAME = "name";
+    public static final String USER_FULL_NAME = "fullName";
 
     @PostMapping("/{bookId}/reviews")
     public void createReviewForBook(
@@ -24,7 +24,7 @@ record CreateBookReviewApi(SaveBookReviewUseCase saveBookReviewUseCase, ReviewDt
         log.debug("POST request received - api/catalog/books/{}/reviews, Payload: {}", bookId, reviewDto);
         reviewDto.bookId = bookId;
         reviewDto.userId = ((Jwt) authentication.getCredentials()).getClaim(USER_EMAIL);
-        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim(USER_NAME);
+        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim(USER_FULL_NAME);
         var review = reviewMapper.toDomain(reviewDto);
         saveBookReviewUseCase.saveReview(review);
     }
