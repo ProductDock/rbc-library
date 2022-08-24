@@ -22,4 +22,12 @@ class BookPersistenceAdapter implements BookPersistenceOutPort {
         return bookRepository.findById(bookId).map(bookJpaEntity -> bookMapper.toDomain(bookJpaEntity));
     }
 
+    @Override
+    public Optional<Book> findByTitleAndAuthor(String title, String author) {
+        var bookJpaEntity = bookRepository.findByTitleAndAuthor(title, author);
+        if (bookJpaEntity == null) {
+            return Optional.empty();
+        }
+        return Optional.of(bookMapper.toDomain(bookJpaEntity));
+    }
 }
