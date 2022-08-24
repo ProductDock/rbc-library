@@ -15,7 +15,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/catalog/books")
 record EditBookReviewApi(EditBookReviewUseCase editBookReviewUseCase, ReviewDtoMapper reviewMapper) {
     public static final String USER_EMAIL = "email";
-    public static final String USER_NAME = "name";
+    public static final String USER_FULL_NAME = "fullName";
 
     @PutMapping("/{bookId}/reviews/{userId}")
     public void editReviewForBook(
@@ -33,7 +33,7 @@ record EditBookReviewApi(EditBookReviewUseCase editBookReviewUseCase, ReviewDtoM
 
         reviewDto.bookId = bookId;
         reviewDto.userId = loggedUserEmail;
-        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim(USER_NAME);
+        reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim(USER_FULL_NAME);
         var review = reviewMapper.toDomain(reviewDto);
         editBookReviewUseCase.editReview(review);
     }

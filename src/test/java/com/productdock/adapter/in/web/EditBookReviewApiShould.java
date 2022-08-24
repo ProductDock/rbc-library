@@ -45,7 +45,7 @@ class EditBookReviewApiShould {
 
         given(authenticationMock.getCredentials()).willReturn(jwtMock);
         given(jwtMock.getClaim("email")).willReturn(DEFAULT_USER_EMAIL);
-        given(jwtMock.getClaim("name")).willReturn(DEFAULT_USER_FULL_NAME);
+        given(jwtMock.getClaim("fullName")).willReturn(DEFAULT_USER_FULL_NAME);
         given(reviewMapper.toDomain(reviewDto)).willReturn(review);
 
 
