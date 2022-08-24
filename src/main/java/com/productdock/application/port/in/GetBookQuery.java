@@ -6,4 +6,5 @@ public interface GetBookQuery {
 
     Book getById(Long bookId);
 
+    Book getByTitleAndAuthor(String title, String author);
 }

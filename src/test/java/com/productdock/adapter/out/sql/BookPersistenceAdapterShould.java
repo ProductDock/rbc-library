@@ -21,6 +21,8 @@ class BookPersistenceAdapterShould {
     private static final Optional<BookJpaEntity> BOOK_ENTITY = Optional.of(mock(BookJpaEntity.class));
     private static final Book BOOK = mock(Book.class);
     private static final Long BOOK_ID = 1L;
+    private static final String BOOK_TITLE = "::title::";
+    private static final String BOOK_AUTHOR = "::author::";
 
     @InjectMocks
     private BookPersistenceAdapter bookPersistenceAdapter;
@@ -46,6 +48,25 @@ class BookPersistenceAdapterShould {
         given(bookRepository.findById(BOOK_ID)).willReturn(Optional.empty());
 
         var book = bookPersistenceAdapter.findById(BOOK_ID);
+
+        assertThat(book).isEmpty();
+    }
+
+    @Test
+    void findBookByTitleAndAuthorWhenExist() {
+        given(bookRepository.findByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR)).willReturn(BOOK_ENTITY.get());
+        given(bookMapper.toDomain(BOOK_ENTITY.get())).willReturn(BOOK);
+
+        var book = bookPersistenceAdapter.findByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR);
+
+        assertThat(book).isPresent().contains(BOOK);
+    }
+
+    @Test
+    void findBookByTitleAndAuthorNotExist() {
+        given(bookRepository.findByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR)).willReturn(null);
+
+        var book = bookPersistenceAdapter.findByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR);
 
         assertThat(book).isEmpty();
     }

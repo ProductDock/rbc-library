@@ -103,6 +103,23 @@ class GetBookApiTest extends KafkaTestBase {
                 .andExpect(jsonPath("$.reviews[0].userId", is(SECOND_REVIEWER)));
     }
 
+    @Test
+    @WithMockUser
+    void getBookByTitleAndAuthor_whenExist() throws Exception {
+        var bookId = givenAnyBook();
+
+        requestProducer.makeGetBookRequest("::title::", "::author::")
+                .andExpect(status().isOk())
+                .andExpect(content().json(
+                        "{\"id\":" + bookId + "," +
+                                "\"title\":\"::title::\"," +
+                                "\"author\":\"::author::\"," +
+                                "\"description\": \"::description::\"," +
+                                "\"cover\":\"::cover::\"," +
+                                "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                "\"reviews\": []}"));
+    }
+
     private Long givenAnyBook() {
         var marketingTopic = givenTopicWithName("MARKETING");
         var designTopic = givenTopicWithName("DESIGN");

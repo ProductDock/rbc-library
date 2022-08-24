@@ -37,6 +37,17 @@ class RestRequestProducer {
                 .andExpect(status().isOk());
     }
 
+    public ResultActions makeGetBookRequest(String title, String author) throws Exception {
+        return mockMvc.perform(get("/api/catalog/books")
+                        .param("title", title)
+                        .param("author", author)
+                        .with(jwt().jwt(jwt -> {
+                            jwt.claim("email", DEFAULT_USER_ID);
+                            jwt.claim("name", "::userFullName::");
+                        })))
+                .andExpect(status().isOk());
+    }
+
     public ResultActions makeBookReviewRequest(String reviewDtoJson, Long bookId) throws Exception {
         return mockMvc.perform(post("/api/catalog/books/" + bookId + "/reviews")
                 .contentType(MediaType.APPLICATION_JSON)

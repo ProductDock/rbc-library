@@ -4,10 +4,7 @@ package com.productdock.adapter.in.web;
 import com.productdock.adapter.in.web.mapper.BookDtoMapper;
 import com.productdock.application.port.in.GetBookQuery;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -21,4 +18,10 @@ record GetBookApi(GetBookQuery getBookQuery, BookDtoMapper bookDtoMapper) {
         return bookDtoMapper.toDto(book);
     }
 
+    @GetMapping
+    public BookDto getBook(@RequestParam String title, @RequestParam String author) {
+        log.debug("GET request received - api/catalog/books?title={}&author={}", title, author);
+        var book = getBookQuery.getByTitleAndAuthor(title, author);
+        return bookDtoMapper.toDto(book);
+    }
 }

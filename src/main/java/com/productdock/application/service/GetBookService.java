@@ -16,4 +16,9 @@ record GetBookService(BookPersistenceOutPort bookRepository) implements GetBookQ
         return bookRepository.findById(bookId).orElseThrow();
     }
 
+    @Override
+    public Book getByTitleAndAuthor(String title, String author) {
+        log.debug("Fetched book with title: {} and author: {}", title, author);
+        return bookRepository.findByTitleAndAuthor(title, author).orElseThrow();
+    }
 }

@@ -8,4 +8,5 @@ public interface BookPersistenceOutPort {
 
     Optional<Book> findById(Long bookId);
 
+    Optional<Book> findByTitleAndAuthor(String title, String author);
 }
