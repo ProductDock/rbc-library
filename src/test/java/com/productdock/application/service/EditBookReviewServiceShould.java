@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +42,7 @@ class EditBookReviewServiceShould {
         service.editReview(review);
 
         verify(reviewRepository).save(review);
+        verify(newRatingPublisher, never()).publishRating(BOOK_ID);
     }
 
     @ParameterizedTest
