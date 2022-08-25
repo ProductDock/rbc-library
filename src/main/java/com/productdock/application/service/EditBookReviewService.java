@@ -23,10 +23,16 @@ class EditBookReviewService implements EditBookReviewUseCase {
         log.debug("Edited a review: [{}]", review);
 
         var existingRating = existingReview.getRating();
-        if (review.getRating().equals(existingRating)) {
+        if (ratingNotChanged(review.getRating(), existingRating)) {
             return;
         }
         newRatingPublisher.publishRating(review.getReviewCompositeKey().getBookId());
     }
 
+    private boolean ratingNotChanged(Short newRating, Short existingRating) {
+        if (existingRating != null) {
+            return existingRating.equals(newRating);
+        }
+        return newRating == null;
+    }
 }
