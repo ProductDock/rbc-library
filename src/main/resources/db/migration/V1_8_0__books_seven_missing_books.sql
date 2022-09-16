@@ -8,6 +8,7 @@ INSERT INTO book (title, author, cover, description) VALUES ('Professional Andro
 
 INSERT into book_topic (book_id, topic_id) VALUES (80,5);
 INSERT into book_topic (book_id, topic_id) VALUES (81,5);
+INSERT into book_topic (book_id, topic_id) VALUES (81,2);
 INSERT into book_topic (book_id, topic_id) VALUES (82,1);
 INSERT into book_topic (book_id, topic_id) VALUES (83,1);
 INSERT into book_topic (book_id, topic_id) VALUES (84,1);
