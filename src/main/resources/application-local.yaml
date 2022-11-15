@@ -16,8 +16,5 @@ spring:
     locations: classpath:db/migration
     baselineOnMigrate: true
 
-server:
-  port: 8082
-
 jwt:
-  public.key: classpath:app.pub
+  public.key: classpath:app-local.pub
