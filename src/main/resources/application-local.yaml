@@ -1,13 +1,13 @@
 USER_PROFILES_JWT_PUBLIC_KEY: src/main/resources/app-local.pub
 
 MYSQL_USERNAME: root
-MYSQL_PASSWORD: root
+SPRING_DATASOURCE_PASSWORD: root
 spring:
   cloud.gcp.sql.enabled: false
   datasource:
     url: jdbc:mysql://localhost:3308/catalog
     username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
     url: jdbc:mysql://localhost:3308/catalog
