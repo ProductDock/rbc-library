@@ -8,7 +8,7 @@ spring:
     user: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
     schemas: catalog
-    url: jdbc:mysql://google/catalog?cloudSqlInstance=${MYSQL_INSTANCE_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.mysql.SocketFactory
+    url: jdbc:mysql://google/catalog?cloudSqlInstance=${GCP_SQL_INSTANCE_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.mysql.SocketFactory
     locations: classpath:db/migration
     baselineOnMigrate: true
   kafka:
