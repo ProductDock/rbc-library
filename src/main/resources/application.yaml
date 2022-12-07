@@ -1,8 +1,19 @@
 spring:
-
+  cloud:
+    gcp:
+      sql:
+        database-name: catalog
+        instance-connection-name: ${MYSQL_INSTANCE_CONNECTION_NAME}
+  flyway:
+    user: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    schemas: catalog
+    url: jdbc:mysql://google/catalog?cloudSqlInstance=${MYSQL_INSTANCE_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.mysql.SocketFactory
+    locations: classpath:db/migration
+    baselineOnMigrate: true
   kafka:
     enabled: true
-    bootstrap-servers: ${kafka.server.url:localhost:9092}
+    bootstrap-servers: ${KAFKA_SERVER_URL}
     value-seriliazer: org.apache.kafka.common.serialization.StringSerializer
     key-serializer: org.apache.kafka.common.serialization.StringSerializer
     producer:
@@ -21,5 +32,7 @@ server:
 
 logging:
   level:
-    com.productdock: ${logging.level:INFO}
+    com.productdock: INFO
 
+jwt:
+  public.key: file:${USER_PROFILES_JWT_PUBLIC_KEY}

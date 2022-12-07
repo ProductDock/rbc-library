@@ -1,20 +1,13 @@
-cors:
-  allowed:
-    origins: http://localhost:3000
+USER_PROFILES_JWT_PUBLIC_KEY: src/main/resources/app-local.pub
 
+MYSQL_USERNAME: root
+MYSQL_PASSWORD: root
 spring:
+  cloud.gcp.sql.enabled: false
   datasource:
-    url: jdbc:mysql://${mysql.server.host:0.0.0.0}:3308/catalog
-    username: root
-    password: root
+    url: jdbc:mysql://localhost:3308/catalog
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
-    user: root
-    password: root
-    schemas: catalog
-    url: jdbc:mysql://${mysql.server.host:0.0.0.0}:3308/catalog
-    locations: classpath:db/migration
-    baselineOnMigrate: true
-
-jwt:
-  public.key: classpath:app-local.pub
+    url: jdbc:mysql://localhost:3308/catalog
