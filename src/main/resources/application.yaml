@@ -3,7 +3,7 @@ spring:
     gcp:
       sql:
         database-name: catalog
-        instance-connection-name: ${MYSQL_INSTANCE_CONNECTION_NAME}
+        instance-connection-name: ${GCP_SQL_INSTANCE_CONNECTION_NAME}
   flyway:
     user: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
