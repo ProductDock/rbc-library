@@ -107,6 +107,10 @@
 			<artifactId>mysql-socket-factory-connector-j-8</artifactId>
 			<version>1.6.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>
