@@ -2,6 +2,8 @@ USER_PROFILES_JWT_PUBLIC_KEY: src/main/resources/app-local.pub
 
 MYSQL_USERNAME: root
 SPRING_DATASOURCE_PASSWORD: root
+LOG_TO_FILE: false
+
 spring:
   cloud.gcp.sql.enabled: false
   datasource:

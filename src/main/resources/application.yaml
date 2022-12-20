@@ -34,5 +34,7 @@ logging:
   level:
     com.productdock: INFO
 
+file-logging-enabled: ${LOG_TO_FILE}
+
 jwt:
   public.key: file:${USER_PROFILES_JWT_PUBLIC_KEY}
