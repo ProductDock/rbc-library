@@ -40,6 +40,8 @@ jwt:
   public.key: file:${USER_PROFILES_JWT_PUBLIC_KEY}
 
 management:
+  server:
+    port: 8087
   endpoint:
     health:
       show-details: always
