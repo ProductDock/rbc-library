@@ -23,7 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests(authorize -> authorize.antMatchers("/actuator/**").permitAll()
-                        .antMatchers("/api/catalog/books/*").hasRole("USER")
+                        //.antMatchers("/api/catalog/books/*").hasRole("USER")
                         .anyRequest().authenticated())
                 .cors().and()
                 .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthConverter);

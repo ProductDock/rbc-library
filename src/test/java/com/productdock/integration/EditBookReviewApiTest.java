@@ -3,6 +3,7 @@ package com.productdock.integration;
 import com.productdock.adapter.out.kafka.BookRatingMessage;
 import com.productdock.adapter.out.sql.BookRepository;
 import com.productdock.adapter.out.sql.ReviewRepository;
+import com.productdock.adapter.out.sql.entity.BookJpaEntity;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import org.junit.jupiter.api.AfterAll;
@@ -57,33 +58,33 @@ class EditBookReviewApiTest extends KafkaTestBase {
     @Test
     @WithMockUser
     void editReview_whenUserIdNotValid() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var editReviewDtoJson =
                 "{\"recommendation\":[]}";
-        requestProducer.makeEditBookReviewRequest(editReviewDtoJson, bookId, "::wrongId::").andExpect(status().isForbidden());
+        requestProducer.makeEditBookReviewRequest(editReviewDtoJson, book.getId(), "::wrongId::").andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser
     void editReview_whenReviewIsValid() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"comment\":\"::comment::\"," +
                         "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isOk());
         var editReviewDtoJson =
                 "{\"comment\":\"::new-comment::\"," +
                         "\"rating\":2," +
                         "\"recommendation\":[\"MEDIOR\",\"SENIOR\"]}";
-        requestProducer.makeEditBookReviewRequest(editReviewDtoJson, bookId, DEFAULT_USER_ID);
+        requestProducer.makeEditBookReviewRequest(editReviewDtoJson, book.getId(), DEFAULT_USER_ID);
 
-        requestProducer.makeGetBookRequest(bookId)
+        requestProducer.makeGetBookRequest(book.getId())
                 .andExpect(content().json(
-                        "{\"id\":" + bookId + "," +
+                        "{\"id\":" + book.getId() + "," +
                                 "\"title\":\"::title::\"," +
                                 "\"author\":\"::author::\"," +
                                 "\"cover\": \"::cover::\"," +
-                                "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                "\"topics\": " + JsonFrom.topicCollection(book.getTopics()) + "," +
                                 "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
                                 "\"rating\":2," +
                                 "\"recommendation\": [\"MEDIOR\",\"SENIOR\"]," +
@@ -94,7 +95,7 @@ class EditBookReviewApiTest extends KafkaTestBase {
                 .until(ifFileExists(TEST_FILE));
 
         var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
-        assertThat(bookRatingMessage.bookId).isEqualTo(bookId);
+        assertThat(bookRatingMessage.bookId).isEqualTo(book.getId());
         assertThat(bookRatingMessage.rating).isEqualTo(2);
         assertThat(bookRatingMessage.ratingsCount).isEqualTo(1);
     }
@@ -102,26 +103,25 @@ class EditBookReviewApiTest extends KafkaTestBase {
     @Test
     @WithMockUser
     void returnBadRequest_whenReviewNotExist() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var editReviewDtoJson =
                 "{\"recommendation\":[]}";
-        requestProducer.makeEditBookReviewRequest(editReviewDtoJson, bookId, DEFAULT_USER_ID).andExpect(status().isBadRequest());
+        requestProducer.makeEditBookReviewRequest(editReviewDtoJson, book.getId(), DEFAULT_USER_ID).andExpect(status().isBadRequest());
     }
 
-    private Long givenAnyBook() {
+    private BookJpaEntity givenAnyBook() {
         var marketingTopic = givenTopicWithName("MARKETING");
         var designTopic = givenTopicWithName("DESIGN");
         var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
-        return bookRepository.save(book).getId();
+        return bookRepository.save(book);
     }
 
 
     private Callable<Boolean> ifFileExists(String testFile) {
-        Callable<Boolean> checkForFile = () -> {
+        return () -> {
             File f = new File(testFile);
             return f.isFile();
         };
-        return checkForFile;
     }
 
     private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {

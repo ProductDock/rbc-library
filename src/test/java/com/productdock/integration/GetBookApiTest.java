@@ -2,6 +2,7 @@ package com.productdock.integration;
 
 import com.productdock.adapter.out.sql.BookRepository;
 import com.productdock.adapter.out.sql.ReviewRepository;
+import com.productdock.adapter.out.sql.entity.BookJpaEntity;
 import com.productdock.adapter.out.sql.entity.ReviewJpaEntity;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
@@ -54,39 +55,39 @@ class GetBookApiTest extends KafkaTestBase {
     @Test
     @WithMockUser
     void getBook_whenIdExistAndNoReviews() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
 
-        requestProducer.makeGetBookRequest(bookId)
+        requestProducer.makeGetBookRequest(book.getId())
                 .andExpect(status().isOk())
                 .andExpect(content().json(
-                        "{\"id\":" + bookId + "," +
+                        "{\"id\":" + book.getId() + "," +
                                 "\"title\":\"::title::\"," +
                                 "\"author\":\"::author::\"," +
                                 "\"description\": \"::description::\"," +
                                 "\"cover\":\"::cover::\"," +
-                                "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                "\"topics\": " + JsonFrom.topicCollection(book.getTopics()) + "," +
                                 "\"reviews\": []}"));
     }
 
     @Test
     @WithMockUser
     void getBook_whenIdExistAndReviewsExist() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var calendar = Calendar.getInstance();
 
         calendar.set(2022, Calendar.APRIL, 5);
-        givenReviewForBook(bookId, FIRST_REVIEWER, calendar.getTime());
+        givenReviewForBook(book.getId(), FIRST_REVIEWER, calendar.getTime());
         calendar.set(2022, Calendar.JUNE, 5);
-        givenReviewForBook(bookId, SECOND_REVIEWER, calendar.getTime());
+        givenReviewForBook(book.getId(), SECOND_REVIEWER, calendar.getTime());
 
-        requestProducer.makeGetBookRequest(bookId)
+        requestProducer.makeGetBookRequest(book.getId())
                 .andExpect(content().json(
-                        "{\"id\":" + bookId + "," +
+                        "{\"id\":" + book.getId() + "," +
                                 "\"title\":\"::title::\"," +
                                 "\"author\":\"::author::\"," +
                                 "\"cover\":\"::cover::\"," +
                                 "\"description\": \"::description::\"," +
-                                "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                "\"topics\": " + JsonFrom.topicCollection(book.getTopics()) + "," +
                                 "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
                                 "\"userId\":\"" + SECOND_REVIEWER + "\"," +
                                 "\"rating\":2," +
@@ -106,25 +107,25 @@ class GetBookApiTest extends KafkaTestBase {
     @Test
     @WithMockUser
     void getBookByTitleAndAuthor_whenExist() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
 
         requestProducer.makeGetBookRequest("::title::", "::author::")
                 .andExpect(status().isOk())
                 .andExpect(content().json(
-                        "{\"id\":" + bookId + "," +
+                        "{\"id\":" + book.getId() + "," +
                                 "\"title\":\"::title::\"," +
                                 "\"author\":\"::author::\"," +
                                 "\"description\": \"::description::\"," +
                                 "\"cover\":\"::cover::\"," +
-                                "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                "\"topics\": " + JsonFrom.topicCollection(book.getTopics()) + "," +
                                 "\"reviews\": []}"));
     }
 
-    private Long givenAnyBook() {
+    private BookJpaEntity givenAnyBook() {
         var marketingTopic = givenTopicWithName("MARKETING");
         var designTopic = givenTopicWithName("DESIGN");
         var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
-        return bookRepository.save(book).getId();
+        return bookRepository.save(book);
     }
 
 

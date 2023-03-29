@@ -1,4 +1,4 @@
-package com.productdock.data.provider.out.sql;
+package com.productdock.data.provider.domain;
 
 import com.productdock.domain.Book;
 

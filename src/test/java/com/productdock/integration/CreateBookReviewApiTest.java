@@ -3,6 +3,7 @@ package com.productdock.integration;
 import com.productdock.adapter.out.kafka.BookRatingMessage;
 import com.productdock.adapter.out.sql.BookRepository;
 import com.productdock.adapter.out.sql.ReviewRepository;
+import com.productdock.adapter.out.sql.entity.BookJpaEntity;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import net.bytebuddy.utility.RandomString;
@@ -57,28 +58,28 @@ class CreateBookReviewApiTest extends KafkaTestBase {
     @Test
     @WithMockUser
     void createReview_whenCommentAndRatingMissing() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"recommendation\":[]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser
     void createReview_whenReviewIsValid() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"comment\":\"::comment::\"," +
                         "\"rating\":1," +
                         "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
-        requestProducer.makeGetBookRequest(bookId)
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isOk());
+        requestProducer.makeGetBookRequest(book.getId())
                 .andExpect(content().json(
-                        "{\"id\":" + bookId + "," +
+                        "{\"id\":" + book.getId() + "," +
                                 "\"title\":\"::title::\"," +
                                 "\"author\":\"::author::\"," +
                                 "\"cover\": \"::cover::\"," +
-                                "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                "\"topics\": " + JsonFrom.topicCollection(book.getTopics()) + "," +
                                 "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
                                 "\"rating\":1," +
                                 "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
@@ -89,7 +90,7 @@ class CreateBookReviewApiTest extends KafkaTestBase {
                 .until(ifFileExists(TEST_FILE));
 
         var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
-        assertThat(bookRatingMessage.bookId).isEqualTo(bookId);
+        assertThat(bookRatingMessage.bookId).isEqualTo(book.getId());
         assertThat(bookRatingMessage.rating).isEqualTo(1);
         assertThat(bookRatingMessage.ratingsCount).isEqualTo(1);
     }
@@ -97,50 +98,49 @@ class CreateBookReviewApiTest extends KafkaTestBase {
     @Test
     @WithMockUser
     void returnBadRequest_whenReviewAlreadyExists() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"comment\":\"::comment::\"," +
                         "\"rating\":null," +
                         "\"recommendation\":[]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isOk());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isBadRequest());
     }
 
     @Test
     @WithMockUser
     void returnBadRequest_whenReviewHasTooLongComment() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"comment\":\"" + RandomString.make(501) + "\"," +
                         "\"rating\":null," +
                         "\"recommendation\":[]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isBadRequest());
     }
 
     @Test
     @WithMockUser
     void returnBadRequest_whenReviewHasInvalidRating() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"comment\":\"::comment::\"," +
                         "\"rating\":7," +
                         "\"recommendation\":[]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isBadRequest());
     }
 
-    private Long givenAnyBook() {
+    private BookJpaEntity givenAnyBook() {
         var marketingTopic = givenTopicWithName("MARKETING");
         var designTopic = givenTopicWithName("DESIGN");
         var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
-        return bookRepository.save(book).getId();
+        return bookRepository.save(book);
     }
 
     private Callable<Boolean> ifFileExists(String testFile) {
-        Callable<Boolean> checkForFile = () -> {
+        return () -> {
             File f = new File(testFile);
             return f.isFile();
         };
-        return checkForFile;
     }
 
     private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {
