@@ -1,6 +1,6 @@
 package com.productdock.data.provider.in.web;
 
-import com.productdock.adapter.in.web.ReviewDto;
+import com.productdock.adapter.in.web.dto.ReviewDto;
 import com.productdock.adapter.in.web.mapper.Recommendation;
 
 import java.util.List;

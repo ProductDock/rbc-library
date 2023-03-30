@@ -1,6 +1,6 @@
 package com.productdock.integration;
 
-import com.productdock.adapter.out.kafka.BookRatingMessage;
+import com.productdock.adapter.out.kafka.messages.BookRatingMessage;
 import com.productdock.adapter.out.sql.BookRepository;
 import com.productdock.adapter.out.sql.ReviewRepository;
 import com.productdock.adapter.out.sql.entity.BookJpaEntity;

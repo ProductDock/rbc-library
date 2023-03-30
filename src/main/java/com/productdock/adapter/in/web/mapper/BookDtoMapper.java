@@ -1,6 +1,6 @@
 package com.productdock.adapter.in.web.mapper;
 
-import com.productdock.adapter.in.web.BookDto;
+import com.productdock.adapter.in.web.dto.BookDto;
 import com.productdock.domain.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

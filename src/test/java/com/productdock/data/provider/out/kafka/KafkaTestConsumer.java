@@ -1,7 +1,7 @@
 package com.productdock.data.provider.out.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.productdock.adapter.out.kafka.BookRatingMessage;
+import com.productdock.adapter.out.kafka.messages.BookRatingMessage;
 import com.productdock.kafka.BookRatingMessageDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;

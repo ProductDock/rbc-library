@@ -1,6 +1,8 @@
-package com.productdock.adapter.out.kafka;
+package com.productdock.adapter.out.kafka.publisher;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.productdock.adapter.out.kafka.messages.BookRatingMessage;
+import com.productdock.adapter.out.kafka.publisher.KafkaRecordProducer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

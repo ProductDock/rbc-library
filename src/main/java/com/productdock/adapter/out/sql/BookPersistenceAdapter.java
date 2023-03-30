@@ -1,13 +1,19 @@
 package com.productdock.adapter.out.sql;
 
+import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.adapter.out.sql.mapper.BookMapper;
 import com.productdock.application.port.out.persistence.BookPersistenceOutPort;
 import com.productdock.domain.Book;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 @Slf4j
@@ -15,9 +21,12 @@ import java.util.Optional;
 class BookPersistenceAdapter implements BookPersistenceOutPort {
 
     private BookRepository bookRepository;
+
+    private TopicRepository topicRepository;
     private BookMapper bookMapper;
 
     @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public Optional<Book> findById(Long bookId) {
         return bookRepository.findById(bookId).map(bookJpaEntity -> bookMapper.toDomain(bookJpaEntity));
     }
@@ -30,4 +39,17 @@ class BookPersistenceAdapter implements BookPersistenceOutPort {
         }
         return Optional.of(bookMapper.toDomain(bookJpaEntity));
     }
+
+    @Override
+    public Book save(Book book) {
+        var bookJpaEntity = bookMapper.toEntity(book);
+        bookJpaEntity.setTopics(populateBookTopics(book.getTopics()));
+        return bookMapper.toDomain(bookRepository.save(bookJpaEntity));
+    }
+
+    private Set<TopicJpaEntity> populateBookTopics(List<Book.Topic> topics) {
+        var topicEntities = topicRepository.findByIds(topics.stream().map(Book.Topic::getId).toList());
+        return new HashSet<>(topicEntities);
+    }
+
 }

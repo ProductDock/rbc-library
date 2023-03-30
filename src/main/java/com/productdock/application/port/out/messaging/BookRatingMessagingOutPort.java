@@ -5,7 +5,8 @@ import com.productdock.domain.Book;
 
 import java.util.concurrent.ExecutionException;
 
-public interface BookMessagingOutPort {
+public interface BookRatingMessagingOutPort {
 
-    void sendMessage(Book book, int bookCopies) throws ExecutionException, InterruptedException, JsonProcessingException;
+    void sendMessage(Book book) throws ExecutionException, InterruptedException, JsonProcessingException;
+
 }

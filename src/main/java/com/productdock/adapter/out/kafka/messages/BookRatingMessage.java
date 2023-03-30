@@ -1,4 +1,4 @@
-package com.productdock.adapter.out.kafka;
+package com.productdock.adapter.out.kafka.messages;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

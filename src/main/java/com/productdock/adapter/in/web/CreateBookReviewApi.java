@@ -1,5 +1,6 @@
 package com.productdock.adapter.in.web;
 
+import com.productdock.adapter.in.web.dto.ReviewDto;
 import com.productdock.adapter.in.web.mapper.ReviewDtoMapper;
 import com.productdock.application.port.in.SaveBookReviewUseCase;
 import lombok.extern.slf4j.Slf4j;

@@ -10,12 +10,9 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", uses = {ReviewMapper.class}, builder = @Builder(disableBuilder = true))
 public interface BookMapper {
 
-    // @Mapping(source = "topics", target = "topics", qualifiedByName = "topicEntitiesToTopicNameList")
     Book toDomain(BookJpaEntity source);
 
-//    @Named("topicEntitiesToTopicNameList")
-//    static List<String> topicEntitiesToTopicNameList(Set<TopicJpaEntity> topics) {
-//        return topics.stream().map(TopicJpaEntity::getName).toList();
-//    }
+    // TODO: test
+    BookJpaEntity toEntity(Book book);
 
 }

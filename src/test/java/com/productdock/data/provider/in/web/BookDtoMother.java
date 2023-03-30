@@ -1,6 +1,6 @@
 package com.productdock.data.provider.in.web;
 
-import com.productdock.adapter.in.web.BookDto;
+import com.productdock.adapter.in.web.dto.BookDto;
 
 public class BookDtoMother {
     private static final Long defaultId = 1L;

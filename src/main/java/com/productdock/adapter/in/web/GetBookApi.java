@@ -1,6 +1,7 @@
 package com.productdock.adapter.in.web;
 
 
+import com.productdock.adapter.in.web.dto.BookDto;
 import com.productdock.adapter.in.web.mapper.BookDtoMapper;
 import com.productdock.application.port.in.GetBookQuery;
 import lombok.extern.slf4j.Slf4j;

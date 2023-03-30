@@ -1,5 +1,6 @@
 USER_PROFILES_JWT_PUBLIC_KEY: src/main/resources/app-local.pub
 
+KAFKA_SERVER_URL: localhost:9093
 MYSQL_USERNAME: root
 SPRING_DATASOURCE_PASSWORD: root
 LOG_TO_FILE: false
