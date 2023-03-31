@@ -7,6 +7,7 @@ import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,8 +15,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,9 +51,12 @@ class CreateBookApiTest extends KafkaTestBase {
     @Autowired
     private RestRequestProducer requestProducer;
 
-    @BeforeEach
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @AfterEach
     final void before() {
-        topicRepository.deleteAll();
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "book_topic", "book", "topic");
     }
 
     @AfterAll
