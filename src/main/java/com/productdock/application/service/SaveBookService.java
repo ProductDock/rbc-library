@@ -23,10 +23,11 @@ class SaveBookService implements SaveBookUseCase {
 
     @Override
     @SneakyThrows
-    public void saveBook(Book book, int bookCopies) {
+    public Long saveBook(Book book, int bookCopies) {
         var insertedBook = bookRepository.save(book);
         bookMessagingOutPort.sendMessage(insertedBook, bookCopies);
         bookInventoryMessagingOutPort.sendMessage(insertedBook.getId(), bookCopies);
+        return insertedBook.getId();
     }
 
 }

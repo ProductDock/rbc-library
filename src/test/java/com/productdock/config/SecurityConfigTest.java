@@ -7,7 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -18,10 +20,20 @@ class SecurityConfigTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private static final String ROLE_USER = "ROLE_USER";
+
     @Test
     void givenUnauthenticated_thenUnauthorizedResponse() throws Exception {
-        mockMvc.perform(get("/api/books"))
+        mockMvc.perform(get("/api/catalog/books/1"))
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void givenUnauthorized_thenForbiddenResponse() throws Exception {
+        mockMvc.perform(post("/api/catalog/books")
+                        .with(jwt().jwt(jwt -> {
+                            jwt.claim("scope", ROLE_USER);
+                        })))
+                .andExpect(status().isForbidden());
+    }
 }

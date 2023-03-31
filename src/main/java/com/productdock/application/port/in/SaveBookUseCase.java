@@ -4,5 +4,5 @@ import com.productdock.domain.Book;
 
 public interface SaveBookUseCase {
 
-    void saveBook(Book book, int bookCopies);
+    Long saveBook(Book book, int bookCopies);
 }

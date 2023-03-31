@@ -2,6 +2,7 @@ package com.productdock.integration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -65,5 +66,15 @@ class RestRequestProducer {
                     jwt.claim("email", DEFAULT_USER_ID);
                     jwt.claim("fullName", "::userFullName::");
                 })));
+    }
+
+    public ResultActions makeCreateBookRequestAs(String insertBookDto, String role) throws Exception {
+        return mockMvc.perform(post("/api/catalog/books")
+                .contentType(MediaType.APPLICATION_JSON)
+                        .content(insertBookDto)
+                .with(jwt().jwt(jwt -> {
+                    jwt.claim("email", DEFAULT_USER_ID);
+                    jwt.claim("fullName", "::userFullName::");
+                }).authorities(new SimpleGrantedAuthority(role))));
     }
 }

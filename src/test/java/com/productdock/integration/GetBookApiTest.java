@@ -2,6 +2,7 @@ package com.productdock.integration;
 
 import com.productdock.adapter.out.sql.BookRepository;
 import com.productdock.adapter.out.sql.ReviewRepository;
+import com.productdock.adapter.out.sql.TopicRepository;
 import com.productdock.adapter.out.sql.entity.BookJpaEntity;
 import com.productdock.adapter.out.sql.entity.ReviewJpaEntity;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
@@ -35,6 +36,9 @@ class GetBookApiTest extends KafkaTestBase {
     private BookRepository bookRepository;
 
     @Autowired
+    private TopicRepository topicRepository;
+
+    @Autowired
     private ReviewRepository reviewRepository;
 
     @Autowired
@@ -44,6 +48,7 @@ class GetBookApiTest extends KafkaTestBase {
     final void before() {
         reviewRepository.deleteAll();
         bookRepository.deleteAll();
+        topicRepository.deleteAll();
     }
 
     @AfterAll
@@ -145,7 +150,7 @@ class GetBookApiTest extends KafkaTestBase {
     }
 
     private TopicJpaEntity givenTopicWithName(String name) {
-        return TopicJpaEntity.builder().name(name).build();
+        var topic = TopicJpaEntity.builder().name(name).build();
+        return topicRepository.save(topic);
     }
-
 }

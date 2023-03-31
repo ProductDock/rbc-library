@@ -1,4 +1,4 @@
-package com.productdock.adapter.in.web;
+package com.productdock.adapter.in.web.mapper;
 
 
 import com.productdock.adapter.in.web.mapper.BookDtoMapper;

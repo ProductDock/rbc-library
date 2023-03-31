@@ -29,7 +29,7 @@ public class BookJpaEntity {
     private String description;
 
     @Singular
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "book_topic",
             joinColumns = {@JoinColumn(name = "book_id")},
