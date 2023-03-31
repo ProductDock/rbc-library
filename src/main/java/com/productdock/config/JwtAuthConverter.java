@@ -17,8 +17,8 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
     @Override
     public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
-        var grantedAuthorities = jwtGrantedAuthoritiesConverter.convert(jwt).stream().toList();
-        return new JwtAuthenticationToken(jwt, grantedAuthorities, getIssuerName(jwt));
+        var grantedAuthorities = jwtGrantedAuthoritiesConverter.convert(jwt);
+        return new JwtAuthenticationToken(jwt, grantedAuthorities.stream().toList(), getIssuerName(jwt));
     }
 
     private String getIssuerName(Jwt jwt) {
