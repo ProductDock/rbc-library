@@ -105,9 +105,9 @@ class EditBookReviewApiTest extends KafkaTestBase {
                 .until(ifFileExists(TEST_FILE));
 
         var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
-        assertThat(bookRatingMessage.bookId).isEqualTo(book.getId());
-        assertThat(bookRatingMessage.rating).isEqualTo(2);
-        assertThat(bookRatingMessage.ratingsCount).isEqualTo(1);
+        assertThat(bookRatingMessage.getBookId()).isEqualTo(book.getId());
+        assertThat(bookRatingMessage.getRating()).isEqualTo(2);
+        assertThat(bookRatingMessage.getRatingsCount()).isEqualTo(1);
     }
 
     @Test

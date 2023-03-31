@@ -12,7 +12,6 @@ public interface BookMapper {
 
     Book toDomain(BookJpaEntity source);
 
-    // TODO: test
     BookJpaEntity toEntity(Book book);
 
 }

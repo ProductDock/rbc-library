@@ -85,9 +85,9 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
                 .until(ifFileExists(TEST_FILE));
 
         var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
-        assertThat(bookRatingMessage.bookId).isEqualTo(bookId);
-        assertThat(bookRatingMessage.rating).isNull();
-        assertThat(bookRatingMessage.ratingsCount).isZero();
+        assertThat(bookRatingMessage.getBookId()).isEqualTo(bookId);
+        assertThat(bookRatingMessage.getRating()).isNull();
+        assertThat(bookRatingMessage.getRatingsCount()).isZero();
     }
 
     @Test

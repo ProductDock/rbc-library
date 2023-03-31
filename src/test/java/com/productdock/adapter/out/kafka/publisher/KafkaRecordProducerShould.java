@@ -23,8 +23,8 @@ class KafkaRecordProducerShould {
     void produceMessage() throws JsonProcessingException {
         var producerRecord = kafkaRecordProducer.createKafkaRecord(BOOK_RATING_TOPIC, BOOK_RATING_MESSAGE);
 
-        String expectedValue = "{\"bookId\":" + BOOK_RATING_MESSAGE.bookId +
-                ",\"rating\":" + BOOK_RATING_MESSAGE.rating + ",\"ratingsCount\":" + BOOK_RATING_MESSAGE.ratingsCount + "}";
+        String expectedValue = "{\"bookId\":" + BOOK_RATING_MESSAGE.getBookId() +
+                ",\"rating\":" + BOOK_RATING_MESSAGE.getRating() + ",\"ratingsCount\":" + BOOK_RATING_MESSAGE.getRatingsCount() + "}";
 
         assertThat(producerRecord.value()).isEqualTo(expectedValue);
     }

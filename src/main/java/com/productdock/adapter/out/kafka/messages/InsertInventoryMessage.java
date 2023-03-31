@@ -12,6 +12,6 @@ import java.io.Serializable;
 @ToString
 @Data
 public class InsertInventoryMessage implements Serializable {
-    public final Long bookId;
-    public final int bookCopies;
+    private Long bookId;
+    private int bookCopies;
 }

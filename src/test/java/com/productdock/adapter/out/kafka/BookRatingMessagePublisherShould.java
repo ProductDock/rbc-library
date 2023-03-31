@@ -41,9 +41,9 @@ class BookRatingMessagePublisherShould {
         var capturedMessage = bookRatingMessageCaptor.getValue();
 
         try (var softly = new AutoCloseableSoftAssertions()) {
-            softly.assertThat(capturedMessage.bookId).isEqualTo(book.getId());
-            softly.assertThat(capturedMessage.rating).isEqualTo(rating.getScore());
-            softly.assertThat(capturedMessage.ratingsCount).isEqualTo(rating.getCount());
+            softly.assertThat(capturedMessage.getBookId()).isEqualTo(book.getId());
+            softly.assertThat(capturedMessage.getRating()).isEqualTo(rating.getScore());
+            softly.assertThat(capturedMessage.getRatingsCount()).isEqualTo(rating.getCount());
         }
     }
 
