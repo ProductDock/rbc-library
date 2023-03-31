@@ -17,17 +17,16 @@ import java.security.interfaces.RSAPublicKey;
 @Configuration
 public class SecurityConfig {
 
-    private final JwtAuthConverter jwtAuthConverter;
     @Value("${jwt.public.key}")
     RSAPublicKey key;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests(authorize -> authorize.antMatchers("/actuator/**").permitAll()
-                        .antMatchers(HttpMethod.POST, "/api/catalog/books").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.POST, "/api/catalog/books").hasAuthority("SCOPE_ROLE_ADMIN")
                         .anyRequest().authenticated())
                 .cors().and()
-                .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthConverter);
+                .oauth2ResourceServer().jwt();
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();

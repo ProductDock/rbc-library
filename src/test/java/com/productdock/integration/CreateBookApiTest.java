@@ -42,8 +42,8 @@ class CreateBookApiTest extends KafkaTestBase {
     public static final String INSERT_INVENTORY_TEST_FILE = "testInsertInventory.txt";
 
     private static final String DEFAULT_TOPIC = "default topic";
-    private static final String ROLE_ADMIN = "ROLE_ADMIN";
-    private static final String ROLE_USER = "ROLE_USER";
+    private static final String ROLE_ADMIN = "SCOPE_ROLE_ADMIN";
+    private static final String ROLE_USER = "SCOPE_ROLE_USER";
 
     @Autowired
     private TopicRepository topicRepository;
