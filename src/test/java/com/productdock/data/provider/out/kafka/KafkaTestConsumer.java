@@ -32,14 +32,7 @@ public class KafkaTestConsumer {
     public void receiveInsertBook(ConsumerRecord<String, String> consumerInsertBook) throws JsonProcessingException {
         LOGGER.info("received payload='{}'", consumerInsertBook.toString());
         var insertBookMessage = kafkaMessageDeserializer.deserializeInsertBookMessage(consumerInsertBook);
-        writeRecordToFile(insertBookMessage, "testInsertBook.txt");
-    }
-
-    @KafkaListener(topics = "${spring.kafka.topic.insert-inventory}")
-    public void receiveInsertInventory(ConsumerRecord<String, String> consumerInsertInventory) throws JsonProcessingException {
-        LOGGER.info("received payload='{}'", consumerInsertInventory.toString());
-        var insertInventoryMessage = kafkaMessageDeserializer.deserializeInsertInventoryMessage(consumerInsertInventory);
-        writeRecordToFile(insertInventoryMessage, "testInsertInventory.txt");
+        writeRecordToFile(insertBookMessage, "testAddBook.txt");
     }
 
     private void writeRecordToFile(Object message, String fileName) {

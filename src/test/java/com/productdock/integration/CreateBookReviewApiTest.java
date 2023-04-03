@@ -10,7 +10,6 @@ import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,13 +19,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.time.Duration;
-import java.util.concurrent.Callable;
 
 import static com.productdock.data.provider.out.sql.BookEntityMother.defaultBookEntityBuilder;
+import static com.productdock.kafka.KafkaFileUtil.getMessageFrom;
+import static com.productdock.kafka.KafkaFileUtil.ifFileExists;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -98,7 +95,7 @@ class CreateBookReviewApiTest extends KafkaTestBase {
                 .atMost(Duration.ofSeconds(4))
                 .until(ifFileExists(TEST_FILE));
 
-        var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
+        var bookRatingMessage = (BookRatingMessage) getMessageFrom(TEST_FILE);
         assertThat(bookRatingMessage.getBookId()).isEqualTo(book.getId());
         assertThat(bookRatingMessage.getRating()).isEqualTo(1);
         assertThat(bookRatingMessage.getRatingsCount()).isEqualTo(1);
@@ -143,21 +140,6 @@ class CreateBookReviewApiTest extends KafkaTestBase {
         var designTopic = givenTopicWithName("DESIGN");
         var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
         return bookRepository.save(book);
-    }
-
-    private Callable<Boolean> ifFileExists(String testFile) {
-        return () -> {
-            File f = new File(testFile);
-            return f.isFile();
-        };
-    }
-
-    private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(testFile);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        var bookRatingMessage = (BookRatingMessage) objectInputStream.readObject();
-        objectInputStream.close();
-        return bookRatingMessage;
     }
 
     private TopicJpaEntity givenTopicWithName(String name) {

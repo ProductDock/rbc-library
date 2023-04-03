@@ -25,6 +25,8 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static com.productdock.data.provider.out.sql.BookEntityMother.defaultBookEntityBuilder;
+import static com.productdock.kafka.KafkaFileUtil.getMessageFrom;
+import static com.productdock.kafka.KafkaFileUtil.ifFileExists;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -84,7 +86,7 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
                 .atMost(Duration.ofSeconds(4))
                 .until(ifFileExists(TEST_FILE));
 
-        var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
+        var bookRatingMessage = (BookRatingMessage) getMessageFrom(TEST_FILE);
         assertThat(bookRatingMessage.getBookId()).isEqualTo(bookId);
         assertThat(bookRatingMessage.getRating()).isNull();
         assertThat(bookRatingMessage.getRatingsCount()).isZero();
@@ -102,22 +104,6 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
         var designTopic = givenTopicWithName("DESIGN");
         var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
         return bookRepository.save(book).getId();
-    }
-
-    private Callable<Boolean> ifFileExists(String testFile) {
-        Callable<Boolean> checkForFile = () -> {
-            File f = new File(testFile);
-            return f.isFile();
-        };
-        return checkForFile;
-    }
-
-    private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(testFile);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        var bookRatingMessage = (BookRatingMessage) objectInputStream.readObject();
-        objectInputStream.close();
-        return bookRatingMessage;
     }
 
     private TopicJpaEntity givenTopicWithName(String name) {
