@@ -19,7 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {BookDtoMapperImpl.class, ReviewDtoMapperImpl.class})
-class BookDtoMapperShould {
+class GetBookDtoMapperShould {
 
     @Autowired
     private BookDtoMapper bookMapper;

@@ -1,8 +1,8 @@
 package com.productdock.adapter.in.web;
 
-import com.productdock.adapter.in.web.dto.InsertBookDto;
-import com.productdock.adapter.in.web.mapper.InsertBookDtoMapper;
-import com.productdock.application.port.in.SaveBookUseCase;
+import com.productdock.adapter.in.web.dto.AddBookDto;
+import com.productdock.adapter.in.web.mapper.AddBookDtoMapper;
+import com.productdock.application.port.in.AddBookUseCase;
 import com.productdock.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,31 +14,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CreateBookApiShould {
+class AddBookApiShould {
 
     @InjectMocks
-    private CreateBookApi createBookApi;
+    private AddBookApi addBookApi;
 
     @Mock
-    private SaveBookUseCase saveBookUseCase;
+    private AddBookUseCase addBookUseCase;
 
     @Mock
-    private InsertBookDtoMapper insertBookDtoMapper;
+    private AddBookDtoMapper addBookDtoMapper;
 
     private static final Integer DEFAULT_BOOK_COPIES = 1;
     private static final Long DEFAULT_BOOK_ID = 1L;
     @Test
     void createBook() {
-        var insertBookDto = mock(InsertBookDto.class);
+        var insertBookDto = mock(AddBookDto.class);
         var book = mock(Book.class);
         insertBookDto.bookCopies = DEFAULT_BOOK_COPIES;
 
-        when(insertBookDtoMapper.toDomain(insertBookDto)).thenReturn(book);
-        when(saveBookUseCase.saveBook(book, DEFAULT_BOOK_COPIES)).thenReturn(DEFAULT_BOOK_ID);
+        when(addBookDtoMapper.toDomain(insertBookDto)).thenReturn(book);
+        when(addBookUseCase.addBook(book, DEFAULT_BOOK_COPIES)).thenReturn(DEFAULT_BOOK_ID);
 
-        var bookId = createBookApi.createBook(insertBookDto);
+        var bookId = addBookApi.createBook(insertBookDto);
 
-        verify(saveBookUseCase).saveBook(book, DEFAULT_BOOK_COPIES);
+        verify(addBookUseCase).addBook(book, DEFAULT_BOOK_COPIES);
         assertThat(bookId).isEqualTo(DEFAULT_BOOK_ID);
     }
 }

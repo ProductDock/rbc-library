@@ -2,7 +2,7 @@ package com.productdock.application.port.in;
 
 import com.productdock.domain.Book;
 
-public interface SaveBookUseCase {
+public interface AddBookUseCase {
 
-    Long saveBook(Book book, int bookCopies);
+    Long addBook(Book book, int bookCopies);
 }

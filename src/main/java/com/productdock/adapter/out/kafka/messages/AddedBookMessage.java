@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Data
-public class InsertBookMessage implements Serializable {
+public class AddedBookMessage implements Serializable {
     private Long bookId;
     private String title;
     private String cover;

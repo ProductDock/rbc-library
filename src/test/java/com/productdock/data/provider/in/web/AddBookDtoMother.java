@@ -1,8 +1,8 @@
 package com.productdock.data.provider.in.web;
 
-import com.productdock.adapter.in.web.dto.InsertBookDto;
+import com.productdock.adapter.in.web.dto.AddBookDto;
 
-public class InsertBookDtoMother {
+public class AddBookDtoMother {
     private static final Integer defaultBookCopies = 2;
     private static final String defaultTitle = "::title::";
     private static final String defaultAuthor = "::author::";
@@ -11,8 +11,8 @@ public class InsertBookDtoMother {
     private static final Long defaultTopicId = 1L;
     private static final String defaultTopicName = "::topicName::";
 
-    public static InsertBookDto.InsertBookDtoBuilder defaultInsertBookDtoBuilder() {
-        return InsertBookDto.builder()
+    public static AddBookDto.AddBookDtoBuilder defaultAddBookDtoBuilder() {
+        return AddBookDto.builder()
                 .cover(defaultCover)
                 .title(defaultTitle)
                 .author(defaultAuthor)
@@ -20,12 +20,12 @@ public class InsertBookDtoMother {
                 .bookCopies(defaultBookCopies);
     }
 
-    public static InsertBookDto defaultInsertBookDto() {
-        return defaultInsertBookDtoBuilder().build();
+    public static AddBookDto defaultAddBookDto() {
+        return defaultAddBookDtoBuilder().build();
     }
 
-    public static InsertBookDto.TopicDto defaultTopicDto() {
-        return InsertBookDto.TopicDto.builder()
+    public static AddBookDto.TopicDto defaultTopicDto() {
+        return AddBookDto.TopicDto.builder()
                 .id(defaultTopicId).build();
 
     }

@@ -1,14 +1,12 @@
 package com.productdock.integration;
 
-import com.productdock.adapter.out.kafka.messages.InsertBookMessage;
-import com.productdock.adapter.out.kafka.messages.InsertInventoryMessage;
+import com.productdock.adapter.out.kafka.messages.AddedBookMessage;
 import com.productdock.adapter.out.sql.TopicRepository;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,14 +19,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
+import static com.productdock.kafka.KafkaFileUtil.getMessageFrom;
+import static com.productdock.kafka.KafkaFileUtil.ifFileExists;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -36,10 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ActiveProfiles({"in-memory-db"})
-class CreateBookApiTest extends KafkaTestBase {
+class AddBookApiTest extends KafkaTestBase {
 
-    public static final String INSERT_BOOK_TEST_FILE = "testInsertBook.txt";
-    public static final String INSERT_INVENTORY_TEST_FILE = "testInsertInventory.txt";
+    public static final String TEST_FILE = "testAddBook.txt";
 
     private static final String DEFAULT_TOPIC = "default topic";
     private static final String ROLE_ADMIN = "SCOPE_ROLE_ADMIN";
@@ -61,10 +56,8 @@ class CreateBookApiTest extends KafkaTestBase {
 
     @AfterAll
     static void after() {
-        File firstFile = new File(INSERT_INVENTORY_TEST_FILE);
-        File secondFile = new File(INSERT_BOOK_TEST_FILE);
-        firstFile.delete();
-        secondFile.delete();
+        File file = new File(TEST_FILE);
+        file.delete();
     }
 
     @Test
@@ -93,14 +86,10 @@ class CreateBookApiTest extends KafkaTestBase {
 
         await()
                 .atMost(Duration.ofSeconds(4))
-                .until(ifFileExists(INSERT_INVENTORY_TEST_FILE));
+                .until(ifFileExists(TEST_FILE));
 
-        var insertBookMessage = (InsertBookMessage) getMessageFrom(INSERT_BOOK_TEST_FILE);
-        var insertInventoryMessage = (InsertInventoryMessage) getMessageFrom(INSERT_INVENTORY_TEST_FILE);
-
+        var insertBookMessage = (AddedBookMessage) getMessageFrom(TEST_FILE);
         assertThatInsertBookMessageMatching(insertBookMessage, insertedBookId, firstTopic.getId());
-        assertThatInsertInventoryMessageMatching(insertInventoryMessage, insertedBookId);
-
     }
 
     @Test
@@ -123,6 +112,7 @@ class CreateBookApiTest extends KafkaTestBase {
 
     static Stream<Arguments> invalidBooksArguments() {
         return Stream.of(
+                Arguments.of("{}"),
                 Arguments.of("{\"title\": \"::title::\", " +
                         "\"author\": \"::author::\", " +
                         "\"cover\": \"::cover::\", " +
@@ -138,40 +128,18 @@ class CreateBookApiTest extends KafkaTestBase {
         );
     }
 
-    private void assertThatInsertBookMessageMatching(InsertBookMessage insertBookMessage, String bookId, Long topicId) {
+    private void assertThatInsertBookMessageMatching(AddedBookMessage addedBookMessage, String bookId, Long topicId) {
         try (var softly = new AutoCloseableSoftAssertions()) {
-            softly.assertThat(Long.toString(insertBookMessage.getBookId())).isEqualTo(bookId);
-            softly.assertThat(insertBookMessage.getTitle()).isEqualTo("::title::");
-            softly.assertThat(insertBookMessage.getAuthor()).isEqualTo("::author::");
-            softly.assertThat(insertBookMessage.getCover()).isEqualTo("::cover::");
-            softly.assertThat(insertBookMessage.getBookCopies()).isEqualTo(2);
-            softly.assertThat(insertBookMessage.getTopics())
+            softly.assertThat(Long.toString(addedBookMessage.getBookId())).isEqualTo(bookId);
+            softly.assertThat(addedBookMessage.getTitle()).isEqualTo("::title::");
+            softly.assertThat(addedBookMessage.getAuthor()).isEqualTo("::author::");
+            softly.assertThat(addedBookMessage.getCover()).isEqualTo("::cover::");
+            softly.assertThat(addedBookMessage.getBookCopies()).isEqualTo(2);
+            softly.assertThat(addedBookMessage.getTopics())
                     .extracting("id", "name")
                     .containsExactly(
                             tuple(Long.toString(topicId), DEFAULT_TOPIC));
         }
-    }
-
-    private void assertThatInsertInventoryMessageMatching(InsertInventoryMessage insertInventoryMessage, String bookId) {
-        try (var softly = new AutoCloseableSoftAssertions()) {
-            softly.assertThat(Long.toString(insertInventoryMessage.getBookId())).isEqualTo(bookId);
-            softly.assertThat(insertInventoryMessage.getBookCopies()).isEqualTo(2);
-        }
-    }
-
-    private Callable<Boolean> ifFileExists(String testFile) {
-        return () -> {
-            File f = new File(testFile);
-            return f.isFile();
-        };
-    }
-
-    private Object getMessageFrom(String testFile) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(testFile);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        var bookRatingMessage = objectInputStream.readObject();
-        objectInputStream.close();
-        return bookRatingMessage;
     }
 
     private TopicJpaEntity givenTopicWithName(String name) {

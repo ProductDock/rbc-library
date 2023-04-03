@@ -1,30 +1,32 @@
 package com.productdock.adapter.in.web.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Singular;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InsertBookDto {
-    public String title;
-    public String author;
-    public String cover;
-    public String description;
+@ToString
+public class AddBookDto extends BaseBookDto {
+
     @Singular
+    @NotNull
     public List<TopicDto> topics;
     @Min(1)
+    @NotNull
     public Integer bookCopies;
 
     @NoArgsConstructor
     @AllArgsConstructor
+    @ToString
     @Builder
     public static class TopicDto {
+
+        @NotNull
         public Long id;
     }
 }

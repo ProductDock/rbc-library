@@ -1,8 +1,7 @@
 package com.productdock.application.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.productdock.application.port.out.messaging.BookInventoryMessagingOutPort;
-import com.productdock.application.port.out.messaging.BookMessagingOutPort;
+import com.productdock.application.port.out.messaging.BookCatalogMessagingOutPort;
 import com.productdock.application.port.out.persistence.BookPersistenceOutPort;
 import com.productdock.domain.Book;
 import org.junit.jupiter.api.Test;
@@ -17,19 +16,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class SaveBookServiceShould {
+class AddBookServiceShould {
 
     @InjectMocks
-    private SaveBookService saveBookService;
+    private AddBookService addBookService;
 
     @Mock
     private BookPersistenceOutPort bookRepository;
 
     @Mock
-    private BookMessagingOutPort bookMessagingOutPort;
-
-    @Mock
-    private BookInventoryMessagingOutPort bookInventoryMessagingOutPort;
+    private BookCatalogMessagingOutPort bookCatalogMessagingOutPort;
 
     @Test
     void saveBook() throws ExecutionException, InterruptedException, JsonProcessingException {
@@ -38,11 +34,10 @@ class SaveBookServiceShould {
         int bookCopies = 1;
         when(bookRepository.save(book)).thenReturn(insertedBook);
 
-        var bookId = saveBookService.saveBook(book, bookCopies);
+        var bookId = addBookService.addBook(book, bookCopies);
 
         verify(bookRepository).save(book);
-        verify(bookMessagingOutPort).sendMessage(insertedBook, bookCopies);
-        verify(bookInventoryMessagingOutPort).sendMessage(insertedBook.getId(), bookCopies);
+        verify(bookCatalogMessagingOutPort).sendMessage(insertedBook, bookCopies);
         assertThat(bookId).isEqualTo(insertedBook.getId());
 
     }

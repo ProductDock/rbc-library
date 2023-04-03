@@ -3,19 +3,16 @@ package com.productdock.adapter.in.web.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookDto {
+public class GetBookDto extends BaseBookDto {
 
     public Long id;
-    public String title;
-    public String author;
-    public String cover;
-    public String description;
     public List<TopicDto> topics;
     public List<ReviewDto> reviews;
     public RatingDto rating;

@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.productdock.data.provider.in.web.BookDtoMother.defaultBookDto;
+import static com.productdock.data.provider.in.web.GetBookDtoMother.defaultGetBookDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -31,7 +31,7 @@ class GetBookApiShould {
     @Test
     void createReviewForBook() {
         var book = mock(Book.class);
-        var defaultBookDto = defaultBookDto();
+        var defaultBookDto = defaultGetBookDto();
         given(getBookQuery.getById(DEFAULT_BOOK_ID)).willReturn(book);
         given(bookDtoMapper.toDto(book)).willReturn(defaultBookDto);
 
