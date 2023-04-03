@@ -62,7 +62,7 @@ class AddBookApiTest extends KafkaTestBase {
 
     @Test
     @WithMockUser
-    void createBook_whenBookIsValid() throws Exception {
+    void addBook_whenBookIsValid() throws Exception {
         var firstTopic = givenTopicWithName(DEFAULT_TOPIC);
         var insertBookDtoJson = "{\"title\": \"::title::\", " +
                 "\"author\": \"::author::\", " +
@@ -71,7 +71,7 @@ class AddBookApiTest extends KafkaTestBase {
                 "\"topics\": [{\"id\": " + firstTopic.getId() + " }], " +
                 "\"bookCopies\" : 2 }";
 
-        var resultActions = requestProducer.makeCreateBookRequestAs(insertBookDtoJson, ROLE_ADMIN).andExpect(status().isCreated());
+        var resultActions = requestProducer.makeAddBookRequestAs(insertBookDtoJson, ROLE_ADMIN).andExpect(status().isCreated());
         var result = resultActions.andReturn();
         String insertedBookId = result.getResponse().getContentAsString();
 
@@ -97,7 +97,7 @@ class AddBookApiTest extends KafkaTestBase {
     void returnForbidden_whenUserWithInsufficientRole() throws Exception {
         var anyJson = "{}";
 
-        requestProducer.makeCreateBookRequestAs(anyJson, ROLE_USER)
+        requestProducer.makeAddBookRequestAs(anyJson, ROLE_USER)
                 .andExpect(status().isForbidden());
     }
 
@@ -106,7 +106,7 @@ class AddBookApiTest extends KafkaTestBase {
     @MethodSource("invalidBooksArguments")
     void returnBadRequest_whenBookIsInvalid(String insertBookDtoJson) throws Exception {
 
-        requestProducer.makeCreateBookRequestAs(insertBookDtoJson, ROLE_ADMIN)
+        requestProducer.makeAddBookRequestAs(insertBookDtoJson, ROLE_ADMIN)
                 .andExpect(status().isBadRequest());
     }
 

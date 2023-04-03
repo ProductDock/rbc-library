@@ -16,7 +16,7 @@ record AddBookApi(AddBookUseCase addBookUseCase, AddBookDtoMapper bookDtoMapper)
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createBook(@Valid @RequestBody AddBookDto addBookDto) {
+    public Long addBook(@Valid @RequestBody AddBookDto addBookDto) {
         log.debug("POST request received - api/catalog/books, Payload: {}", addBookDto);
         var book = bookDtoMapper.toDomain(addBookDto);
         return addBookUseCase.addBook(book, addBookDto.bookCopies);

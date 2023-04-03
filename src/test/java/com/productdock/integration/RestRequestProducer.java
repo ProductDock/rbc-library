@@ -68,7 +68,7 @@ class RestRequestProducer {
                 })));
     }
 
-    public ResultActions makeCreateBookRequestAs(String insertBookDto, String role) throws Exception {
+    public ResultActions makeAddBookRequestAs(String insertBookDto, String role) throws Exception {
         return mockMvc.perform(post("/api/catalog/books")
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(insertBookDto)

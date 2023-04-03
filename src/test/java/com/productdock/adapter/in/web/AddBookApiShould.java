@@ -28,7 +28,7 @@ class AddBookApiShould {
     private static final Integer DEFAULT_BOOK_COPIES = 1;
     private static final Long DEFAULT_BOOK_ID = 1L;
     @Test
-    void createBook() {
+    void addBook() {
         var insertBookDto = mock(AddBookDto.class);
         var book = mock(Book.class);
         insertBookDto.bookCopies = DEFAULT_BOOK_COPIES;
@@ -36,7 +36,7 @@ class AddBookApiShould {
         when(addBookDtoMapper.toDomain(insertBookDto)).thenReturn(book);
         when(addBookUseCase.addBook(book, DEFAULT_BOOK_COPIES)).thenReturn(DEFAULT_BOOK_ID);
 
-        var bookId = addBookApi.createBook(insertBookDto);
+        var bookId = addBookApi.addBook(insertBookDto);
 
         verify(addBookUseCase).addBook(book, DEFAULT_BOOK_COPIES);
         assertThat(bookId).isEqualTo(DEFAULT_BOOK_ID);

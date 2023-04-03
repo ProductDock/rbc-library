@@ -28,7 +28,7 @@ class AddBookServiceShould {
     private BookCatalogMessagingOutPort bookCatalogMessagingOutPort;
 
     @Test
-    void saveBook() throws ExecutionException, InterruptedException, JsonProcessingException {
+    void addBook() throws ExecutionException, InterruptedException, JsonProcessingException {
         var book = mock(Book.class);
         var insertedBook = mock(Book.class);
         int bookCopies = 1;
