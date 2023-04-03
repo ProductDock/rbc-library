@@ -8,8 +8,6 @@ import com.productdock.domain.exception.SaveBookException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +25,6 @@ class BookPersistenceAdapter implements BookPersistenceOutPort {
     private BookMapper bookMapper;
 
     @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public Optional<Book> findById(Long bookId) {
         return bookRepository.findById(bookId).map(bookJpaEntity -> bookMapper.toDomain(bookJpaEntity));
     }
