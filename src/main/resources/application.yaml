@@ -22,7 +22,6 @@ spring:
     topic:
       book-rating: book-rating
       insert-book: insert-book
-      insert-inventory: insert-inventory
 
   jpa:
     hibernate:

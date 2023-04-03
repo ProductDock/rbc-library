@@ -26,7 +26,6 @@ spring:
     topic:
       book-rating: embedded-book-rating
       insert-book: embedded-insert-book
-      insert-inventory: embedded-insert-inventory
 
 cors:
   allowed:
