@@ -11,6 +11,8 @@ import java.util.List;
 
 import static com.productdock.data.provider.out.sql.BookEntityMother.defaultBookEntityBuilder;
 import static com.productdock.data.provider.out.sql.ReviewJpaEntityMother.defaultReviewEntity;
+import static com.productdock.data.provider.out.sql.TopicJpaEntityMother.defaultTopicJpaEntity;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {BookMapperImpl.class, ReviewMapperImpl.class})
@@ -22,7 +24,8 @@ class BookMapperShould {
     @Test
     void mapBookEntityToBook() {
         var reviews = List.of(defaultReviewEntity());
-        var bookEntity = defaultBookEntityBuilder().reviews(reviews).build();
+        var topicEntity = defaultTopicJpaEntity();
+        var bookEntity = defaultBookEntityBuilder().reviews(reviews).topic(topicEntity).build();
 
         var book = bookMapper.toDomain(bookEntity);
 
@@ -35,6 +38,9 @@ class BookMapperShould {
             softly.assertThat(book.getRating().getCount()).isEqualTo(1);
             softly.assertThat(book.getRating().getScore()).isEqualTo(2);
             softly.assertThat(book.getDescription()).isEqualTo(bookEntity.getDescription());
+            softly.assertThat(book.getTopics())
+                            .extracting("id", "name")
+                            .containsExactlyInAnyOrder(tuple(topicEntity.getId(), topicEntity.getName()));
         }
     }
 }

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import static com.productdock.data.provider.out.sql.ReviewJpaEntityMother.defaultReviewEntity;
-import static com.productdock.data.provider.out.sql.ReviewMother.defaultReview;
+import static com.productdock.data.provider.domain.ReviewMother.defaultReview;
 
 class ReviewMapperShould {
 

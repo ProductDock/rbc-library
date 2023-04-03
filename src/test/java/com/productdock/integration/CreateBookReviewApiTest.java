@@ -1,27 +1,29 @@
 package com.productdock.integration;
 
-import com.productdock.adapter.out.kafka.BookRatingMessage;
+import com.productdock.adapter.out.kafka.messages.BookRatingMessage;
 import com.productdock.adapter.out.sql.BookRepository;
 import com.productdock.adapter.out.sql.ReviewRepository;
+import com.productdock.adapter.out.sql.TopicRepository;
+import com.productdock.adapter.out.sql.entity.BookJpaEntity;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.time.Duration;
-import java.util.concurrent.Callable;
 
 import static com.productdock.data.provider.out.sql.BookEntityMother.defaultBookEntityBuilder;
+import static com.productdock.kafka.KafkaFileUtil.getMessageFrom;
+import static com.productdock.kafka.KafkaFileUtil.ifFileExists;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -37,15 +39,20 @@ class CreateBookReviewApiTest extends KafkaTestBase {
     private BookRepository bookRepository;
 
     @Autowired
+    private TopicRepository topicRepository;
+
+    @Autowired
     private ReviewRepository reviewRepository;
 
     @Autowired
     private RestRequestProducer requestProducer;
 
-    @BeforeEach
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @AfterEach
     final void before() {
-        reviewRepository.deleteAll();
-        bookRepository.deleteAll();
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "book_topic", "review", "review", "book", "topic");
     }
 
     @AfterAll
@@ -57,28 +64,28 @@ class CreateBookReviewApiTest extends KafkaTestBase {
     @Test
     @WithMockUser
     void createReview_whenCommentAndRatingMissing() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"recommendation\":[]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser
     void createReview_whenReviewIsValid() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"comment\":\"::comment::\"," +
                         "\"rating\":1," +
                         "\"recommendation\":[\"JUNIOR\",\"MEDIOR\"]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
-        requestProducer.makeGetBookRequest(bookId)
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isOk());
+        requestProducer.makeGetBookRequest(book.getId())
                 .andExpect(content().json(
-                        "{\"id\":" + bookId + "," +
+                        "{\"id\":" + book.getId() + "," +
                                 "\"title\":\"::title::\"," +
                                 "\"author\":\"::author::\"," +
                                 "\"cover\": \"::cover::\"," +
-                                "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                "\"topics\": " + JsonFrom.topicCollection(book.getTopics()) + "," +
                                 "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
                                 "\"rating\":1," +
                                 "\"recommendation\": [\"JUNIOR\",\"MEDIOR\"]," +
@@ -88,70 +95,55 @@ class CreateBookReviewApiTest extends KafkaTestBase {
                 .atMost(Duration.ofSeconds(4))
                 .until(ifFileExists(TEST_FILE));
 
-        var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
-        assertThat(bookRatingMessage.bookId).isEqualTo(bookId);
-        assertThat(bookRatingMessage.rating).isEqualTo(1);
-        assertThat(bookRatingMessage.ratingsCount).isEqualTo(1);
+        var bookRatingMessage = (BookRatingMessage) getMessageFrom(TEST_FILE);
+        assertThat(bookRatingMessage.getBookId()).isEqualTo(book.getId());
+        assertThat(bookRatingMessage.getRating()).isEqualTo(1);
+        assertThat(bookRatingMessage.getRatingsCount()).isEqualTo(1);
     }
 
     @Test
     @WithMockUser
     void returnBadRequest_whenReviewAlreadyExists() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"comment\":\"::comment::\"," +
                         "\"rating\":null," +
                         "\"recommendation\":[]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isOk());
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isOk());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isBadRequest());
     }
 
     @Test
     @WithMockUser
     void returnBadRequest_whenReviewHasTooLongComment() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"comment\":\"" + RandomString.make(501) + "\"," +
                         "\"rating\":null," +
                         "\"recommendation\":[]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isBadRequest());
     }
 
     @Test
     @WithMockUser
     void returnBadRequest_whenReviewHasInvalidRating() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var reviewDtoJson =
                 "{\"comment\":\"::comment::\"," +
                         "\"rating\":7," +
                         "\"recommendation\":[]}";
-        requestProducer.makeBookReviewRequest(reviewDtoJson, bookId).andExpect(status().isBadRequest());
+        requestProducer.makeBookReviewRequest(reviewDtoJson, book.getId()).andExpect(status().isBadRequest());
     }
 
-    private Long givenAnyBook() {
+    private BookJpaEntity givenAnyBook() {
         var marketingTopic = givenTopicWithName("MARKETING");
         var designTopic = givenTopicWithName("DESIGN");
         var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
-        return bookRepository.save(book).getId();
-    }
-
-    private Callable<Boolean> ifFileExists(String testFile) {
-        Callable<Boolean> checkForFile = () -> {
-            File f = new File(testFile);
-            return f.isFile();
-        };
-        return checkForFile;
-    }
-
-    private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(testFile);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        var bookRatingMessage = (BookRatingMessage) objectInputStream.readObject();
-        objectInputStream.close();
-        return bookRatingMessage;
+        return bookRepository.save(book);
     }
 
     private TopicJpaEntity givenTopicWithName(String name) {
-        return TopicJpaEntity.builder().name(name).build();
+        var topic = TopicJpaEntity.builder().name(name).build();
+        return topicRepository.save(topic);
     }
 }

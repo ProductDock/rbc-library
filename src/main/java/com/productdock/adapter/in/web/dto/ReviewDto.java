@@ -1,4 +1,4 @@
-package com.productdock.adapter.in.web;
+package com.productdock.adapter.in.web.dto;
 
 import com.productdock.adapter.in.web.mapper.Recommendation;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,8 @@
-package com.productdock.adapter.out.kafka;
+package com.productdock.adapter.out.kafka.publisher;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.productdock.adapter.out.kafka.messages.BookRatingMessage;
+import com.productdock.adapter.out.kafka.publisher.KafkaRecordProducer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,8 +23,8 @@ class KafkaRecordProducerShould {
     void produceMessage() throws JsonProcessingException {
         var producerRecord = kafkaRecordProducer.createKafkaRecord(BOOK_RATING_TOPIC, BOOK_RATING_MESSAGE);
 
-        String expectedValue = "{\"bookId\":" + BOOK_RATING_MESSAGE.bookId +
-                ",\"rating\":" + BOOK_RATING_MESSAGE.rating + ",\"ratingsCount\":" + BOOK_RATING_MESSAGE.ratingsCount + "}";
+        String expectedValue = "{\"bookId\":" + BOOK_RATING_MESSAGE.getBookId() +
+                ",\"rating\":" + BOOK_RATING_MESSAGE.getRating() + ",\"ratingsCount\":" + BOOK_RATING_MESSAGE.getRatingsCount() + "}";
 
         assertThat(producerRecord.value()).isEqualTo(expectedValue);
     }

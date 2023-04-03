@@ -1,8 +1,7 @@
 package com.productdock.data.provider.out.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.productdock.adapter.out.kafka.BookRatingMessage;
-import com.productdock.kafka.BookRatingMessageDeserializer;
+import com.productdock.kafka.KafkaMessageDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,21 +18,28 @@ public class KafkaTestConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTestConsumer.class);
 
     @Autowired
-    private BookRatingMessageDeserializer bookRatingMessageDeserializer;
+    private KafkaMessageDeserializer kafkaMessageDeserializer;
 
 
     @KafkaListener(topics = "${spring.kafka.topic.book-rating}")
-    public void receive(ConsumerRecord<String, String> consumerRating) throws JsonProcessingException {
+    public void receiveBookRating(ConsumerRecord<String, String> consumerRating) throws JsonProcessingException {
         LOGGER.info("received payload='{}'", consumerRating.toString());
-        var bookRatingMessage = bookRatingMessageDeserializer.deserializeBookRatingMessage(consumerRating);
-        writeRecordToFile(bookRatingMessage);
+        var bookRatingMessage = kafkaMessageDeserializer.deserializeBookRatingMessage(consumerRating);
+        writeRecordToFile(bookRatingMessage, "testRating.txt");
     }
 
-    private void writeRecordToFile(BookRatingMessage bookRatingMessage) {
+    @KafkaListener(topics = "${spring.kafka.topic.insert-book}")
+    public void receiveInsertBook(ConsumerRecord<String, String> consumerInsertBook) throws JsonProcessingException {
+        LOGGER.info("received payload='{}'", consumerInsertBook.toString());
+        var insertBookMessage = kafkaMessageDeserializer.deserializeInsertBookMessage(consumerInsertBook);
+        writeRecordToFile(insertBookMessage, "testAddBook.txt");
+    }
+
+    private void writeRecordToFile(Object message, String fileName) {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("testRating.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream(fileName);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(bookRatingMessage);
+            objectOutputStream.writeObject(message);
             objectOutputStream.flush();
             objectOutputStream.close();
         } catch (Exception e) {

@@ -1,17 +1,21 @@
 package com.productdock.integration;
 
-import com.productdock.adapter.out.kafka.BookRatingMessage;
+import com.productdock.adapter.out.kafka.messages.BookRatingMessage;
 import com.productdock.adapter.out.sql.BookRepository;
 import com.productdock.adapter.out.sql.ReviewRepository;
+import com.productdock.adapter.out.sql.TopicRepository;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +25,8 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static com.productdock.data.provider.out.sql.BookEntityMother.defaultBookEntityBuilder;
+import static com.productdock.kafka.KafkaFileUtil.getMessageFrom;
+import static com.productdock.kafka.KafkaFileUtil.ifFileExists;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,16 +42,22 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
     private BookRepository bookRepository;
 
     @Autowired
+    private TopicRepository topicRepository;
+
+    @Autowired
     private ReviewRepository reviewRepository;
 
     @Autowired
     private RestRequestProducer requestProducer;
 
-    @BeforeEach
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @AfterEach
     final void before() {
-        reviewRepository.deleteAll();
-        bookRepository.deleteAll();
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "book_topic", "review", "review", "book", "topic");
     }
+
 
     @AfterAll
     static void after() {
@@ -74,10 +86,10 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
                 .atMost(Duration.ofSeconds(4))
                 .until(ifFileExists(TEST_FILE));
 
-        var bookRatingMessage = getBookRatingMessageFrom(TEST_FILE);
-        assertThat(bookRatingMessage.bookId).isEqualTo(bookId);
-        assertThat(bookRatingMessage.rating).isNull();
-        assertThat(bookRatingMessage.ratingsCount).isZero();
+        var bookRatingMessage = (BookRatingMessage) getMessageFrom(TEST_FILE);
+        assertThat(bookRatingMessage.getBookId()).isEqualTo(bookId);
+        assertThat(bookRatingMessage.getRating()).isNull();
+        assertThat(bookRatingMessage.getRatingsCount()).isZero();
     }
 
     @Test
@@ -94,23 +106,8 @@ class DeleteBookReviewApiTest extends KafkaTestBase {
         return bookRepository.save(book).getId();
     }
 
-    private Callable<Boolean> ifFileExists(String testFile) {
-        Callable<Boolean> checkForFile = () -> {
-            File f = new File(testFile);
-            return f.isFile();
-        };
-        return checkForFile;
-    }
-
-    private BookRatingMessage getBookRatingMessageFrom(String testFile) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(testFile);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        var bookRatingMessage = (BookRatingMessage) objectInputStream.readObject();
-        objectInputStream.close();
-        return bookRatingMessage;
-    }
-
     private TopicJpaEntity givenTopicWithName(String name) {
-        return TopicJpaEntity.builder().name(name).build();
+        var topic = TopicJpaEntity.builder().name(name).build();
+        return topicRepository.save(topic);
     }
 }

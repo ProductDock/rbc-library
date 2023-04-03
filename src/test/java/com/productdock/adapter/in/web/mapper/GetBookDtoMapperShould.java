@@ -1,4 +1,4 @@
-package com.productdock.adapter.in.web;
+package com.productdock.adapter.in.web.mapper;
 
 
 import com.productdock.adapter.in.web.mapper.BookDtoMapper;
@@ -12,18 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static com.productdock.data.provider.domain.BookMother.defaultBook;
+import static com.productdock.data.provider.domain.BookMother.defaultBookBuilder;
+import static com.productdock.data.provider.domain.ReviewMother.defaultReview;
+import static com.productdock.data.provider.domain.TopicMother.defaultTopic;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {BookDtoMapperImpl.class, ReviewDtoMapperImpl.class})
-class BookDtoMapperShould {
+class GetBookDtoMapperShould {
 
     @Autowired
     private BookDtoMapper bookMapper;
 
     @Test
     void mapBookToBookDto() {
-        var book = defaultBook();
+        var review = defaultReview();
+        var topic = defaultTopic();
+        var book = defaultBookBuilder().review(review).topic(topic).build();
 
         var bookDto = bookMapper.toDto(book);
 
@@ -33,8 +38,13 @@ class BookDtoMapperShould {
             softly.assertThat(bookDto.cover).isEqualTo(book.getCover());
             softly.assertThat(bookDto.title).isEqualTo(book.getTitle());
             softly.assertThat(bookDto.reviews).hasSize(1);
-            softly.assertThat(bookDto.reviews.get(0).recommendation).containsExactlyInAnyOrder(Recommendation.JUNIOR, Recommendation.MEDIOR);
+            softly.assertThat(bookDto.reviews)
+                    .flatExtracting("recommendation")
+                    .containsExactlyInAnyOrder(Recommendation.JUNIOR, Recommendation.MEDIOR);
             softly.assertThat(bookDto.description).isEqualTo(book.getDescription());
+            softly.assertThat(bookDto.topics)
+                    .extracting("id", "name")
+                    .containsExactlyInAnyOrder(tuple(topic.getId(), topic.getName()));
         }
     }
 }

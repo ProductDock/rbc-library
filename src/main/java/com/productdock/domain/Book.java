@@ -1,9 +1,6 @@
 package com.productdock.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -19,7 +16,9 @@ public class Book {
     private String author;
     private String cover;
     private String description;
-    private List<String> topics;
+    @Singular
+    private List<Topic> topics;
+    @Singular
     private List<Review> reviews;
 
     public Rating getRating() {
@@ -65,6 +64,15 @@ public class Book {
     public static class Rating {
         private Double score;
         private int count;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    @Builder
+    public static class Topic {
+        private Long id;
+        private String name;
     }
 
 }

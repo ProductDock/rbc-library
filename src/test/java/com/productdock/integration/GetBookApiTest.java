@@ -2,18 +2,20 @@ package com.productdock.integration;
 
 import com.productdock.adapter.out.sql.BookRepository;
 import com.productdock.adapter.out.sql.ReviewRepository;
+import com.productdock.adapter.out.sql.TopicRepository;
+import com.productdock.adapter.out.sql.entity.BookJpaEntity;
 import com.productdock.adapter.out.sql.entity.ReviewJpaEntity;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles({"in-memory-db"})
 class GetBookApiTest extends KafkaTestBase {
 
-    public static final String TEST_FILE = "testRating.txt";
     public static final String FIRST_REVIEWER = "user1";
     public static final String SECOND_REVIEWER = "user2";
 
@@ -34,59 +35,58 @@ class GetBookApiTest extends KafkaTestBase {
     private BookRepository bookRepository;
 
     @Autowired
+    private TopicRepository topicRepository;
+
+    @Autowired
     private ReviewRepository reviewRepository;
 
     @Autowired
     private RestRequestProducer requestProducer;
 
-    @BeforeEach
-    final void before() {
-        reviewRepository.deleteAll();
-        bookRepository.deleteAll();
-    }
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-    @AfterAll
-    static void after() {
-        File f = new File(TEST_FILE);
-        f.delete();
+    @AfterEach
+    final void before() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "book_topic", "review", "review", "book", "topic");
     }
 
     @Test
     @WithMockUser
     void getBook_whenIdExistAndNoReviews() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
 
-        requestProducer.makeGetBookRequest(bookId)
+        requestProducer.makeGetBookRequest(book.getId())
                 .andExpect(status().isOk())
                 .andExpect(content().json(
-                        "{\"id\":" + bookId + "," +
+                        "{\"id\":" + book.getId() + "," +
                                 "\"title\":\"::title::\"," +
                                 "\"author\":\"::author::\"," +
                                 "\"description\": \"::description::\"," +
                                 "\"cover\":\"::cover::\"," +
-                                "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                "\"topics\": " + JsonFrom.topicCollection(book.getTopics()) + "," +
                                 "\"reviews\": []}"));
     }
 
     @Test
     @WithMockUser
     void getBook_whenIdExistAndReviewsExist() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
         var calendar = Calendar.getInstance();
 
         calendar.set(2022, Calendar.APRIL, 5);
-        givenReviewForBook(bookId, FIRST_REVIEWER, calendar.getTime());
+        givenReviewForBook(book.getId(), FIRST_REVIEWER, calendar.getTime());
         calendar.set(2022, Calendar.JUNE, 5);
-        givenReviewForBook(bookId, SECOND_REVIEWER, calendar.getTime());
+        givenReviewForBook(book.getId(), SECOND_REVIEWER, calendar.getTime());
 
-        requestProducer.makeGetBookRequest(bookId)
+        requestProducer.makeGetBookRequest(book.getId())
                 .andExpect(content().json(
-                        "{\"id\":" + bookId + "," +
+                        "{\"id\":" + book.getId() + "," +
                                 "\"title\":\"::title::\"," +
                                 "\"author\":\"::author::\"," +
                                 "\"cover\":\"::cover::\"," +
                                 "\"description\": \"::description::\"," +
-                                "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                "\"topics\": " + JsonFrom.topicCollection(book.getTopics()) + "," +
                                 "\"reviews\": [{\"userFullName\":\"::userFullName::\"," +
                                 "\"userId\":\"" + SECOND_REVIEWER + "\"," +
                                 "\"rating\":2," +
@@ -106,25 +106,25 @@ class GetBookApiTest extends KafkaTestBase {
     @Test
     @WithMockUser
     void getBookByTitleAndAuthor_whenExist() throws Exception {
-        var bookId = givenAnyBook();
+        var book = givenAnyBook();
 
         requestProducer.makeGetBookRequest("::title::", "::author::")
                 .andExpect(status().isOk())
                 .andExpect(content().json(
-                        "{\"id\":" + bookId + "," +
+                        "{\"id\":" + book.getId() + "," +
                                 "\"title\":\"::title::\"," +
                                 "\"author\":\"::author::\"," +
                                 "\"description\": \"::description::\"," +
                                 "\"cover\":\"::cover::\"," +
-                                "\"topics\": [\"MARKETING\",\"DESIGN\"]," +
+                                "\"topics\": " + JsonFrom.topicCollection(book.getTopics()) + "," +
                                 "\"reviews\": []}"));
     }
 
-    private Long givenAnyBook() {
+    private BookJpaEntity givenAnyBook() {
         var marketingTopic = givenTopicWithName("MARKETING");
         var designTopic = givenTopicWithName("DESIGN");
         var book = defaultBookEntityBuilder().topic(marketingTopic).topic(designTopic).build();
-        return bookRepository.save(book).getId();
+        return bookRepository.save(book);
     }
 
 
@@ -144,7 +144,7 @@ class GetBookApiTest extends KafkaTestBase {
     }
 
     private TopicJpaEntity givenTopicWithName(String name) {
-        return TopicJpaEntity.builder().name(name).build();
+        var topic = TopicJpaEntity.builder().name(name).build();
+        return topicRepository.save(topic);
     }
-
 }
