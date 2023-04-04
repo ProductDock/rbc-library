@@ -7,6 +7,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-prod:
+  build-upload-prod:
     uses: ProductDock/rbc-github-workflows/.github/workflows/build-registry-upload.yml@main
     secrets: inherit
