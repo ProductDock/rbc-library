@@ -1,6 +1,6 @@
 package com.productdock.adapter.in.web;
 
-import com.productdock.adapter.in.web.mapper.BookDtoMapper;
+import com.productdock.adapter.in.web.mapper.GetBookDtoMapper;
 import com.productdock.application.port.in.GetBookQuery;
 import com.productdock.domain.Book;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class GetBookApiShould {
     private GetBookQuery getBookQuery;
 
     @Mock
-    private BookDtoMapper bookDtoMapper;
+    private GetBookDtoMapper getBookDtoMapper;
 
     public static final long DEFAULT_BOOK_ID = 1;
 
@@ -33,7 +33,7 @@ class GetBookApiShould {
         var book = mock(Book.class);
         var defaultBookDto = defaultGetBookDto();
         given(getBookQuery.getById(DEFAULT_BOOK_ID)).willReturn(book);
-        given(bookDtoMapper.toDto(book)).willReturn(defaultBookDto);
+        given(getBookDtoMapper.toDto(book)).willReturn(defaultBookDto);
 
         var bookDto = getBookApi.getBook(DEFAULT_BOOK_ID);
 

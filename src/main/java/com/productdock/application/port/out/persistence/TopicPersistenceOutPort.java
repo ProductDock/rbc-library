@@ -7,4 +7,7 @@ import java.util.Collection;
 public interface TopicPersistenceOutPort {
 
     Collection<Book.Topic> findByIds(Collection<Long> ids);
+
+    Collection<Book.Topic> findAll();
+
 }

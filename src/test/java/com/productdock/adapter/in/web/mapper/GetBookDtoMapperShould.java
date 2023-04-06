@@ -1,10 +1,6 @@
 package com.productdock.adapter.in.web.mapper;
 
 
-import com.productdock.adapter.in.web.mapper.BookDtoMapper;
-import com.productdock.adapter.in.web.mapper.BookDtoMapperImpl;
-import com.productdock.adapter.in.web.mapper.Recommendation;
-import com.productdock.adapter.in.web.mapper.ReviewDtoMapperImpl;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,11 +14,11 @@ import static com.productdock.data.provider.domain.TopicMother.defaultTopic;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {BookDtoMapperImpl.class, ReviewDtoMapperImpl.class})
+@ContextConfiguration(classes = {GetBookDtoMapperImpl.class, ReviewDtoMapperImpl.class})
 class GetBookDtoMapperShould {
 
     @Autowired
-    private BookDtoMapper bookMapper;
+    private GetBookDtoMapper bookMapper;
 
     @Test
     void mapBookToBookDto() {

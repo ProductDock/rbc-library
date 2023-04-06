@@ -22,4 +22,9 @@ public class TopicPersistenceAdapter implements TopicPersistenceOutPort {
     public Collection<Book.Topic> findByIds(Collection<Long> ids) {
         return topicMapper.toDomainCollection(topicRepository.findByIds(ids));
     }
+
+    @Override
+    public Collection<Book.Topic> findAll() {
+        return topicMapper.toDomainCollection(topicRepository.findAll());
+    }
 }

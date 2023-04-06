@@ -7,7 +7,7 @@ import org.mapstruct.ReportingPolicy;
 
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", uses = {ReviewDtoMapper.class})
-public interface BookDtoMapper {
+public interface GetBookDtoMapper {
 
     GetBookDto toDto(Book source);
 
