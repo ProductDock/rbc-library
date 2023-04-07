@@ -77,4 +77,13 @@ class RestRequestProducer {
                     jwt.claim("fullName", "::userFullName::");
                 }).authorities(new SimpleGrantedAuthority(role))));
     }
+
+    public ResultActions makeGetTopicsRequest() throws Exception {
+        return mockMvc.perform(get("/api/catalog/topics")
+                        .with(jwt().jwt(jwt -> {
+                            jwt.claim("email", DEFAULT_USER_ID);
+                            jwt.claim("fullName", "::userFullName::");
+                        })))
+                .andExpect(status().isOk());
+    }
 }

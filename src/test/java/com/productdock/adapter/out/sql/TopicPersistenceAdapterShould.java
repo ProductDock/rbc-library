@@ -57,4 +57,17 @@ class TopicPersistenceAdapterShould {
 
         assertThat(foundedTopics).isEmpty();
     }
+
+    @Test
+    void findAllTopics() {
+        var topicEntities = List.of(FIRST_TOPIC_ENTITY, SECOND_TOPIC_ENTITY);
+        var topics = List.of(FIRST_TOPIC, SECOND_TOPIC);
+
+        given(topicRepository.findAll()).willReturn(topicEntities);
+        given(topicMapper.toDomainCollection(topicEntities)).willReturn(topics);
+
+        var foundedTopics = topicPersistenceAdapter.findAll();
+
+        assertThat(foundedTopics).contains(FIRST_TOPIC, SECOND_TOPIC);
+    }
 }
