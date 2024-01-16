@@ -13,4 +13,3 @@ INSERT into book_topic (book_id, topic_id) VALUES (82,1);
 INSERT into book_topic (book_id, topic_id) VALUES (83,1);
 INSERT into book_topic (book_id, topic_id) VALUES (84,1);
 INSERT into book_topic (book_id, topic_id) VALUES (85,1);
-INSERT into book_topic (book_id, topic_id) VALUES (86,1);
