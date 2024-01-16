@@ -1,16 +1,18 @@
 USER_PROFILES_JWT_PUBLIC_KEY: src/main/resources/app-local.pub
 
 KAFKA_SERVER_URL: localhost:9093
+MYSQL_SERVER_URL: localhost:3308
 MYSQL_USERNAME: root
 SPRING_DATASOURCE_PASSWORD: root
 LOG_TO_FILE: false
 
 spring:
+  autoconfigure.exclude: org.springframework.cloud.gcp.autoconfigure.core.GcpContextAutoConfiguration
   cloud.gcp.sql.enabled: false
   datasource:
-    url: jdbc:mysql://localhost:3308/catalog
+    url: jdbc:mysql://${MYSQL_SERVER_URL}/catalog
     username: ${MYSQL_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
-    url: jdbc:mysql://localhost:3308/catalog
+    url: jdbc:mysql://${MYSQL_SERVER_URL}/catalog
