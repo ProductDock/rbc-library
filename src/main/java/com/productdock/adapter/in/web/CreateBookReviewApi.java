@@ -27,6 +27,7 @@ record CreateBookReviewApi(SaveBookReviewUseCase saveBookReviewUseCase, ReviewDt
         reviewDto.userId = ((Jwt) authentication.getCredentials()).getClaim(USER_EMAIL);
         reviewDto.userFullName = ((Jwt) authentication.getCredentials()).getClaim(USER_FULL_NAME);
         var review = reviewMapper.toDomain(reviewDto);
+
         saveBookReviewUseCase.saveReview(review);
     }
 }
