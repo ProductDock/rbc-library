@@ -1,57 +1,50 @@
-## PD Library REST API
+## PD Library Catalog
 
+Catalog is one of the services that makes PD Library.
 
-## Build and run by executing following steps manually
+It keeps track of book titles, authors, descriptions, reviews, ratings, QR codes, and genres. 
+Basically of everything that can be read on the physical book itself, plus reviews and ratings left by readres, that also help to explain the book.   
 
-### Production
+It does not know who rented the book or if there is an available copy of the book to rent.
 
-Production is running in GCP.
+It can be considered as one of those static paper catalogs from Lidl or Ikea, whose purpose is only to
+inform consumers about its offer.
 
-1. #### Follow [usual steps](https://cloud.google.com/compute/docs/instances/connecting-to-instance) for connecting to a VM running in GCP 
-   Connect via SSH to a **rbc-library-vm**.
-2. #### Go to a folder where backend is:
-    ``` 
-    cd /home/pd-library/rbc-library
-    ``` 
-3. #### This is a Git repository. Pull most recent version from main:
-    ```  
-   sudo git checkout main
-   sudo git pull
-    ``` 
-4. #### Maven is already installed, so you can build new jar with maven:
+### Delivery mechanism
 
-   **!!! Important: You need to switch to a root user !!!**
+* REST API served over [Gateway](https://github.com/ProductDock/rbc-library-gateway)
 
-   _Why? Otherwise it will download entire .m2 repository to a home folder of a user who made SSH connection._
-    ```  
-    sudo su
-   ../apache-maven-3.8.5/bin/mvn package -P prod
-    ``` 
-5. #### Restart rbc-library-vm to run a new jar 
+### Security
 
-   **rbc-library-vm** is configured with startup-script. Startup script already contains instructions for running the jar:
+* Protected by the User Profile JWT token issued by the [PD Library User Profile](https://github.com/ProductDock/rbc-library-user-profiles) service
 
-   **Startup-script content:**
-    
-    ```
-    #! /bin/bash
-    SPRING_DATASOURCE_PASSWORD=<REAL_PASS_HERE> SPRING_PROFILES_ACTIVE=prod java -jar /home/pd-library/rbc-library/target/rbc-library-0.0.1-SNAPSHOT.jar
-    ```
+### Dependencies
 
+1. MySQL database
+2. Kafka
 
+Dependencies can be run from [Infrastructure](https://github.com/ProductDock/rbc-library-infrastructure) project,
+by [docker compose](https://docs.docker.com/compose/) scripts.
 
+### Build and run locally
 
-### Local
+Locally, application can be started in two ways.
 
-Locally, application is started and built by IDE (IntelliJ).
+* From source code
+* From latest published Docker image
+ 
+#### From source code (Run from IntelliJ)
 
-IntelliJ needs to be instructed to run app with following parameters:
-- SPRING_DATASOURCE_PASSWORD
-- SPRING_PROFILES_ACTIVE
+_Suitable when developing features in this project._ 
 
-It's either by putting them in **.bash_profile** or configuring them in IntelliJ.
-
-When running from IntelliJ IDEA, follow these steps:
-- Open "Edit Configurations";
+1. Set [Spring Profile](https://docs.spring.io/spring-boot/docs/1.1.4.RELEASE/reference/html/boot-features-profiles.html) to local by following these steps:
+- Open "Edit Configurations"
 - in the section "Library Application" find the field "Program arguments";
-- enter the following command: --spring.profiles.active=local --spring.datasource.password=
+- enter the following command: --spring.profiles.active=local
+2. Press Run or Debug Library Application
+
+#### From latest published Docker image
+
+_Suitable when developing features in other projects, and you need this one as a dependency._
+
+For this purpose see [Infrastructure](https://github.com/ProductDock/rbc-library-infrastructure) project.  
