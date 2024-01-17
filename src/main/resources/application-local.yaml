@@ -16,3 +16,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
     url: jdbc:mysql://${MYSQL_SERVER_URL}/catalog
+    locations:
+      - classpath:db/migration
+      - classpath:local/db/migration/fix
