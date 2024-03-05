@@ -45,6 +45,11 @@ class BookPersistenceAdapter implements BookPersistenceOutPort {
         return bookMapper.toDomain(bookRepository.save(bookJpaEntity));
     }
 
+    @Override
+    public void deleteById(Long bookId) {
+        bookRepository.deleteById(bookId);
+    }
+
     private Set<TopicJpaEntity> populateBookTopics(List<Book.Topic> topics) {
         var topicEntities = topicRepository.findByIds(topics.stream().map(Book.Topic::getId).toList());
         if (topics.size() != topicEntities.size())

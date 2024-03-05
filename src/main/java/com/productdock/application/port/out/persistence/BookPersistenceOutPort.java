@@ -11,4 +11,6 @@ public interface BookPersistenceOutPort {
     Optional<Book> findByTitleAndAuthor(String title, String author);
 
     Book save(Book book);
+
+    void deleteById(Long bookId);
 }
