@@ -22,6 +22,7 @@ spring:
     topic:
       book-rating: book-rating
       insert-book: insert-book
+      delete-book: delete-book
 
   jpa:
     hibernate:
