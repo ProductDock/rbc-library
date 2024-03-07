@@ -5,6 +5,7 @@ import com.productdock.application.port.in.DeleteBookUseCase;
 import com.productdock.application.port.out.messaging.DeleteBookMessagingOutPort;
 import com.productdock.application.port.out.persistence.BookPersistenceOutPort;
 import com.productdock.application.port.out.web.RentalsClient;
+import com.productdock.domain.exception.BookNotFoundException;
 import com.productdock.domain.exception.DeleteBookException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -27,14 +28,24 @@ public class DeleteBookService implements DeleteBookUseCase {
     public void deleteBook(Long bookId) {
 
         if (bookRepository.findById(bookId).isEmpty()) {
-            throw new DeleteBookException("Book not found.");
+            throw new BookNotFoundException("Book not found.");
         }
         var bookRentals = rentalsClient.getRentals(bookId);
         if (!bookRentals.isEmpty()) {
-            throw new DeleteBookException("Book is currently in use by " + bookRentals.stream().findFirst().get().user().fullName());
+            throw new DeleteBookException(createRentalMessage(bookRentals.stream().findFirst().get()));
         }
         bookRepository.deleteById(bookId);
         deleteBookMessagingOutPort.sendMessage(bookId);
         log.debug("deleted book with id: {}", bookId);
+    }
+
+    private String createRentalMessage(BookRentalStateDto bookRentals){
+        if(bookRentals.status() == null || bookRentals.user() == null){
+            return "Cannot read rental status.";
+        }
+        String status = bookRentals.status().toString().toLowerCase();
+        String userName = bookRentals.user().fullName();
+        String message = "Book is " + status + " by " + userName + ".";
+        return message;
     }
 }
