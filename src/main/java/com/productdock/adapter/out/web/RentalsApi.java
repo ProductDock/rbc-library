@@ -29,7 +29,7 @@ public class RentalsApi implements RentalsClient {
 
     private ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
-    public RentalsApi(@Value("http://localhost:8083/api/rental/book//") String rentalsServiceUrl) {
+    public RentalsApi(@Value("http://localhost:8083/api/rental/book/") String rentalsServiceUrl) {
         this.rentalsServiceUrl = rentalsServiceUrl;
     }
 

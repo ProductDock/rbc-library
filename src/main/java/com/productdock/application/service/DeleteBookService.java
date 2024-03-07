@@ -31,7 +31,7 @@ public class DeleteBookService implements DeleteBookUseCase {
         }
         var bookRentals = rentalsClient.getRentals(bookId);
         if (!bookRentals.isEmpty()) {
-            throw new DeleteBookException("Book is currently in use by " + bookRentals.stream().findFirst().get().user.fullName);
+            throw new DeleteBookException("Book is currently in use by " + bookRentals.stream().findFirst().get().user().fullName());
         }
         bookRepository.deleteById(bookId);
         deleteBookMessagingOutPort.sendMessage(bookId);

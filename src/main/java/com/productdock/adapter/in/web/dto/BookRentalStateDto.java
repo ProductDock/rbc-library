@@ -4,9 +4,5 @@ import com.productdock.domain.RentalStatus;
 
 import java.util.Date;
 
-public class BookRentalStateDto {
+public record BookRentalStateDto (UserProfileDto user, RentalStatus status, Date date){}
 
-    public UserProfileDto user;
-    public RentalStatus status;
-    public Date date;
-}
