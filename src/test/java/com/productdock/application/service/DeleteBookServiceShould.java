@@ -6,6 +6,7 @@ import com.productdock.application.port.out.messaging.DeleteBookMessagingOutPort
 import com.productdock.application.port.out.persistence.BookPersistenceOutPort;
 import com.productdock.application.port.out.web.RentalsClient;
 import com.productdock.domain.Book;
+import com.productdock.domain.exception.BookNotFoundException;
 import com.productdock.domain.exception.DeleteBookException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +55,7 @@ public class DeleteBookServiceShould {
         given(bookRepository.findById(BOOK_ID)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> deleteBookService.deleteBook(BOOK_ID))
-                .isInstanceOf(DeleteBookException.class);
+                .isInstanceOf(BookNotFoundException.class);
     }
 
     @Test
