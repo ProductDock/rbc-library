@@ -35,6 +35,13 @@ public class KafkaTestConsumer {
         writeRecordToFile(insertBookMessage, "testAddBook.txt");
     }
 
+    @KafkaListener(topics = "${spring.kafka.topic.delete-book}")
+    public void recieveDeleteBook(ConsumerRecord<String, String> consumerRecord) throws JsonProcessingException{
+        var deleteBookMessage = kafkaMessageDeserializer.deserializeDeleteBookMessage(consumerRecord);
+        writeRecordToFile(deleteBookMessage, "testDeleteBook.txt");
+
+    }
+
     private void writeRecordToFile(Object message, String fileName) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);
