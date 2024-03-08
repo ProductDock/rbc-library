@@ -22,7 +22,7 @@ public class DeleteBookApiShould {
     @Test
     void deleteBook(){
 
-        deleteBookApi.DeleteBook(DEFAULT_BOOK_ID);
+        deleteBookApi.deleteBook(DEFAULT_BOOK_ID);
 
         verify(deleteBookUseCase).deleteBook(DEFAULT_BOOK_ID);
     }

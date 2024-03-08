@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteBookServiceShould {
+class DeleteBookServiceShould {
 
     private static final UserProfileDto USER_PROFILE_DTO = new UserProfileDto("Mocked name", null, null);
     private static final BookRentalStateDto RENTAL_DTO = new BookRentalStateDto(USER_PROFILE_DTO, null, null);

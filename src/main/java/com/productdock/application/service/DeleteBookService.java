@@ -45,7 +45,6 @@ public class DeleteBookService implements DeleteBookUseCase {
         }
         String status = bookRentals.status().toString().toLowerCase();
         String userName = bookRentals.user().fullName();
-        String message = "Book is " + status + " by " + userName + ".";
-        return message;
+        return "Book is " + status + " by " + userName + ".";
     }
 }

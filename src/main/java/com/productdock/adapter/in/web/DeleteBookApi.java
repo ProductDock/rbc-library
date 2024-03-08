@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public record DeleteBookApi(DeleteBookUseCase deleteBookUseCase) {
 
     @DeleteMapping("/{bookId}")
-    public void DeleteBook(@PathVariable("bookId") Long bookId){
+    public void deleteBook(@PathVariable("bookId") Long bookId){
         log.debug("DELETE request recieved with book id: {}", bookId);
         deleteBookUseCase.deleteBook(bookId);
     }
