@@ -1,4 +1,5 @@
 USER_PROFILES_JWT_PUBLIC_KEY: src/main/resources/app-local.pub
+RENTAL_SERVICE_URL: http://localhost:8083
 
 KAFKA_SERVER_URL: localhost:9093
 MYSQL_SERVER_URL: localhost:3308

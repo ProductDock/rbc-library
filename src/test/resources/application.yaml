@@ -34,3 +34,7 @@ cors:
 
 jwt:
   public.key: classpath:test.pub
+
+rental:
+  service:
+    url: http://localhost:8083

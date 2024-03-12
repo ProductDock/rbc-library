@@ -1,13 +1,11 @@
 package com.productdock.adapter.out.kafka;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.productdock.adapter.out.kafka.publisher.KafkaPublisher;
 import com.productdock.application.port.out.messaging.DeleteBookMessagingOutPort;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.ExecutionException;
 
 @Component
 @RequiredArgsConstructor
@@ -17,8 +15,9 @@ public class DeletedBookMessagePublisher implements DeleteBookMessagingOutPort {
     private String kafkaTopic;
     private final KafkaPublisher publisher;
 
+    @SneakyThrows
     @Override
-    public void sendMessage(Long bookId) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public void sendMessage(Long bookId) {
         publisher.sendMessage(bookId, kafkaTopic);
     }
 

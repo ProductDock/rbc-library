@@ -16,7 +16,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.jdbc.JdbcTestUtils;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +24,7 @@ import java.time.Duration;
 import static com.productdock.data.provider.out.sql.BookEntityMother.defaultBookEntityBuilder;
 import static com.productdock.kafka.KafkaFileUtil.getMessageFrom;
 import static com.productdock.kafka.KafkaFileUtil.ifFileExists;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DeleteBookApiTest extends KafkaTestBase {
 
     public static final String TEST_FILE = "testDeleteBook.txt";
+    private static final String ROLE_ADMIN = "SCOPE_ROLE_ADMIN";
 
     public static MockWebServer mockRentalBackEnd;
     @Autowired
@@ -62,14 +63,13 @@ public class DeleteBookApiTest extends KafkaTestBase {
 
     @AfterAll
     static void after() {
-        File f = new File(TEST_FILE);
-        f.delete();
+        new File(TEST_FILE).delete();
     }
 
     @Test
     @WithMockUser
     void deleteBook_whenIdDoesntExist() throws Exception {
-        requestProducer.makeDeleteBookRequest(1L).andExpect(status().isNotFound());
+        requestProducer.makeDeleteBookRequest(1L, ROLE_ADMIN).andExpect(status().isNotFound());
     }
 
     @Test
@@ -77,7 +77,7 @@ public class DeleteBookApiTest extends KafkaTestBase {
     void deleteBook_whenBookIsValid() throws Exception {
         var bookId = givenAnyBook();
         mockRentalBackEnd.enqueue(new MockResponse().setBody("[]").addHeader("Content-Type", "application/json"));
-        requestProducer.makeDeleteBookRequest(bookId).andExpect(status().isOk());
+        requestProducer.makeDeleteBookRequest(bookId, ROLE_ADMIN).andExpect(status().isOk());
 
         await()
                 .atMost(Duration.ofSeconds(4))
@@ -92,15 +92,15 @@ public class DeleteBookApiTest extends KafkaTestBase {
     void deleteBook_whenBookIsTaken() throws Exception {
         var bookId = givenAnyBook();
         mockRentalBackEnd.enqueue(new MockResponse().setBody("[{\"user\":{\"fullName\":\"Test Test\"},\"status\":\"RENTED\"}]").addHeader("Content-Type", "application/json"));
-        requestProducer.makeDeleteBookRequest(bookId).andExpect(status().isBadRequest());
+        requestProducer.makeDeleteBookRequest(bookId, ROLE_ADMIN).andExpect(status().isBadRequest());
     }
 
     @Test
     @WithMockUser
-    void deleteBook_whenRentalisNotValid() throws Exception {
+    void deleteBook_whenRentalIsNotValid() throws Exception {
         var bookId = givenAnyBook();
         mockRentalBackEnd.enqueue(new MockResponse().setBody("[{\"user\":{\"fullName\":\"Test Test\"}}]").addHeader("Content-Type", "application/json"));
-        requestProducer.makeDeleteBookRequest(bookId).andExpect(status().isBadRequest());
+        requestProducer.makeDeleteBookRequest(bookId, ROLE_ADMIN).andExpect(status().isBadRequest());
     }
 
 

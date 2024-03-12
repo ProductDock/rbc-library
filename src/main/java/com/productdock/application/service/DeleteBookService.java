@@ -12,10 +12,12 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DeleteBookService implements DeleteBookUseCase {
+class DeleteBookService implements DeleteBookUseCase {
 
     private final BookPersistenceOutPort bookRepository;
 
@@ -26,25 +28,34 @@ public class DeleteBookService implements DeleteBookUseCase {
     @Override
     @SneakyThrows
     public void deleteBook(Long bookId) {
-
-        if (bookRepository.findById(bookId).isEmpty()) {
-            throw new BookNotFoundException("Book not found.");
-        }
-        var bookRentals = rentalsClient.getRentals(bookId);
-        if (!bookRentals.isEmpty()) {
-            throw new DeleteBookException(createRentalMessage(bookRentals.stream().findFirst().get()));
-        }
+        validate(bookId);
         bookRepository.deleteById(bookId);
         deleteBookMessagingOutPort.sendMessage(bookId);
         log.debug("deleted book with id: {}", bookId);
     }
 
-    private String createRentalMessage(BookRentalStateDto bookRentals){
-        if(bookRentals.status() == null || bookRentals.user() == null){
-            return "Cannot read rental status.";
+    @SneakyThrows
+    private void validate(Long bookId) {
+        bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found."));
+
+        var bookRentals = rentalsClient.getRentals(bookId);
+        if (!bookRentals.isEmpty()) {
+            throw new DeleteBookException(createRentalMessage(bookRentals));
         }
-        String status = bookRentals.status().toString().toLowerCase();
-        String userName = bookRentals.user().fullName();
-        return "Book is " + status + " by " + userName + ".";
+    }
+
+    private String createRentalMessage(Collection<BookRentalStateDto> bookRentals) {
+        var message = "Book is ";
+        for (var rental : bookRentals) {
+            if (rental.status() == null || rental.user() == null) {
+                return "Cannot read rental status.";
+            }
+            var status = rental.status().toString().toLowerCase();
+            var userName = rental.user().fullName();
+
+            message = message.concat(status).concat(" by ").concat(userName).concat(". ");
+        }
+
+        return message;
     }
 }

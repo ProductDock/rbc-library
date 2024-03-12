@@ -39,7 +39,6 @@ public class KafkaTestConsumer {
     public void recieveDeleteBook(ConsumerRecord<String, String> consumerRecord) throws JsonProcessingException{
         var deleteBookMessage = kafkaMessageDeserializer.deserializeDeleteBookMessage(consumerRecord);
         writeRecordToFile(deleteBookMessage, "testDeleteBook.txt");
-
     }
 
     private void writeRecordToFile(Object message, String fileName) {

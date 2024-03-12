@@ -41,6 +41,10 @@ file-logging-enabled: ${LOG_TO_FILE}
 jwt:
   public.key: file:${USER_PROFILES_JWT_PUBLIC_KEY}
 
+rental:
+  service:
+    url: ${RENTAL_SERVICE_URL}
+
 management:
   server:
     port: 8087

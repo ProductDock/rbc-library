@@ -87,11 +87,11 @@ class RestRequestProducer {
                 .andExpect(status().isOk());
     }
 
-    public ResultActions makeDeleteBookRequest(Long bookId) throws Exception {
+    public ResultActions makeDeleteBookRequest(Long bookId, String role) throws Exception {
         return mockMvc.perform(delete("/api/catalog/books/" + bookId)
                 .with(jwt().jwt(jwt -> {
                     jwt.claim("email", DEFAULT_USER_ID);
                     jwt.claim("fullName", "::userFullName");
-                })));
+                }).authorities(new SimpleGrantedAuthority(role))));
     }
 }

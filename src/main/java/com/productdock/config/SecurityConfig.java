@@ -24,6 +24,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests(authorize -> authorize.antMatchers("/actuator/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/catalog/books").hasAuthority("SCOPE_ROLE_ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/api/catalog/books").hasAuthority("SCOPE_ROLE_ADMIN")
                         .anyRequest().authenticated())
                 .cors().and()
                 .oauth2ResourceServer().jwt();

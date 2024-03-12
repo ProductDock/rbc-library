@@ -14,7 +14,7 @@ public record DeleteBookApi(DeleteBookUseCase deleteBookUseCase) {
 
     @DeleteMapping("/{bookId}")
     public void deleteBook(@PathVariable("bookId") Long bookId){
-        log.debug("DELETE request recieved with book id: {}", bookId);
+        log.debug("DELETE BOOK request received with book id: {}", bookId);
         deleteBookUseCase.deleteBook(bookId);
     }
 }

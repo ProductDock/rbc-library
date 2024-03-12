@@ -18,7 +18,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Collection;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -29,7 +28,7 @@ public class RentalsApi implements RentalsClient {
 
     private ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
-    public RentalsApi(@Value("http://localhost:8083/api/rental/book/") String rentalsServiceUrl) {
+    public RentalsApi(@Value("${rental.service.url}/api/rental/book/") String rentalsServiceUrl) {
         this.rentalsServiceUrl = rentalsServiceUrl;
     }
 
@@ -41,14 +40,12 @@ public class RentalsApi implements RentalsClient {
                 .path(bookId.toString())
                 .path("/rentals")
                 .build();
-        HttpRequest request = HttpRequest.newBuilder()
+        var request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        log.debug("{}", response.body());
         return objectMapper.readValue(response.body(), new TypeReference<Collection<BookRentalStateDto>>() {
         });
     }

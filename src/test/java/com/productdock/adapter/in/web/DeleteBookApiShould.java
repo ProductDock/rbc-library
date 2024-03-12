@@ -17,13 +17,13 @@ public class DeleteBookApiShould {
     @Mock
     private DeleteBookUseCase deleteBookUseCase;
 
-    public static final long DEFAULT_BOOK_ID = 1;
+    public static final long BOOK_ID = 1;
 
     @Test
     void deleteBook(){
 
-        deleteBookApi.deleteBook(DEFAULT_BOOK_ID);
+        deleteBookApi.deleteBook(BOOK_ID);
 
-        verify(deleteBookUseCase).deleteBook(DEFAULT_BOOK_ID);
+        verify(deleteBookUseCase).deleteBook(BOOK_ID);
     }
 }
