@@ -36,8 +36,9 @@ class DeleteBookService implements DeleteBookUseCase {
 
     @SneakyThrows
     private void validate(Long bookId) {
-        bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found."));
-
+        if (bookRepository.findById(bookId).isEmpty()) {
+            throw new BookNotFoundException("Book not found.");
+        }
         var bookRentals = rentalsClient.getRentals(bookId);
         if (!bookRentals.isEmpty()) {
             throw new DeleteBookException(createRentalMessage(bookRentals));
