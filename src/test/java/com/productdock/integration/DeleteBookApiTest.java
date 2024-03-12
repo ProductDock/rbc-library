@@ -34,6 +34,7 @@ public class DeleteBookApiTest extends KafkaTestBase {
 
     public static final String TEST_FILE = "testDeleteBook.txt";
     private static final String ROLE_ADMIN = "SCOPE_ROLE_ADMIN";
+    private static final String ROLE_USER = "SCOPE_ROLE_USER";
 
     public static MockWebServer mockRentalBackEnd;
     @Autowired
@@ -70,6 +71,13 @@ public class DeleteBookApiTest extends KafkaTestBase {
     @WithMockUser
     void deleteBook_whenIdDoesntExist() throws Exception {
         requestProducer.makeDeleteBookRequest(1L, ROLE_ADMIN).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser
+    void returnForbidden_whenUserWithInsufficientRole() throws Exception {
+        requestProducer.makeDeleteBookRequest(1L, ROLE_USER)
+                .andExpect(status().isForbidden());
     }
 
     @Test
