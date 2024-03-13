@@ -16,6 +16,8 @@ import java.security.interfaces.RSAPublicKey;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
+    
+    private static final String ROLE_ADMIN = "SCOPE_ROLE_ADMIN";
 
     @Value("${jwt.public.key}")
     RSAPublicKey key;
@@ -23,8 +25,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests(authorize -> authorize.antMatchers("/actuator/**").permitAll()
-                        .antMatchers(HttpMethod.POST, "/api/catalog/books").hasAuthority("SCOPE_ROLE_ADMIN")
-                        .antMatchers(HttpMethod.DELETE, "/api/catalog/books/{bookId}").hasAuthority("SCOPE_ROLE_ADMIN")
+                        .antMatchers(HttpMethod.POST, "/api/catalog/books").hasAuthority(ROLE_ADMIN)
+                        .antMatchers(HttpMethod.DELETE, "/api/catalog/books/{bookId}").hasAuthority(ROLE_ADMIN)
                         .anyRequest().authenticated())
                 .cors().and()
                 .oauth2ResourceServer().jwt();

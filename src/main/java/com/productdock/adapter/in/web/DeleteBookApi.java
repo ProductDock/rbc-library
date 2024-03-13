@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/api/catalog/books")
-public record DeleteBookApi(DeleteBookUseCase deleteBookUseCase) {
+record DeleteBookApi(DeleteBookUseCase deleteBookUseCase) {
 
     @DeleteMapping("/{bookId}")
-    public void deleteBook(@PathVariable("bookId") Long bookId){
+    public void deleteBook(@PathVariable("bookId") Long bookId) {
         log.debug("DELETE BOOK request received with book id: {}", bookId);
         deleteBookUseCase.deleteBook(bookId);
     }

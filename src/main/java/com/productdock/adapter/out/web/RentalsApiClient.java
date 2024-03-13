@@ -21,14 +21,15 @@ import java.util.Collection;
 
 @Slf4j
 @Component
-public class RentalsApi implements RentalsClient {
+public class RentalsApiClient implements RentalsClient {
 
     private String rentalsServiceUrl;
     private HttpClient client = HttpClient.newHttpClient();
 
     private ObjectMapper objectMapper = new ObjectMapper();
+
     @Autowired
-    public RentalsApi(@Value("${rental.service.url}/api/rental/book/") String rentalsServiceUrl) {
+    public RentalsApiClient(@Value("${rental.service.url}/api/rental/book/") String rentalsServiceUrl) {
         this.rentalsServiceUrl = rentalsServiceUrl;
     }
 
@@ -45,8 +46,8 @@ public class RentalsApi implements RentalsClient {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
                 .GET()
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return objectMapper.readValue(response.body(), new TypeReference<Collection<BookRentalStateDto>>() {
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return objectMapper.readValue(response.body(), new TypeReference<>() {
         });
     }
 }

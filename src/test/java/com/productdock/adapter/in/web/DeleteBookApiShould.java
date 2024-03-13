@@ -12,15 +12,14 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class DeleteBookApiShould {
 
+    public static final long BOOK_ID = 1;
     @InjectMocks
     private DeleteBookApi deleteBookApi;
     @Mock
     private DeleteBookUseCase deleteBookUseCase;
 
-    public static final long BOOK_ID = 1;
-
     @Test
-    void deleteBook(){
+    void deleteBook() {
 
         deleteBookApi.deleteBook(BOOK_ID);
 
