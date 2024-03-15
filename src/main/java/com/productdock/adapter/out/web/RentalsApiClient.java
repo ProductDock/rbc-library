@@ -2,10 +2,9 @@ package com.productdock.adapter.out.web;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.productdock.adapter.in.web.dto.BookRentalStateDto;
 import com.productdock.application.port.out.web.RentalsClient;
+import com.productdock.domain.BookRentalState;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,13 +27,12 @@ public class RentalsApiClient implements RentalsClient {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Autowired
     public RentalsApiClient(@Value("${rental.service.url}/api/rental/book/") String rentalsServiceUrl) {
         this.rentalsServiceUrl = rentalsServiceUrl;
     }
 
     @Override
-    public Collection<BookRentalStateDto> getRentals(Long bookId) throws IOException, InterruptedException {
+    public Collection<BookRentalState> getRentals(Long bookId) throws IOException, InterruptedException {
         var jwt = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getCredentials()).getTokenValue();
         var uri = new DefaultUriBuilderFactory(rentalsServiceUrl)
                 .builder()

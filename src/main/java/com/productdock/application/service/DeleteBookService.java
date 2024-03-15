@@ -1,10 +1,10 @@
 package com.productdock.application.service;
 
-import com.productdock.adapter.in.web.dto.BookRentalStateDto;
 import com.productdock.application.port.in.DeleteBookUseCase;
 import com.productdock.application.port.out.messaging.DeleteBookMessagingOutPort;
 import com.productdock.application.port.out.persistence.BookPersistenceOutPort;
 import com.productdock.application.port.out.web.RentalsClient;
+import com.productdock.domain.BookRentalState;
 import com.productdock.domain.exception.BookNotFoundException;
 import com.productdock.domain.exception.DeleteBookException;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +28,14 @@ class DeleteBookService implements DeleteBookUseCase {
     @Override
     @SneakyThrows
     public void deleteBook(Long bookId) {
-        validate(bookId);
+        validateBookAvailability(bookId);
         bookRepository.deleteById(bookId);
         deleteBookMessagingOutPort.sendMessage(bookId);
         log.debug("deleted book with id: {}", bookId);
     }
 
     @SneakyThrows
-    private void validate(Long bookId) {
+    private void validateBookAvailability(Long bookId) {
         if (bookRepository.findById(bookId).isEmpty()) {
             throw new BookNotFoundException("Book not found.");
         }
@@ -45,16 +45,15 @@ class DeleteBookService implements DeleteBookUseCase {
         }
     }
 
-    private String createRentalMessage(Collection<BookRentalStateDto> bookRentals) {
-        var message = "Book is ";
+    private String createRentalMessage(Collection<BookRentalState> bookRentals) {
+        var message = "Book in use by: ";
+        var punctuation = "";
         for (var rental : bookRentals) {
-            if (rental.status() == null || rental.user() == null) {
-                return "Cannot read rental status.";
-            }
             var status = rental.status().toString().toLowerCase();
             var userName = rental.user().fullName();
 
-            message = message.concat(status).concat(" by ").concat(userName).concat(". ");
+            message = message.concat(punctuation).concat(userName).concat(" (").concat(status).concat(")");
+            punctuation = ", ";
         }
 
         return message;

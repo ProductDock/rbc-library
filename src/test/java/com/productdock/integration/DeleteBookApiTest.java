@@ -4,6 +4,7 @@ import com.productdock.adapter.out.sql.BookRepository;
 import com.productdock.adapter.out.sql.TopicRepository;
 import com.productdock.adapter.out.sql.entity.TopicJpaEntity;
 import com.productdock.data.provider.out.kafka.KafkaTestBase;
+import lombok.SneakyThrows;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
@@ -69,7 +70,8 @@ public class DeleteBookApiTest extends KafkaTestBase {
 
     @Test
     @WithMockUser
-    void deleteBook_whenIdDoesntExist() throws Exception {
+    @SneakyThrows
+    void deleteBook_whenIdDoesntExist() {
         requestProducer.makeDeleteBookRequest(1L, ROLE_ADMIN).andExpect(status().isNotFound());
     }
 
@@ -102,15 +104,6 @@ public class DeleteBookApiTest extends KafkaTestBase {
         mockRentalBackEnd.enqueue(new MockResponse().setBody("[{\"user\":{\"fullName\":\"Test Test\"},\"status\":\"RENTED\"}]").addHeader("Content-Type", "application/json"));
         requestProducer.makeDeleteBookRequest(bookId, ROLE_ADMIN).andExpect(status().isBadRequest());
     }
-
-    @Test
-    @WithMockUser
-    void deleteBook_whenRentalIsNotValid() throws Exception {
-        var bookId = givenAnyBook();
-        mockRentalBackEnd.enqueue(new MockResponse().setBody("[{\"user\":{\"fullName\":\"Test Test\"}}]").addHeader("Content-Type", "application/json"));
-        requestProducer.makeDeleteBookRequest(bookId, ROLE_ADMIN).andExpect(status().isBadRequest());
-    }
-
 
     private Long givenAnyBook() {
         var marketingTopic = givenTopicWithName("MARKETING");

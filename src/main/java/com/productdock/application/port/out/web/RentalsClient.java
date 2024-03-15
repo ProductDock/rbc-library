@@ -1,11 +1,11 @@
 package com.productdock.application.port.out.web;
 
-import com.productdock.adapter.in.web.dto.BookRentalStateDto;
+import com.productdock.domain.BookRentalState;
 
 import java.io.IOException;
 import java.util.Collection;
 
 public interface RentalsClient {
 
-    Collection<BookRentalStateDto> getRentals(Long bookId) throws IOException, InterruptedException;
+    Collection<BookRentalState> getRentals(Long bookId) throws IOException, InterruptedException;
 }
