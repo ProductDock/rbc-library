@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 
@@ -27,6 +28,7 @@ class DeleteBookService implements DeleteBookUseCase {
 
     @Override
     @SneakyThrows
+    @Transactional
     public void deleteBook(Long bookId) {
         validateBookAvailability(bookId);
         bookRepository.deleteById(bookId);
