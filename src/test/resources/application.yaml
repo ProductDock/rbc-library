@@ -26,6 +26,7 @@ spring:
     topic:
       book-rating: embedded-book-rating
       insert-book: embedded-insert-book
+      delete-book: embedded-delete-book
 
 cors:
   allowed:
@@ -33,3 +34,7 @@ cors:
 
 jwt:
   public.key: classpath:test.pub
+
+rental:
+  service:
+    url: http://localhost:8083

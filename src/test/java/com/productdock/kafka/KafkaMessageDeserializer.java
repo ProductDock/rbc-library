@@ -17,4 +17,8 @@ public record KafkaMessageDeserializer(ObjectMapper objectMapper) {
     public AddedBookMessage deserializeInsertBookMessage(ConsumerRecord<String, String> consumerInsertBook) throws JsonProcessingException {
         return objectMapper.readValue(consumerInsertBook.value(), AddedBookMessage.class);
     }
+
+    public Long deserializeDeleteBookMessage(ConsumerRecord<String, String> consumerRecord) throws JsonProcessingException {
+        return objectMapper.readValue(consumerRecord.value(),Long.class);
+    }
 }
